@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itender.ms.mapper.ItenderUserMapper">
+    <resultMap id="itenderUser" type="com.itender.ms.domain.ItenderUser">
+    	<id column="id" javaType="String" property="id"></id>
+        <result column="USER_NAME" javaType="STRING" property="userName"></result>
+        <result column="PASS_WORD" javaType="STRING" property="password"></result>
+        <result column="EMAIL" javaType="STRING" property="email"></result>
+        <result column="REGISTER_TIME" javaType="DATE" property="registerTime"></result>
+        <result column="REGISTER_IP" javaType="STRING" property="registerIp"></result>
+        <result column="LAST_LOGIN_TIME" javaType="DATE" property="lastLoginTime"></result>
+        <result column="LAST_LOGIN_IP" javaType="STRING" property="lastLoginIp"></result>
+        <result column="IS_DEFAULT_ADMIN" javaType="Boolean" property="isDefaultAdmin"></result>
+        <result column="CREATE_TIME" javaType="DATE" property="createTime"></result>
+        <result column="UPDATE_TIME" javaType="DATE" property="updateTime"></result>
+        <result column="OPERATOR" javaType="STRING" property="operator"></result>
+        <collection property="roles" ofType="com.itender.ms.domain.ItenderRole" javaType="java.util.List">
+        	<id column="role_id" property="id"/>
+          	<result column="role_name" property="roleName"/>
+        </collection>
+    </resultMap>
+
+	 <select id="selectByUserId" parameterType="java.lang.String" resultMap="itenderUser">
+		SELECT 
+			a.*,c.id role_id,c.role_name
+		FROM 
+			ITENDER_USER a
+		LEFT JOIN 
+			ITENDER_USER_ROLE b
+		ON 
+			b.user_id=a.id
+		LEFT JOIN 
+			ITENDER_ROLE c
+		ON 
+			c.id=b.role_id
+		WHERE
+			a.id= #{userId,jdbcType=VARCHAR} 
+    </select>
+
+    <select id="selectByNameAndPassword" parameterType="com.itender.ms.domain.ItenderUser" resultMap="itenderUser">
+    	SELECT  
+    		a.*,c.id role_id,c.role_name
+    	FROM  
+    		ITENDER_USER a
+		LEFT JOIN 
+			ITENDER_USER_ROLE b
+		ON 
+			b.user_id=a.id
+		LEFT JOIN 
+			ITENDER_ROLE c
+		ON 
+			c.id=b.role_id
+    	WHERE 
+    		a.USER_NAME = #{userName,jdbcType=VARCHAR} 
+    	AND 
+    		a.PASS_WORD = #{password,jdbcType=VARCHAR}
+    </select>
+    
+    <update id="updateUser" parameterType="com.itender.ms.domain.ItenderUser">
+    	UPDATE ITENDER_USER
+    	<trim prefix="SET" suffixOverrides=",">
+		  <if test="userName != null">USER_NAME=#{userName},</if>
+		  <if test="password != null">PASS_WORD=#{password},</if>
+		  <if test="email != null">EMAIL=#{email},</if>
+		  <if test="registerTime != null">REGISTER_TIME=#{registerTime},</if>
+		  <if test="registerIp != null">REGISTER_IP=#{registerIp},</if>
+		  <if test="lastLoginTime != null">LAST_LOGIN_TIME=#{lastLoginTime},</if>
+		  <if test="lastLoginIp != null">LAST_LOGIN_IP=#{lastLoginIp},</if>
+		</trim>
+        WHERE ID = #{id}
+    </update>
+</mapper>

@@ -1,0 +1,18 @@
+##Staging环境
+spring:
+    profiles: pro
+
+
+#服务端口
+server:
+  port: 9090
+
+
+#数据库IP
+db:
+  ip: rm-wz9gk6617j8pmmjojo.mysql.rds.aliyuncs.com
+  name: treekm
+  username: xycdba
+  password: Xycdba001
+
+

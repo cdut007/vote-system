@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itender.ms.mapper.ItenderPrivilegeMapper">
+    <resultMap id="itenderPrivilege" type="com.itender.ms.domain.ItenderPrivilege">
+    	<id column="id" javaType="String" property="id"></id>
+        <result column="PRIVILEGE_NAME" javaType="STRING" property="privilegeName"></result>
+        <result column="PRIVILEGE_URI" javaType="STRING" property="privilegeUri"></result>
+        <result column="privilege_method" javaType="STRING" property="privilegeMethod"></result>
+        <result column="privilege_alias" javaType="STRING" property="alias"></result>
+        <result column="privilege_icon" javaType="STRING" property="icon"></result>
+        <result column="privilege_seq" javaType="INTEGER" property="seq"></result>
+        <result column="privilege_level" javaType="INTEGER" property="level"></result>
+        <result column="privilege_ref" javaType="STRING" property="ref"></result>
+    </resultMap>
+
+	 <select id="selectByUserId" parameterType="java.lang.String" resultMap="itenderPrivilege">
+        SELECT
+            a.id,a.privilege_name,a.privilege_uri,a.privilege_method,a.privilege_alias,a.privilege_icon,a.privilege_seq,a.privilege_level,a.privilege_ref,count(*)
+        FROM
+            ITENDER_PRIVILEGE a
+        JOIN
+            ITENDER_ROLE_PRIVILEGE b
+        ON
+            b.privilege_id=a.id
+        RIGHT JOIN
+            ITENDER_USER_ROLE c
+        ON
+            c.role_id=b.role_id
+        WHERE
+            c.user_id= #{userId,jdbcType=VARCHAR}
+        GROUP BY
+            a.id,a.privilege_name,a.privilege_uri,a.privilege_method,a.privilege_alias,a.privilege_icon,a.privilege_seq,a.privilege_level,a.privilege_ref
+        HAVING
+            count(*)=1
+    </select>
+    
+    <update id="updatePrivilege" parameterType="com.itender.ms.domain.ItenderPrivilege">
+    	UPDATE ITENDER_PRIVILEGE
+    	<trim prefix="SET" suffixOverrides=",">
+		  <if test="privilegeName != null">PRIVILEGE_NAME=#{privilegeName},</if>
+		  <if test="privilegeUri != null">PRIVILEGE_URI=#{privilegeUri},</if>
+          <if test="privilegeMethod != null">privilege_method=#{privilegeMethod},</if>
+          <if test="alias != null">privilege_alias=#{alias},</if>
+          <if test="icon != null">privilege_icon=#{icon},</if>
+          <if test="seq != null">privilege_seq=#{seq},</if>
+          <if test="level != null">privilege_level=#{level},</if>
+          <if test="ref != null">privilege_ref=#{ref},</if>
+		</trim>
+        WHERE ID = #{id}
+    </update>
+
+    <select id="selectByIds" parameterType="java.lang.String" resultMap="itenderPrivilege">
+        SELECT
+          a.*
+        FROM
+          itender_privilege a
+        WHERE
+          a.id
+        IN
+        <foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    
+    <select id="isExist" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT
+          COUNT(*)
+        FROM
+          ITENDER_PRIVILEGE p
+        WHERE
+          p.PRIVILEGE_URI=#{privilegeUri}
+        AND
+          p.PRIVILEGE_METHOD=#{privilegeMethod}
+    </select>
+
+    <insert id="insert" parameterType="com.itender.ms.domain.ItenderPrivilege" >
+        <selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
+             SELECT lower(sys_guid()) FROM dual
+        </selectKey>
+        INSERT INTO ITENDER_PRIVILEGE (ID, PRIVILEGE_NAME, PRIVILEGE_URI, PRIVILEGE_METHOD, PRIVILEGE_ALIAS, PRIVILEGE_ICON, PRIVILEGE_SEQ, PRIVILEGE_LEVEL, PRIVILEGE_REF) VALUES (#{id},#{privilegeName},#{privilegeUri},#{privilegeMethod},#{alias},#{icon},#{seq},#{level},#{ref})
+    </insert>
+</mapper>

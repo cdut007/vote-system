@@ -1,0 +1,37 @@
+*{
+    line-height: 30px;
+}
+body{
+    /*padding: 10px!important;*/
+    /*line-height: 30px;*/
+    /*font-family: "Microsoft Yahei", Verdana, Simsun, "Segoe UI Web Light", "Segoe UI Light", "Segoe UI Web Regular", "Segoe UI", "Segoe UI Symbol", "Helvetica Neue", Arial;*/
+}
+table
+{
+    border-collapse:collapse;
+    margin: 15px 0px;
+}
+table,th, td
+{
+    border: 1px solid black;
+}
+table td{
+    padding: 30px!important;
+    box-sizing: border-box!important;
+    vertical-align: top!important;
+}
+table td p{
+    margin: 0!important;
+}
+.word-style {
+    border: none;
+    border-bottom: 1px #000000 solid;
+    box-shadow: none;
+    outline: none;
+    width: 150px;
+    font-size: 16pt;
+    word-break: break-all;
+}
+.a4-bg{
+    /*background: url("./img/a4_bg.jpg") repeat-y;*/
+}

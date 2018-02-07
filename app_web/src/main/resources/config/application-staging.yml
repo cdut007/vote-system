@@ -1,0 +1,18 @@
+##Staging环境
+spring:
+    profiles: staging
+
+
+#服务端口
+server:
+  port: 9090
+
+
+#数据库IP
+db:
+  ip: 123.56.222.51
+#  ip: 172.17.52.59
+  name: orcl12c
+  username: tender_test
+  password: tender_test$#222
+

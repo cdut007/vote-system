@@ -1,0 +1,110 @@
+######################
+#Log4j2配置
+logging:
+  config: classpath:config/log4j2.xml
+
+#Spring配置
+spring:
+    ## 多环境配置
+    profiles:
+        active: staging
+
+    #数据库配置
+    datasource:
+        name: itender
+        url: jdbc:oracle:thin:@${db.ip}:1521:${db.name}
+        username: ${db.username}
+        password: ${db.password}
+
+        # 使用druid数据源
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: oracle.jdbc.driver.OracleDriver
+        filters: stat
+        initialSize: 1
+        maxActive: 20
+        maxWait: 30000
+        minIdle: 1
+        poolPreparedStatements: true
+        maxOpenPreparedStatements: 20
+        validationQuery: SELECT 1 FROM DUAL
+        testWhileIdle: true
+        testOnBorrow: true
+        testOnReturn: true
+        timeBetweenEvictionRunsMillis: 30000
+        minEvictableIdleTimeMillis: 30000
+        keepAlive: true
+
+    #freemarker配置
+    # FREEMARKER (FreeMarkerAutoConfiguration)
+    freemarker:
+      allow-request-override: false # Set whether HttpServletRequest attributes are allowed to override (hide) controller generated model attributes of the same name.
+      allow-session-override: false # Set whether HttpSession attributes are allowed to override (hide) controller generated model attributes of the same name.
+      cache: false # Enable templates caching.
+      charset: UTF-8 # Template encoding.
+      check-template-location: true # Check that the templates location exists.
+      content-type: text/html # Content-Type value.
+      enabled: true # Enable MVC view resolution for this technology.
+      expose-request-attributes: false # Set whether all request attributes should be added to the model prior to merging with the templates.
+      expose-session-attributes: false # Set whether all HttpSession attributes should be added to the model prior to merging with the templates.
+      expose-spring-macro-helpers: true # Set whether to expose a RequestContext for use by Spring's macro library, under the name "springMacroRequestContext".
+      prefer-file-system-access: true # Prefer file system access for templates loading. File system access enables hot detection of templates changes.
+      prefix: # Prefix that gets prepended to view names when building a URL.
+      request-context-attribute: # Name of the RequestContext attribute for all views.
+      suffix: .ftl # Suffix that gets appended to view names when building a URL.
+      template-loader-path: classpath:/templates/ # Comma-separated list of templates paths.
+
+#Mybatis配置
+mybatis:
+  mapperLocations: classpath*:mapper/*.xml
+  typeAliasesPackage: tk.mapper.model
+
+
+mapper:
+#    mappers:
+#        - CustomMapper
+    not-empty: false
+    identity: select lower(sys_guid()) from dual
+    ORDER: BEFORE
+
+pagehelper:
+    helperDialect: oracle
+    reasonable: true
+    supportMethodsArguments: true
+    params: count=countSql
+
+#权限资源uri配置
+privilege-uri-init:
+  #无权限URI
+  no_permission_uri: /nopermission
+  #不需要自动跳转URI
+  always_unreturn_uri:
+    - /
+  #一直无需检查URI
+  always_uncheck_uri:
+    - /
+    - /error
+    - /login
+    - /management/user/login
+    - /management/user/logout
+    - /management/user/register
+    - /swagger-*
+    - /static/*
+    - /invitation/documents/view/pdf
+    - /invitation/documents/available
+    - /invitation/documents/complete
+  #登录后无需检查URI
+  login_uncheck_uri:
+    - /
+    - /dashboard*
+    - /index
+    - /login
+    - /management/user/logout
+    - /management/user/register
+  #后台登录URI
+  backend_login_uri: /
+  #前台登录URI
+  frontend_login_uri: /home
+  #后台需要检查的URI前缀
+  backend_check_prefix: /
+  #前台需要检查的URI前缀
+  frontend_check_prefix: /home

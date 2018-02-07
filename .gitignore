@@ -1,0 +1,8 @@
+# Created by .ignore support plugin (hsz.mobi)
+.idea
+target
+genpdf
+*/target
+logs
+.log
+pom.xml.versionsBackup
