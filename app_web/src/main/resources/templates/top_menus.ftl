@@ -3,6 +3,8 @@
         <li class="layui-nav-item"><a href="/dashboard">招投标预发系统</a></li>
         <li class="layui-nav-item"><a href="/meta/template">元模板</a></li>
         <li class="layui-nav-item"><a href="/invitation/documents">招标文件</a></li>
+        <li class="layui-nav-item"><a href="/device">设备管理</a></li>
+
         <@resource_check url="/management/user">
         <li class="layui-nav-item"><a href="/management/user">用户</a></li>
 
