@@ -10,9 +10,9 @@ server:
 
 #数据库IP
 db:
-  ip: rm-wz9gk6617j8pmmjojo.mysql.rds.aliyuncs.com
-  name: treekm
-  username: xycdba
-  password: Xycdba001
+  ip: 47.94.241.88:3306
+  name: itender_supervise
+  username: dev
+  password: Ycp7WyjzNA
 
 
