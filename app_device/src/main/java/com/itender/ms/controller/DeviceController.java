@@ -40,9 +40,16 @@ public class DeviceController {
 	@Autowired
 	private ItenderDeviceService itenderDeviceService;
 
+
+    @ApiIgnore
+    @RequestMapping("")
+    public String index(HttpServletRequest request,HttpServletResponse response){
+        return "device/device_list";
+    }
+
     @ApiIgnore
     @RequestMapping(value = "/listDevice",method = RequestMethod.GET)
-    public String privilegePage(HttpServletRequest request, HttpServletResponse response){
+    public String devicePage(HttpServletRequest request, HttpServletResponse response){
         return ViewUtil.forward("/device/device_list");
     }
 
