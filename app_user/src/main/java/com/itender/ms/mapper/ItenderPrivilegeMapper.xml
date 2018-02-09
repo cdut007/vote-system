@@ -17,13 +17,13 @@
         SELECT
             a.id,a.privilege_name,a.privilege_uri,a.privilege_method,a.privilege_alias,a.privilege_icon,a.privilege_seq,a.privilege_level,a.privilege_ref,count(*)
         FROM
-            ITENDER_PRIVILEGE a
+            itender_privilege a
         JOIN
-            ITENDER_ROLE_PRIVILEGE b
+            itender_role_privilege b
         ON
             b.privilege_id=a.id
         RIGHT JOIN
-            ITENDER_USER_ROLE c
+            itender_user_role c
         ON
             c.role_id=b.role_id
         WHERE
@@ -66,7 +66,7 @@
         SELECT
           COUNT(*)
         FROM
-          ITENDER_PRIVILEGE p
+          itender_privilege p
         WHERE
           p.PRIVILEGE_URI=#{privilegeUri}
         AND

@@ -28,13 +28,13 @@
 		SELECT 
 			a.*,c.id role_id,c.role_name
 		FROM 
-			ITENDER_USER a
+			itender_user a
 		LEFT JOIN 
-			ITENDER_USER_ROLE b
+			itender_user_role b
 		ON 
 			b.user_id=a.id
 		LEFT JOIN 
-			ITENDER_ROLE c
+			itender_role c
 		ON 
 			c.id=b.role_id
 		WHERE
@@ -45,13 +45,13 @@
     	SELECT  
     		a.*,c.id role_id,c.role_name
     	FROM  
-    		ITENDER_USER a
+    		itender_user a
 		LEFT JOIN 
-			ITENDER_USER_ROLE b
+			itender_user_role b
 		ON 
 			b.user_id=a.id
 		LEFT JOIN 
-			ITENDER_ROLE c
+			itender_role c
 		ON 
 			c.id=b.role_id
     	WHERE 
@@ -61,7 +61,7 @@
     </select>
     
     <update id="updateUser" parameterType="com.itender.ms.domain.ItenderUser">
-    	UPDATE ITENDER_USER
+    	UPDATE itender_user
     	<trim prefix="SET" suffixOverrides=",">
 			<if test="userName != null">USER_NAME=#{userName},</if>
 			<if test="nickName != null">USER_NAME=#{nickName},</if>

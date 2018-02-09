@@ -3,7 +3,7 @@ package com.itender.ms.domain;
 import javax.persistence.Column;
 import javax.persistence.Table;
 
-@Table(name = "ITENDER_USER_ROLE")
+@Table(name = "itender_user_role")
 public class ItenderUserRole {
 
     @Column(name="user_id")

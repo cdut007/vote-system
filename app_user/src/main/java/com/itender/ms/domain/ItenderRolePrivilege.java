@@ -2,7 +2,7 @@ package com.itender.ms.domain;
 
 import javax.persistence.*;
 
-@Table(name = "ITENDER_ROLE_PRIVILEGE")
+@Table(name = "itender_role_privilege")
 public class ItenderRolePrivilege {
 
     @Id
