@@ -10,9 +10,9 @@ server:
 
 #数据库IP
 db:
-  ip: 123.56.222.51
+  ip: ﻿47.94.241.88
 #  ip: 172.17.52.59
-  name: orcl12c
-  username: tender_test
-  password: tender_test$#222
+  name: ﻿itender_supervise
+  username: dev
+  password: Ycp7WyjzNA
 

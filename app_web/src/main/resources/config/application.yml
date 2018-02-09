@@ -12,13 +12,15 @@ spring:
     #数据库配置
     datasource:
         name: itender
-        url: jdbc:oracle:thin:@${db.ip}:1521:${db.name}
+        url: jdbc:mysql://${db.ip}:3306/${db.name}?useUnicode=true&characterEncoding=utf-8
+#        url: jdbc:oracle:thin:@${db.ip}:1521:${db.name}
         username: ${db.username}
         password: ${db.password}
 
         # 使用druid数据源
         type: com.alibaba.druid.pool.DruidDataSource
-        driver-class-name: oracle.jdbc.driver.OracleDriver
+        driver-class-name: com.mysql.jdbc.Driver
+#        driver-class-name: oracle.jdbc.driver.OracleDriver
         filters: stat
         initialSize: 1
         maxActive: 20
@@ -26,7 +28,8 @@ spring:
         minIdle: 1
         poolPreparedStatements: true
         maxOpenPreparedStatements: 20
-        validationQuery: SELECT 1 FROM DUAL
+        validationQuery: "SELECT 'x'"
+#        validationQuery: SELECT 1 FROM DUAL
         testWhileIdle: true
         testOnBorrow: true
         testOnReturn: true
@@ -63,11 +66,13 @@ mapper:
 #    mappers:
 #        - CustomMapper
     not-empty: false
-    identity: select lower(sys_guid()) from dual
+#    identity: select lower(sys_guid()) from dual
+    identity: select uuid()
     ORDER: BEFORE
 
 pagehelper:
-    helperDialect: oracle
+    helperDialect: mysql
+#    helperDialect: oracle
     reasonable: true
     supportMethodsArguments: true
     params: count=countSql

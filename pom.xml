@@ -44,11 +44,11 @@
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc6</artifactId>
-            <version>11.2.0</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.oracle</groupId>-->
+            <!--<artifactId>ojdbc6</artifactId>-->
+            <!--<version>11.2.0</version>-->
+        <!--</dependency>-->
 
         <!--mybatis-->
         <dependency>
@@ -112,18 +112,29 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>2.7.0</version>
         </dependency>
+
         <!--添加aspose依赖-->
         <!--<dependency>-->
             <!--<groupId>com.aspose</groupId>-->
             <!--<artifactId>aspose-pdf</artifactId>-->
             <!--<version>11.0.0</version>-->
         <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.aspose</groupId>-->
+            <!--<artifactId>aspose-words</artifactId>-->
+            <!--<version>16.2.0</version>-->
+            <!--<classifier>jdk16</classifier>-->
+        <!--</dependency>-->
+
         <dependency>
-            <groupId>com.aspose</groupId>
-            <artifactId>aspose-words</artifactId>
-            <version>16.2.0</version>
-            <classifier>jdk16</classifier>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+
     </dependencies>
 
     <properties>
