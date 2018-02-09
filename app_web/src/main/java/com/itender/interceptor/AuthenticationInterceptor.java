@@ -4,12 +4,13 @@ import com.itender.ms.domain.ItenderPrivilege;
 import com.itender.ms.domain.ItenderUser;
 import com.itender.ms.exception.APIException;
 import com.itender.ms.util.CommonUtility;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -94,7 +95,7 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter{
 
 		//判断是否为ajax请求，默认不是
 		boolean isAjaxRequest = false;
-		if(!StringUtils.isBlank(request.getHeader("x-requested-with")) && request.getHeader("x-requested-with").equals("XMLHttpRequest")){
+		if(!StringUtils.isEmpty(request.getHeader("x-requested-with")) && request.getHeader("x-requested-with").equals("XMLHttpRequest")){
 			isAjaxRequest = true;
 		}
 
