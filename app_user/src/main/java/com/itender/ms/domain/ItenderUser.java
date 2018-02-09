@@ -25,11 +25,23 @@ public class ItenderUser extends ItenderAttrBase {
     @Column(name="user_name")
     private String userName;
 
-    @Column(name="pass_word")
-    private String password;
+    @Column(name="nick_name")
+    private String nickName;
+
+    @Column(name="phone")
+    private String phone;
+
+    @Column(name="company")
+    private String company;
+
+    @Column(name="position")
+    private String position;
 
     @Column(name="email")
     private String email;
+
+    @Column(name="pass_word")
+    private String password;
 
     @Column(name="register_time")
     private Date registerTime;
@@ -68,12 +80,36 @@ public class ItenderUser extends ItenderAttrBase {
         this.userName = userName;
     }
 
-    public String getPassword() {
-        return password;
+    public String getNickName() {
+        return nickName;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
     }
 
     public String getEmail() {
@@ -82,6 +118,14 @@ public class ItenderUser extends ItenderAttrBase {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Date getRegisterTime() {
@@ -124,30 +168,33 @@ public class ItenderUser extends ItenderAttrBase {
         isDefaultAdmin = defaultAdmin;
     }
 
-	public List<ItenderRole> getRoles() {
-		return roles;
-	}
+    public List<ItenderRole> getRoles() {
+        return roles;
+    }
 
-	public void setRoles(List<ItenderRole> roles) {
-		this.roles = roles;
-	}
+    public void setRoles(List<ItenderRole> roles) {
+        this.roles = roles;
+    }
 
-	public List<ItenderPrivilege> getPrivileges() {
-		return privileges;
-	}
+    public List<ItenderPrivilege> getPrivileges() {
+        return privileges;
+    }
 
-	public void setPrivileges(List<ItenderPrivilege> privileges) {
-		this.privileges = privileges;
-	}
-
+    public void setPrivileges(List<ItenderPrivilege> privileges) {
+        this.privileges = privileges;
+    }
 
     @Override
     public String toString() {
         return "ItenderUser{" +
                 "id='" + id + '\'' +
                 ", userName='" + userName + '\'' +
-                ", password='" + password + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", phone='" + phone + '\'' +
+                ", company='" + company + '\'' +
+                ", position='" + position + '\'' +
                 ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
                 ", registerTime=" + registerTime +
                 ", registerIp='" + registerIp + '\'' +
                 ", lastLoginTime=" + lastLoginTime +
