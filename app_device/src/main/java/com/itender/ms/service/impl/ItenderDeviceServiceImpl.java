@@ -76,6 +76,21 @@ public class ItenderDeviceServiceImpl implements ItenderDeviceService {
 	}
 
 	@Override
+	public List<ItenderDevice> getAvailableDeviceList() throws APIException {
+		return null;
+	}
+
+	@Override
+	public ItenderDevice bindRoom(String deviceId, String roomId) throws APIException {
+		return null;
+	}
+
+	@Override
+	public ItenderDevice unbindRoom(String deviceId) throws APIException {
+		return null;
+	}
+
+	@Override
 	public ItenderDevice add(ItenderDevice device) throws APIException {
 		int rows = itenderDeviceMapper.insertSelective(device);
 		return rows == 0?null:device;
