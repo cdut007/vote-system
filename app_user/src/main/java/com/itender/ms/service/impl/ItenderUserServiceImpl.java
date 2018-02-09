@@ -129,7 +129,7 @@ public class ItenderUserServiceImpl implements ItenderUserService {
         itenderUserMapper.updateByPrimaryKeySelective(condition);
 
         List<ItenderPrivilege> privileges = null;
-        if (user.isDefaultAdmin()) {//默认管理员赋予所有权限
+        if (user.getDefaultAdmin()) {//默认管理员赋予所有权限
             privileges = itenderPrivilegeMapper.selectAll();
         } else {
             privileges = itenderPrivilegeMapper.selectByUserId(user.getId());

@@ -127,7 +127,7 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter{
 		// ####################################################
 		if (user != null) {
 			//对默认管理员方行
-			if(user.isDefaultAdmin()){
+			if(user.getDefaultAdmin()){
 				return true;
 			}
 			// 放行无需检查的URI
