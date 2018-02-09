@@ -1,10 +1,12 @@
-<div class="layui-layout layui-layout-admin">
+
+<div class="layui-layout layui-layout-admin layui-header header-index">
+    <span class="logo">综改区监督平台</span>
     <ul class="layui-nav no-border-radius layui-header">
+        <li class="layui-nav-item"><a href="/dashboard">综改区监督平台</a></li>
         <li class="layui-nav-item"><a href="/device">设备管理</a></li>
 
         <@resource_check url="/management/user">
         <li class="layui-nav-item"><a href="/management/user">用户</a></li>
-
         </@resource_check>
     </ul>
     <ul class="layui-nav layui-layout-right layui-header">

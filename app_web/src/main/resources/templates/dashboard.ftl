@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>招标编辑器</title>
+    <title>综改区监督平台</title>
     <#include "resource.ftl">
 </head>
 <body>

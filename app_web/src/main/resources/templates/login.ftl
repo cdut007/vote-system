@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>招投标预发系统 - 登录</title>
+    <title>综改区监督平台 - 登录</title>
     <#include "resource.ftl">
     <style>
         .login {
