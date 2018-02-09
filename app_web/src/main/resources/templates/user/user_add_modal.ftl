@@ -9,12 +9,11 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">Email</label>
+                    <label class="layui-form-label">联系电话</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="email" lay-verify="" lay-verType="tips" placeholder="邮箱地址" autocomplete="off" class="layui-input">
+                        <input type="text" name="phone" lay-verify="" lay-verType="tips" placeholder="联系电话" autocomplete="off" class="layui-input">
                     </div>
                 </div>
-
                 <div class="layui-form-item">
                     <label class="layui-form-label">密码</label>
                     <div class="layui-input-inline">

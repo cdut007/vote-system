@@ -10,6 +10,30 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
+                    <label class="layui-form-label">姓名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="nickName" lay-verify="" lay-verType="tips" placeholder="姓名" autocomplete="off" class="layui-input" value="${currentUser.nickName!}">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">联系电话</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="phone" lay-verify="" lay-verType="tips" placeholder="联系电话" autocomplete="off" class="layui-input" value="${currentUser.phone!}">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">单位</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="company" lay-verify="" lay-verType="tips" placeholder="单位" autocomplete="off" class="layui-input" value="${currentUser.company!}">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">职位</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="position" lay-verify="" lay-verType="tips" placeholder="姓名" autocomplete="off" class="layui-input" value="${currentUser.position!}">
+                    </div>
+                </div>
+                <div class="layui-form-item">
                     <label class="layui-form-label">Email</label>
                     <div class="layui-input-inline">
                         <input type="text" name="email" lay-verify="" lay-verType="tips" placeholder="邮箱地址" autocomplete="off" class="layui-input" value="${currentUser.email!}">
