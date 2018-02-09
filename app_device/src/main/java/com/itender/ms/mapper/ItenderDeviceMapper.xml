@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itender.ms.mapper.ItenderDeviceMapper">
+    <resultMap id="itenderDevice" type="com.itender.ms.domain.ItenderDevice">
+    	<id column="id" javaType="String" property="id"></id>
+        <result column="model" javaType="STRING" property="model"></result>
+        <result column="name" javaType="STRING" property="name"></result>
+        <result column="ip" javaType="STRING" property="ip"></result>
+        <result column="port" javaType="STRING" property="port"></result>
+        <result column="account" javaType="STRING" property="account"></result>
+        <result column="password" javaType="STRING" property="password"></result>
+        <result column="status" javaType="STRING" property="status"></result>
+        <result column="maintenance_phone" javaType="STRING" property="maintenancePhone"></result>
+		<result column="room_id" javaType="STRING" property="roomId"></result>
+
+    </resultMap>
+
+	 <select id="selectByDeviceId" parameterType="java.lang.String" resultMap="itenderDevice">
+		SELECT 
+			a.*
+		FROM 
+			ITENDER_DEVICE a
+		WHERE
+			a.id= #{deviceId,jdbcType=VARCHAR}
+    </select>
+
+	<select id="selectByDeviceName" parameterType="java.lang.String" resultMap="itenderDevice">
+		SELECT
+		a.*
+		FROM
+		ITENDER_DEVICE a
+		WHERE
+		a.id= #{deviceName,jdbcType=VARCHAR}
+	</select>
+
+    
+    <update id="updateDevice" parameterType="com.itender.ms.domain.ItenderDevice">
+    	UPDATE ITENDER_DEVICE
+    	<trim prefix="SET" suffixOverrides=",">
+		  <if test="model != null">model=#{model},</if>
+		  <if test="name != null">name=#{name},</if>
+		  <if test="ip != null">ip=#{ip},</if>
+		  <if test="port != null">port=#{port},</if>
+		  <if test="account != null">account=#{account},</if>
+		  <if test="password != null">password=#{password},</if>
+		  <if test="status != null">status=#{status},</if>
+		  <if test="maintenancePhone != null">maintenance_phone=#{maintenancePhone},</if>
+		  <if test="roomId != null">room_id=#{roomId},</if>
+		</trim>
+        WHERE id = #{id}
+    </update>
+</mapper>
