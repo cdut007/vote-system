@@ -129,8 +129,8 @@ public class DeviceController {
     ) throws APIException{
         logger.debug("==设备信息=="+device.toString());
         Map<String,Object> result = new HashMap<>();
-         device = itenderDeviceService.findById(device.getId());
-        if(device == null){
+        ItenderDevice deviceExsit = itenderDeviceService.findById(device.getId());
+        if(deviceExsit == null){
             result.put("status", false);
             result.put("msg", "未找到相关设备信息！");
             return ResponseEntity.ok(result);
