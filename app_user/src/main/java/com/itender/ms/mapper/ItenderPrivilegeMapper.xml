@@ -3,8 +3,8 @@
 <mapper namespace="com.itender.ms.mapper.ItenderPrivilegeMapper">
     <resultMap id="itenderPrivilege" type="com.itender.ms.domain.ItenderPrivilege">
     	<id column="id" javaType="String" property="id"></id>
-        <result column="PRIVILEGE_NAME" javaType="STRING" property="privilegeName"></result>
-        <result column="PRIVILEGE_URI" javaType="STRING" property="privilegeUri"></result>
+        <result column="privilege_name" javaType="STRING" property="privilegeName"></result>
+        <result column="privilege_uri" javaType="STRING" property="privilegeUri"></result>
         <result column="privilege_method" javaType="STRING" property="privilegeMethod"></result>
         <result column="privilege_alias" javaType="STRING" property="alias"></result>
         <result column="privilege_icon" javaType="STRING" property="icon"></result>
@@ -35,10 +35,10 @@
     </select>
     
     <update id="updatePrivilege" parameterType="com.itender.ms.domain.ItenderPrivilege">
-    	UPDATE ITENDER_PRIVILEGE
+    	UPDATE itender_privilege
     	<trim prefix="SET" suffixOverrides=",">
-		  <if test="privilegeName != null">PRIVILEGE_NAME=#{privilegeName},</if>
-		  <if test="privilegeUri != null">PRIVILEGE_URI=#{privilegeUri},</if>
+		  <if test="privilegeName != null">privilege_name=#{privilegeName},</if>
+		  <if test="privilegeUri != null">privilege_uri=#{privilegeUri},</if>
           <if test="privilegeMethod != null">privilege_method=#{privilegeMethod},</if>
           <if test="alias != null">privilege_alias=#{alias},</if>
           <if test="icon != null">privilege_icon=#{icon},</if>
@@ -68,15 +68,15 @@
         FROM
           itender_privilege p
         WHERE
-          p.PRIVILEGE_URI=#{privilegeUri}
+          p.privilege_uri=#{privilegeUri}
         AND
-          p.PRIVILEGE_METHOD=#{privilegeMethod}
+          p.privilege_method=#{privilegeMethod}
     </select>
 
     <insert id="insert" parameterType="com.itender.ms.domain.ItenderPrivilege" >
         <selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
-             SELECT lower(sys_guid()) FROM dual
+             SELECT uuid()
         </selectKey>
-        INSERT INTO ITENDER_PRIVILEGE (ID, PRIVILEGE_NAME, PRIVILEGE_URI, PRIVILEGE_METHOD, PRIVILEGE_ALIAS, PRIVILEGE_ICON, PRIVILEGE_SEQ, PRIVILEGE_LEVEL, PRIVILEGE_REF) VALUES (#{id},#{privilegeName},#{privilegeUri},#{privilegeMethod},#{alias},#{icon},#{seq},#{level},#{ref})
+        INSERT INTO itender_privilege (id, privilege_name, privilege_uri, privilege_method, privilege_alias, privilege_icon, privilege_seq, privilege_level, privilege_ref) VALUES (#{id},#{privilegeName},#{privilegeUri},#{privilegeMethod},#{alias},#{icon},#{seq},#{level},#{ref})
     </insert>
 </mapper>

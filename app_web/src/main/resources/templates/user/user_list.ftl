@@ -64,9 +64,11 @@
             url: "/management/user/listUser",
             method: "POST",
             cols: [[
-                {title: '序号',templet: '#indexTpl',width: 100},
-                {title: "用户名", field: 'userName',width: 100},
-                {title: "Email", field: 'email'},
+                {title: '序号',templet: '#indexTpl',width: 70},
+                {title: "用户名", field: 'userName',width: 80},
+                {title: "姓名", field: 'nickName',width: 100},
+                {title: "联系电话", field: 'phone'},
+                {title: "单位", field: 'company'},
                 {title: "注册时间", field: 'registerTime',templet: "#registerTime"},
                 {title: "最近登录时间", field: 'lastLoginTime',templet: "#lastLoginTime"},
                 {fixed: 'right', align: 'center', toolbar: '#userTableTool'}

@@ -55,26 +55,26 @@
 		ON 
 			c.id=b.role_id
     	WHERE 
-    		a.USER_NAME = #{userName,jdbcType=VARCHAR} 
+    		a.user_name = #{userName,jdbcType=VARCHAR}
     	AND 
-    		a.PASS_WORD = #{password,jdbcType=VARCHAR}
+    		a.pass_word = #{password,jdbcType=VARCHAR}
     </select>
     
     <update id="updateUser" parameterType="com.itender.ms.domain.ItenderUser">
     	UPDATE itender_user
     	<trim prefix="SET" suffixOverrides=",">
-			<if test="userName != null">USER_NAME=#{userName},</if>
-			<if test="nickName != null">USER_NAME=#{nickName},</if>
-			<if test="phone != null">USER_NAME=#{phone},</if>
-			<if test="company != null">USER_NAME=#{company},</if>
-			<if test="position != null">USER_NAME=#{position},</if>
-			<if test="email != null">EMAIL=#{email},</if>
-			<if test="password != null">PASS_WORD=#{password},</if>
-			<if test="registerTime != null">REGISTER_TIME=#{registerTime},</if>
-			<if test="registerIp != null">REGISTER_IP=#{registerIp},</if>
-			<if test="lastLoginTime != null">LAST_LOGIN_TIME=#{lastLoginTime},</if>
-			<if test="lastLoginIp != null">LAST_LOGIN_IP=#{lastLoginIp},</if>
+			<if test="userName != null">user_name=#{userName},</if>
+			<if test="nickName != null">nick_name=#{nickName},</if>
+			<if test="phone != null">phone=#{phone},</if>
+			<if test="company != null">company=#{company},</if>
+			<if test="position != null">position=#{position},</if>
+			<if test="email != null">email=#{email},</if>
+			<if test="password != null">pass_word=#{password},</if>
+			<if test="registerTime != null">register_time=#{registerTime},</if>
+			<if test="registerIp != null">register_ip=#{registerIp},</if>
+			<if test="lastLoginTime != null">last_login_time=#{lastLoginTime},</if>
+			<if test="lastLoginIp != null">last_login_ip=#{lastLoginIp},</if>
 		</trim>
-        WHERE ID = #{id}
+        WHERE id = #{id}
     </update>
 </mapper>
