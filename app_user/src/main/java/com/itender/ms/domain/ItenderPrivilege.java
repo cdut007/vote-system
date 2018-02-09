@@ -8,7 +8,7 @@ import java.util.List;
  * @Author Mao.Zeng@MG
  * @Date 2018/1/15 16:19
  */
-@Table(name = "ITENDER_PRIVILEGE")
+@Table(name = "itender_privilege")
 public class ItenderPrivilege {
 
     @Id

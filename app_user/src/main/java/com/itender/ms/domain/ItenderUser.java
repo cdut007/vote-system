@@ -15,7 +15,7 @@ import java.util.List;
  * @author Administrator
  *
  */
-@Table(name = "ITENDER_USER")
+@Table(name = "itender_user")
 public class ItenderUser extends ItenderAttrBase {
 
     @Id
