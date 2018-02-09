@@ -92,21 +92,30 @@ public class ItenderUserServiceImpl implements ItenderUserService {
     }
 
     @Override
-    public ItenderUser updateUser(ItenderUser user, boolean updatePassword) throws APIException {
+    public ItenderUser updateUser(ItenderUser user) throws APIException {
         if (user == null) {
             return null;
         }
-        if (updatePassword) {
-            String password = enPassword(user.getPassword());
-            user.setPassword(password);
-        } else {
-            user.setPassword(null);
-        }
-        int rows = itenderUserMapper.updateUser(user);
+        user.setPassword(enPassword(user.getPassword()));
+        int rows = itenderUserMapper.updateByPrimaryKeySelective(user);
         return rows == 0 ? null : user;
     }
 
-    @Override
+	@Override
+	public boolean updatePassword(String userId, String password) throws APIException{
+		ItenderUser oldUser =  itenderUserMapper.selectByPrimaryKey(userId);
+		if(oldUser == null || oldUser.getId()==null){
+			return false;
+		}
+		ItenderUser user = new ItenderUser();
+		user.setId(oldUser.getId());
+		user.setPassword(enPassword(password));
+		int row = itenderUserMapper.updateByPrimaryKeySelective(user);
+
+		return row==0?false:true;
+	}
+
+	@Override
     public ItenderUser userLogin(String username, String password, boolean isSession) throws APIException {
         String enPassword = this.enPassword(password);
         ItenderUser userold = new ItenderUser();

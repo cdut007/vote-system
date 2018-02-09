@@ -23,7 +23,9 @@ public interface ItenderUserService extends ItenderServiceBase<ItenderUser> {
 	 * @param user
 	 * @return
 	 */
-	public ItenderUser updateUser(ItenderUser user,boolean updatePassword) throws APIException;
+	public ItenderUser updateUser(ItenderUser user) throws APIException;
+
+	public boolean updatePassword(String userId,String password) throws APIException;
 	
 	/**
 	 * 用户登录

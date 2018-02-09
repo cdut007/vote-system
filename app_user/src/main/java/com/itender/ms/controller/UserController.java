@@ -197,14 +197,13 @@ public class UserController {
 			return ResponseEntity.ok(result);
 		}
 		if(!oldPassword.equals(itenderUserService.dePassword(user.getPassword()))){
-//			logger.debug(itenderUserService.dePassword(user.getPassword()));
 			result.put("status", false);
 			result.put("msg", "原始密码错误！");
 			return ResponseEntity.ok(result);
 		}
-		user.setPassword(newPassword);
-		user = itenderUserService.updateUser(user,true);
-		if(user == null){
+
+		boolean status = itenderUserService.updatePassword(userId,newPassword);
+		if(!status){
 			logger.error("更新密码数据异常！");
 			result.put("status", false);
 			result.put("msg", "更新密码数据异常！");
@@ -217,9 +216,13 @@ public class UserController {
 	@ApiOperation(value = "修改用户信息接口",notes = "用于修改用户信息")
 	@RequestMapping(value = "/updateUser",method = RequestMethod.POST)
 	public ResponseEntity<Map<String,Object>> updateUser(HttpServletRequest request,
-														@ApiParam(name = "userId",value = "用户ID",required = true) @RequestParam(required = true) String userId,
-														@ApiParam(name = "email",value = "Email",required = true) @RequestParam(required = true) String email,
-														@ApiParam(name = "password",value = "新密码",required = true) @RequestParam(required = true) String password
+			@ApiParam(name = "userId",value = "用户ID",required = true) @RequestParam(required = true) String userId,
+														 @ApiParam(name = "nickName",value = "用户姓名") @RequestParam(required = false) String nickName,
+														 @ApiParam(name = "phone",value = "联系电话") @RequestParam(required = false) String phone,
+														 @ApiParam(name = "company",value = "单位") @RequestParam(required = false) String company,
+														 @ApiParam(name = "position",value = "职位") @RequestParam(required = false) String position,
+														 @ApiParam(name = "email",value = "Email") @RequestParam(required = false) String email,
+			@ApiParam(name = "password",value = "新密码",required = true) @RequestParam(required = true) String password
 	) throws APIException{
 		Map<String,Object> result = new HashMap<>();
 		ItenderUser user = itenderUserService.findById(userId);
@@ -228,9 +231,13 @@ public class UserController {
 			result.put("msg", "用户不存在！");
 			return ResponseEntity.ok(result);
 		}
+		user.setNickName(nickName);
+		user.setPhone(phone);
+		user.setCompany(company);
+		user.setPosition(position);
 		user.setEmail(email);
 		user.setPassword(password);
-		user = itenderUserService.updateUser(user,true);
+		user = itenderUserService.updateUser(user);
 		if(user == null){
 			logger.error("更新用户数据异常！");
 			result.put("status", false);
@@ -245,6 +252,10 @@ public class UserController {
 	public ResponseEntity<Map<String,Object>> updatemy(HttpServletRequest request,
 		 @ApiParam(name = "userId",value = "用户ID",required = true) @RequestParam(required = true) String userId,
 		 @ApiParam(name = "email",value = "Email",required = true) @RequestParam(required = true) String email,
+		 @ApiParam(name = "nickName",value = "用户姓名") @RequestParam(required = false) String nickName,
+		@ApiParam(name = "phone",value = "联系电话") @RequestParam(required = false) String phone,
+		@ApiParam(name = "company",value = "单位") @RequestParam(required = false) String company,
+		@ApiParam(name = "position",value = "职位") @RequestParam(required = false) String position,
 		 @ApiParam(name = "password",value = "新密码",required = true) @RequestParam(required = true) String password
 	) throws APIException{
 		Map<String,Object> result = new HashMap<>();
@@ -254,9 +265,13 @@ public class UserController {
 			result.put("msg", "错误！用户不存在！");
 			return ResponseEntity.ok(result);
 		}
+		user.setNickName(nickName);
+		user.setPhone(phone);
+		user.setCompany(company);
+		user.setPosition(position);
 		user.setEmail(email);
 		user.setPassword(password);
-		user = itenderUserService.updateUser(user,true);
+		user = itenderUserService.updateUser(user);
 		if(user == null){
 			logger.error("更新用户数据异常！");
 			result.put("status", false);
