@@ -22,6 +22,7 @@ layui.config({
     formaterUtil:"formater_util",
     tableEditor:"table_editor",
     itenderUser:"itender_user",
+    itenderDevice:"itender_device",
     itenderRole:"itender_role",
     itenderPrivilege:"itender_privilege",
     multipleSelect:"multipleSelect",

@@ -90,7 +90,50 @@ layui.define(function (exports) {
                     }
                 })
             });
+        },
+
+        openModal: function (data,callback) {
+        var layer = layui.layer;
+        var synServer = function (data,callback) {
+            $.ajax({
+                url: data.queryUrl,
+                type: "GET",
+                data: {id: data.queryId},
+                success: function (res) {
+                    var isJson = DeviceObj.isJsonString(res);
+                    if(isJson){
+                        var result = JSON.parse(res);
+                        console.log(result);
+                        if(result.status==false){
+                            layer.msg(result.msg);
+                        }
+                    }else{
+                        layer.open({
+                            type: 1,
+                            title: data.title,
+                            area: data.area,
+                            skin: 'layui-layer-molv',
+                            content: res,
+                            scrollbar: true,
+                            closeBtn: data.closeBtn,
+                            shadeClose: data.shadeClose,
+                            success: function (layerDom,index) {
+                                callback(layerDom, index);
+                            },
+                            end: function () {
+                                callback();
+                            }
+                        });
+                    }
+                },
+                error: function (xmlHttpReq, error, ex) {
+                }
+            });
         }
+        synServer(data,function (layerDom,index) {
+            callback(layerDom, index);
+        })
+    }
     }
     /**
      * 对外暴露的方法
@@ -102,8 +145,19 @@ layui.define(function (exports) {
          * @param callback
          */
         addDevice: function (data,callback) {
-            Devicebj.addNewDevice(data,callback);
+            DeviceObj.addNewDevice(data,callback);
         }
+
+        /**
+         * 打开弹出层
+         * @param data
+         * @param callback
+         */
+        ,openModal: function (data,callback) {
+            console.log(data);
+            DeviceObj.openModal(data,callback);
+        }
+
         /**
          * 删除设备
          * @param deviceId
@@ -118,7 +172,7 @@ layui.define(function (exports) {
          * @param callback
          */
         ,updateDevice: function (data,callback) {
-            PrivilegeObj.updateDevice(data,callback);
+            DeviceObj.updateDevice(data,callback);
         }
     });
 

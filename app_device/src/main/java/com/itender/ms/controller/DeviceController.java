@@ -69,15 +69,10 @@ public class DeviceController {
     }
 
     @ApiIgnore
-    @RequestMapping(value = "/detail",method = RequestMethod.GET)
-    public String addDeviceModal(HttpServletRequest request,HttpServletResponse response){
-        String deviceId = request.getParameter("id");
-        ItenderDevice device = null;
-        if(CommonUtility.isNonEmpty(deviceId)){
-            device = itenderDeviceService.findById(deviceId);
-        }
-        request.setAttribute("itenderDevice",device);
-        return ViewUtil.forward("device/privilege_detils_modal");
+    @RequestMapping(value = "/add_page",method = RequestMethod.GET)
+    public String addDevicePage(HttpServletRequest request,HttpServletResponse response){
+
+        return ViewUtil.forward("device/device_add");
     }
 
     @ApiOperation(value = "添加设备接口",notes = "用于新增设备信息")

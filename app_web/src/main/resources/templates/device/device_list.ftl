@@ -1,3 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>设备管理列表</title>
+<#include "../resource.ftl">
+</head>
+<body>
+<#include "../top_menus.ftl">
 <div class="layui-container margin-top">
     <div class="layui-row">
         <div class="layui-col-md-12 margin-bottom">
@@ -11,6 +20,7 @@
         </div>
     </div>
 </div>
+</body>
 
 <script type="text/html" id="indexTpl">
     {{d.LAY_TABLE_INDEX+1}}
@@ -99,8 +109,7 @@
                 area: 'auto',//宽高
                 closeBtn: 1,//关闭按钮
                 shadeClose: true,//是否点击遮罩关闭
-                queryId: '',
-                queryUrl: '/device/detail'
+                queryUrl: '/device/add_page'
             }
             itenderDevice.openModal(data,function (layerDom,index) {
                 currentTable.reload();
@@ -109,3 +118,4 @@
     });
 
 </script>
+</html>
