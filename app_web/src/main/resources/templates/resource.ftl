@@ -3,5 +3,4 @@
 <script src="/js/jquery-1.11.1.js"></script>
 <script src="/js/layui/layui.js"></script>
 <script src="/js/juicer-min.js"></script>
-<script src="/js/jquery.jeditable.js"></script>
 <script src="/js/common.js"></script>
