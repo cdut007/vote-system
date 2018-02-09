@@ -18,7 +18,7 @@ public interface ItenderPrivilegeMapper extends Mapper<ItenderPrivilege> {
 
 	/**
 	 * 是否存在
-	 * @param privilegeUrl
+	 * @param privilegeUri
 	 * @param privilegeMethod
 	 * @return
 	 */
