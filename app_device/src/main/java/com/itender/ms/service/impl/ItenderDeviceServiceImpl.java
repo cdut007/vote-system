@@ -93,6 +93,7 @@ public class ItenderDeviceServiceImpl implements ItenderDeviceService {
 	@Override
 	public ItenderDevice add(ItenderDevice device) throws APIException {
 		int rows = itenderDeviceMapper.insertSelective(device);
+
 		return rows == 0?null:device;
 	}
 
