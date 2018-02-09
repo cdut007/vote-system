@@ -1,1 +1,0 @@
-<script src="/js/jquery.PrintArea.js"></script>
