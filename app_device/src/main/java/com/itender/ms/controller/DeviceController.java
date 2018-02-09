@@ -140,8 +140,8 @@ public class DeviceController {
         }
 
 
-        int row = itenderDeviceService.updateDevice(device);
-        if(row <= 0){
+         device = itenderDeviceService.updateDevice(device);
+        if(device == null){
             result.put("status", false);
             result.put("msg", "添加设备失败！");
         }else{
