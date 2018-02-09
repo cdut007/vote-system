@@ -56,7 +56,7 @@ public class ItenderUser extends ItenderAttrBase {
     private String lastLoginIp;
 
     @Column(name="is_default_admin")
-    private boolean isDefaultAdmin;
+    private Boolean isDefaultAdmin;
 
     @Transient
     private List<ItenderRole> roles;
@@ -160,11 +160,11 @@ public class ItenderUser extends ItenderAttrBase {
         this.lastLoginIp = lastLoginIp;
     }
 
-    public boolean isDefaultAdmin() {
+    public Boolean getDefaultAdmin() {
         return isDefaultAdmin;
     }
 
-    public void setDefaultAdmin(boolean defaultAdmin) {
+    public void setDefaultAdmin(Boolean defaultAdmin) {
         isDefaultAdmin = defaultAdmin;
     }
 
@@ -202,6 +202,6 @@ public class ItenderUser extends ItenderAttrBase {
                 ", isDefaultAdmin=" + isDefaultAdmin +
                 ", roles=" + roles +
                 ", privileges=" + privileges +
-                '}';
+                "} " + super.toString();
     }
 }
