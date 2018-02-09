@@ -10,6 +10,7 @@ import com.github.pagehelper.PageInfo;
 import com.itender.ms.convert.LayuiTableData;
 import com.itender.ms.convert.PageDataConvert;
 import com.itender.ms.domain.ItenderDevice;
+import com.itender.ms.enums.DeviceStatus;
 import com.itender.ms.util.CommonUtility;
 import com.itender.ms.util.ViewUtil;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -75,22 +77,24 @@ public class DeviceController {
         return ViewUtil.forward("device/device_add");
     }
 
+    @ApiIgnore
+    @RequestMapping(value = "/edit_page",method = RequestMethod.GET)
+    public String editDevicePage(HttpServletRequest request,HttpServletResponse response){
+        String deviceId = request.getParameter("id");
+        ItenderDevice device = null;
+        if(CommonUtility.isNonEmpty(deviceId)){
+            device = itenderDeviceService.findById(deviceId);
+        }
+        request.setAttribute("itenderDevice",device);
+        return ViewUtil.forward("device/device_edit");
+    }
+
     @ApiOperation(value = "添加设备接口",notes = "用于新增设备信息")
     @RequestMapping(value = "/addDevice",method = RequestMethod.POST)
     public ResponseEntity<Map<String,Object>> addDevice(HttpServletRequest request,
-                                                           @ApiParam(name = "name",value = "设备名称",required = true) @RequestParam(required = true) String name,
-                                                           @ApiParam(name = "model",value = "设备型号",required = true) @RequestParam(required = true) String model,
-                                                           @ApiParam(name = "ip",value = "设备ip",required = true) @RequestParam(required = true) String ip,
-                                                           @ApiParam(name = "port",value = "设备端口",required = true) @RequestParam(required = true) String port,
-                                                           @ApiParam(name = "account",value = "设备账号",required = true) @RequestParam(required = true) String account,
-                                                           @ApiParam(name = "password",value = "设备密码",required = true) @RequestParam(required = true) String password,
-                                                           @ApiParam(name = "status",value = "设备状态",required = true) @RequestParam(required = true) String status,
-                                                           @ApiParam(name = "maintenancePhone",value = "维护电话",required = true) @RequestParam(required = true) String maintenancePhone
-    ) throws APIException{
+                                                           @ApiParam(name = "name",value = "设备",required = true) @RequestBody ItenderDevice device) throws APIException{
         Map<String,Object> result = new HashMap<>();
-        ItenderDevice device = new ItenderDevice();
-        device.setName(name);
-        device.setName(name);
+        device.setStatus(DeviceStatus.normal.name());
         device = itenderDeviceService.add(device);
         if(!CommonUtility.isNonEmpty(device.getId())){
             result.put("status", false);
@@ -103,12 +107,12 @@ public class DeviceController {
     }
 
     @ApiOperation(value = "删除设备接口",notes = "用于删除设备信息")
-    @RequestMapping(value = "/delDevice",method = RequestMethod.GET)
+    @RequestMapping(value = "/delDevice",method = RequestMethod.POST)
     public ResponseEntity<Map<String,Object>> delPrivilege(HttpServletRequest request,
                                                            @ApiParam(name = "deviceId",value = "设备ID",required = true) @RequestParam(required = true) String deviceId
     ) throws APIException{
         Map<String,Object> result = new HashMap<>();
-
+        logger.debug("==删除设备id=="+deviceId);
         int row = itenderDeviceService.deleteById(deviceId);
         if(row == 0){
             result.put("status", false);
@@ -121,20 +125,11 @@ public class DeviceController {
 
     @ApiOperation(value = "更新设备接口",notes = "用于更新设备信息")
     @RequestMapping(value = "/updateDevice",method = RequestMethod.POST)
-    public ResponseEntity<Map<String,Object>> updateDevice(HttpServletRequest request,
-                                                           @ApiParam(name = "deviceId",value = "设备ID",required = true) @RequestParam(required = true) String deviceId,
-
-                                                           @ApiParam(name = "name",value = "设备名称",required = true) @RequestParam(required = true) String name,
-                                                              @ApiParam(name = "model",value = "设备型号",required = true) @RequestParam(required = true) String model,
-                                                              @ApiParam(name = "ip",value = "设备ip",required = true) @RequestParam(required = true) String ip,
-                                                              @ApiParam(name = "port",value = "设备端口",required = true) @RequestParam(required = true) String port,
-                                                              @ApiParam(name = "account",value = "设备账号",required = true) @RequestParam(required = true) String account,
-                                                              @ApiParam(name = "password",value = "设备密码",required = true) @RequestParam(required = true) String password,
-                                                              @ApiParam(name = "status",value = "设备状态",required = true) @RequestParam(required = true) String status,
-                                                              @ApiParam(name = "maintenancePhone",value = "维护电话",required = true) @RequestParam(required = true) String maintenancePhone
+    public ResponseEntity<Map<String,Object>> updateDevice(HttpServletRequest request,@ApiParam(name = "name",value = "设备",required = true) @RequestBody ItenderDevice device
     ) throws APIException{
+        logger.debug("==设备信息=="+device.toString());
         Map<String,Object> result = new HashMap<>();
-        ItenderDevice device = itenderDeviceService.findById(deviceId);
+         device = itenderDeviceService.findById(device.getId());
         if(device == null){
             result.put("status", false);
             result.put("msg", "未找到相关设备信息！");

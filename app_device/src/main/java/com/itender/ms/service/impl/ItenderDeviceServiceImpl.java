@@ -46,7 +46,9 @@ public class ItenderDeviceServiceImpl implements ItenderDeviceService {
 
 	@Override
 	public Integer deleteById(String id) {
-		return itenderDeviceMapper.deleteByDeviceId(id);
+		ItenderDevice itenderDevice = new ItenderDevice();
+		itenderDevice.setId(id);
+		return itenderDeviceMapper.delete(itenderDevice);
 	}
 
 	@Override

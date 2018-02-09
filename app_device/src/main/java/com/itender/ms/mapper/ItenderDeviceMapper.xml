@@ -18,8 +18,8 @@
 	 <select id="selectByDeviceId" parameterType="java.lang.String" resultMap="itenderDevice">
 		SELECT 
 			a.*
-		FROM 
-			ITENDER_DEVICE a
+		FROM
+		 itender_device a
 		WHERE
 			a.id= #{deviceId,jdbcType=VARCHAR}
     </select>
@@ -28,14 +28,14 @@
 		SELECT
 		a.*
 		FROM
-		ITENDER_DEVICE a
+		itender_device a
 		WHERE
 		a.id= #{deviceName,jdbcType=VARCHAR}
 	</select>
 
     
     <update id="updateDevice" parameterType="com.itender.ms.domain.ItenderDevice">
-    	UPDATE ITENDER_DEVICE
+    	UPDATE itender_device
     	<trim prefix="SET" suffixOverrides=",">
 		  <if test="model != null">model=#{model},</if>
 		  <if test="name != null">name=#{name},</if>

@@ -7,6 +7,8 @@ layui.define(function (exports) {
     });
 
     var DeviceObj = {
+
+
         addNewDevice: function (data,callback) {
             var syncServer = function (data, callback) {
                 var index = layui.layer.load(2);
@@ -14,7 +16,8 @@ layui.define(function (exports) {
                     url: "/device/addDevice",
                     type: "POST",
                     dataType: "json",
-                    data: data,
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
                     success: function (res) {
                         layui.layer.close(index);
                         if(res.status){
@@ -41,7 +44,8 @@ layui.define(function (exports) {
                     url: "/device/updateDevice",
                     type: "POST",
                     dataType: "json",
-                    data: data,
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
                     success: function (res) {
                         layui.layer.close(index);
                         if(res.status){
@@ -68,7 +72,7 @@ layui.define(function (exports) {
                 //TODO 异常处理
                 $.ajax({
                     url: "/device/delDevice",
-                    type: "DELETE",
+                    type: "POST",
                     dataType: "json",
                     data: {deviceId:deviceId},
                     success: function (res) {
@@ -90,6 +94,15 @@ layui.define(function (exports) {
                     }
                 })
             });
+        },
+        isJsonString: function(str) {
+            try {
+                if (typeof JSON.parse(str) == "object") {
+                    return true;
+                }
+            } catch(e) {
+            }
+            return false;
         },
 
         openModal: function (data,callback) {
@@ -134,6 +147,7 @@ layui.define(function (exports) {
             callback(layerDom, index);
         })
     }
+
     }
     /**
      * 对外暴露的方法
@@ -145,6 +159,7 @@ layui.define(function (exports) {
          * @param callback
          */
         addDevice: function (data,callback) {
+            console.log(data);
             DeviceObj.addNewDevice(data,callback);
         }
 
@@ -172,6 +187,7 @@ layui.define(function (exports) {
          * @param callback
          */
         ,updateDevice: function (data,callback) {
+            console.log(data);
             DeviceObj.updateDevice(data,callback);
         }
     });

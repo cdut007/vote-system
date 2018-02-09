@@ -87,7 +87,7 @@
                     closeBtn: 1,//关闭按钮
                     shadeClose: true,//是否点击遮罩关闭
                     queryId: deviceId,
-                    queryUrl: '/device/detail'
+                    queryUrl: '/device/edit_page'
                 }
                 itenderDevice.openModal(data,function (layerDom,index) {
                     currentTable.reload();
