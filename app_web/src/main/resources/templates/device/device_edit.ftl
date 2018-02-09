@@ -59,6 +59,17 @@
                 </div>
 
                 <div class="layui-form-item">
+                    <label class="layui-form-label">设备状态</label>
+                    <div class="layui-input-inline">
+                        <input type="checkbox" checked="" name="status" lay-skin="switch" lay-filter="switchStatus" lay-text="正常|不可用">
+                    </div>
+                </div>
+
+
+
+
+
+                <div class="layui-form-item">
                     <div class="layui-input-block">
                         <button type="submit" class="layui-btn" lay-submit lay-filter="updateDevice">提交</button>
 
@@ -66,6 +77,7 @@
                         <button type="reset" class="layui-btn layui-btn-primary">重置</button>
                     </div>
                 </div>
+
             </form>
     </div>
 </div>
@@ -90,6 +102,17 @@
             },
 
         });
+
+
+        //监听指定开关
+        form.on('switch(switchStatus)', function(data){
+            layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
+                offset: '6px'
+            });
+            layer.tips('更新状态：', data.othis)
+        });
+
+
         form.on('submit(updateDevice)', function(data){
             var formData = data.field;
             formData.id = "${itenderDevice.id!}";

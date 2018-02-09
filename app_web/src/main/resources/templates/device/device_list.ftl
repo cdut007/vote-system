@@ -13,6 +13,7 @@
             <button class="layui-btn layui-btn-success" id="addDevice">添加设备</button>
         </div>
     </div>
+
     <div class="layui-row">
         <div class="layui-col-md-12">
             <table class="table table-bordered table-hover" id="deviceTable" lay-filter="deviceTable">
