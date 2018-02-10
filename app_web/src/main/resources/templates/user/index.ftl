@@ -43,6 +43,14 @@
                         </dl>
                     </li>
                 </@resource_check>
+                <@resource_check url="/industry/list">
+                    <li class="layui-nav-item">
+                        <a href="javascript:;">行业管理</a>
+                        <dl class="layui-nav-child">
+                            <dd id="list-industry" data-uri="/industry/list"><a href="javascript:;">行业列表</a></dd>
+                        </dl>
+                    </li>
+                </@resource_check>
             </ul>
         </div>
     </div>
@@ -60,7 +68,7 @@
 
     <div class="layui-footer" style="text-align: center">
         <!-- 底部固定区域 -->
-        <span>招投标预发系统</span>
+        <span>综改区监督平台</span>
     </div>
 </div>
 </body>

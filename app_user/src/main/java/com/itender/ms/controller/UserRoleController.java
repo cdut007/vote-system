@@ -10,7 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.itender.ms.convert.LayuiTableData;
 import com.itender.ms.convert.PageDataConvert;
+import com.itender.ms.domain.ItenderIndustry;
 import com.itender.ms.domain.ItenderPrivilege;
+import com.itender.ms.service.ItenderIndustryService;
 import com.itender.ms.service.ItenderPrivilegeService;
 import com.itender.ms.util.ViewUtil;
 import org.slf4j.Logger;
@@ -45,6 +47,8 @@ public class UserRoleController {
 	private ItenderRoleService itenderRoleService;
 	@Autowired
 	private ItenderPrivilegeService itenderPrivilegeService;
+	@Autowired
+	private ItenderIndustryService itenderIndustryService;
 
 	@ApiIgnore
 	@RequestMapping(value = "/listRole", method = RequestMethod.GET)
@@ -68,13 +72,20 @@ public class UserRoleController {
 
 	@ApiIgnore
 	@RequestMapping(value = "/roleDetils",method = RequestMethod.GET)
-	public String roleDetilsModal(HttpServletRequest request,HttpServletResponse response){
+	public String roleDetilsModal(HttpServletRequest request,HttpServletResponse response) throws APIException{
 		String roleId = request.getParameter("id");
 		ItenderRole itenderRole = null;
 		if(CommonUtility.isNonEmpty(roleId)){
 			itenderRole = itenderRoleService.findById(roleId);
 		}
+		List<ItenderIndustry> itenderIndustries = itenderIndustryService.findAll();
+		List<ItenderIndustry> exsitTypes = itenderIndustryService.findByRoleId(roleId);
+		List<String> exsitRoleType = exsitTypes.stream().map(roleType ->{
+			return roleType.getIndustryName();
+		}).collect(Collectors.toList());
 		request.setAttribute("itenderRole",itenderRole);
+		request.setAttribute("roleTypes",itenderIndustries);//角色属性
+		request.setAttribute("exsitTypes",exsitRoleType);//已拥有的角色属性
 		return ViewUtil.forward("/user/role_detils_modal");
 	}
 
@@ -82,6 +93,7 @@ public class UserRoleController {
 	@RequestMapping(value = "/addRole",method = RequestMethod.GET)
 	public String addRoleModal(HttpServletRequest request,HttpServletResponse response) throws APIException {
         List<ItenderPrivilege> privileges = itenderPrivilegeService.findAll();
+        List<ItenderIndustry> itenderIndustries = itenderIndustryService.findAll();
         List<ItenderPrivilege> privilegesLev1 = privileges.stream().filter(privilege->{
             return privilege.getLevel()==1;
         }).collect(Collectors.toList());
@@ -91,9 +103,11 @@ public class UserRoleController {
         List<ItenderPrivilege> privilegesLev3 = privileges.stream().filter(privilege->{
             return privilege.getLevel()==3;
         }).collect(Collectors.toList());
+
         request.setAttribute("privilegesLev1",privilegesLev1);//Level的Role
         request.setAttribute("privilegesLev2",privilegesLev2);//Leve2的Role
         request.setAttribute("privilegesLev3",privilegesLev3);//Leve3的Role
+		request.setAttribute("roleTypes",itenderIndustries);//角色属性
 
 		return ViewUtil.forward("/user/role_add_modal");
 	}
@@ -102,16 +116,17 @@ public class UserRoleController {
     @RequestMapping(value = "/addRole",method = RequestMethod.POST)
 	public ResponseEntity<Map<String,Object>> addRole(HttpServletRequest request,
 			@ApiParam(name = "roleName",value = "角色名",required = true) @RequestParam(name = "roleName",required = true) String roleName,
-            @ApiParam(name = "privilegeId",value = "权限ID") @RequestParam(name = "privilegeId",required = false) String[] privilegeId
+			@ApiParam(name = "roleType",value = "角色属性") @RequestParam(name = "roleType",required = false) String[] roleType,
+			@ApiParam(name = "privilegeId",value = "权限ID") @RequestParam(name = "privilegeId",required = false) String[] privilegeId
 			) throws APIException{
 		Map<String,Object> result = new HashMap<>();
 		ItenderRole role = new ItenderRole();
 		role.setRoleName(roleName);
 
-		if(privilegeId == null || privilegeId.length == 0){
+		if((privilegeId == null || privilegeId.length == 0)&&(roleType == null || roleType.length == 0)){
     		role = itenderRoleService.add(role);
         }else{
-		    role = itenderRoleService.addRole(role,privilegeId);
+		    role = itenderRoleService.addRole(role,privilegeId,roleType);
         }
 		if(role == null){
 			result.put("status", false);
@@ -144,7 +159,8 @@ public class UserRoleController {
 	@RequestMapping(value = "/updateRole",method = RequestMethod.POST)
 	public ResponseEntity<Map<String,Object>> updateRole(HttpServletRequest request,
 			@ApiParam(name = "roleId",value = "角色ID",required = true) @RequestParam(required = true) String roleId,
-			@ApiParam(name = "roleName",value = "角色名",required = true) @RequestParam(required = true) String roleName
+			@ApiParam(name = "roleName",value = "角色名",required = true) @RequestParam(required = true) String roleName,
+			@ApiParam(name = "roleTypeId",value = "角色属性") @RequestParam(name = "roleTypeId",required = false) String[] roleTypeId
 	) throws APIException{
 		Map<String,Object> result = new HashMap<>();
 
@@ -156,10 +172,10 @@ public class UserRoleController {
 		}
 		itenderRole.setRoleName(roleName);
 
-		int row = itenderRoleService.updateRole(itenderRole);
+		int row = itenderRoleService.updateRole(itenderRole,roleTypeId);
 		if(row == 0){
 			result.put("status", false);
-			result.put("msg", "更新角色失败！");
+			result.put("msg", "更新角色发生异常！");
 		}else{
 			result.put("status", true);
 		}

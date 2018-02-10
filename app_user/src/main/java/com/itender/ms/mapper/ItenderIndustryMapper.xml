@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itender.ms.mapper.ItenderIndustryMapper">
+    <resultMap id="itenderIndustry" type="com.itender.ms.domain.ItenderIndustry">
+    	<id column="id" javaType="String" property="id"></id>
+        <result column="industry_name" javaType="STRING" property="industryName"></result>
+		<result column="create_time" javaType="DATE" property="createTime"></result>
+		<result column="update_time" javaType="DATE" property="updateTime"></result>
+		<result column="operator" javaType="STRING" property="operator"></result>
+    </resultMap>
+	<select id="selectByRoleId" parameterType="java.lang.String" resultMap="itenderIndustry">
+		SELECT
+			a.*
+		FROM
+			itender_industry a
+		JOIN 
+			itender_role_type b
+		ON
+			a.id=b.industry_id
+		WHERE
+			b.role_id=#{roleId,jdbcType=VARCHAR}
+	</select>
+	<select id="selectByIds" parameterType="java.lang.String" resultMap="itenderIndustry">
+		SELECT
+			a.*
+		FROM
+			itender_industry a
+		WHERE
+			a.id
+		IN
+		<foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+</mapper>

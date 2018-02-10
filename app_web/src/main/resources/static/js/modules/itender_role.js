@@ -43,13 +43,10 @@ layui.define(function (exports) {
                     type: "POST",
                     dataType: "json",
                     data: data,
+                    traditional : true,
                     success: function (res) {
                         layui.layer.close(index);
-                        if(res.status){
-                            callback(res, true);
-                        }else{
-                            callback(res.msg,false);
-                        }
+                        callback(res, res.status);
                     },
                     error: function (xmlHttpReq, error, ex) {
                         layui.layer.close(index);
