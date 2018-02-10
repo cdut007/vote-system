@@ -3,9 +3,11 @@ package com.itender.ms.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.itender.ms.domain.ItenderDevice;
+import com.itender.ms.enums.DeviceStatus;
 import com.itender.ms.exception.APIException;
 import com.itender.ms.mapper.ItenderDeviceMapper;
 import com.itender.ms.service.ItenderDeviceService;
+import com.itender.ms.util.CommonUtility;
 import com.itender.ms.util.PasswordUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,7 @@ import tk.mybatis.mapper.entity.Example;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -78,18 +81,48 @@ public class ItenderDeviceServiceImpl implements ItenderDeviceService {
 	}
 
 	@Override
+	public List<ItenderDevice> getRoomDeviceList() throws APIException {
+		List<ItenderDevice>  deviceList = itenderDeviceMapper.selectAll();
+		List<ItenderDevice> available = new ArrayList<>();
+		if(deviceList!=null && deviceList.size() > 0){
+			for (int i = 0; i < deviceList.size(); i++) {
+				ItenderDevice device = deviceList.get(i);
+				if(CommonUtility.isNonEmpty(device.getRoomId())){
+					available.add(device);
+				}
+
+			}
+		}
+		return available;
+	}
+
+	@Override
 	public List<ItenderDevice> getAvailableDeviceList() throws APIException {
-		return null;
+		List<ItenderDevice>  deviceList = itenderDeviceMapper.selectAll();
+		List<ItenderDevice> available = new ArrayList<>();
+		if(deviceList!=null && deviceList.size() > 0){
+			for (int i = 0; i < deviceList.size(); i++) {
+				ItenderDevice device = deviceList.get(i);
+				if(!CommonUtility.isNonEmpty(device.getRoomId()) && DeviceStatus.normal.name().equals(device.getStatus())){
+					available.add(device);
+				}
+
+			}
+		}
+		return available;
 	}
 
 	@Override
-	public ItenderDevice bindRoom(String deviceId, String roomId) throws APIException {
-		return null;
+	public ItenderDevice bindRoom(ItenderDevice device, String roomId) throws APIException {
+		device.setRoomId(roomId);
+		int rows = itenderDeviceMapper.updateDevice(device);
+		return rows == 0?null:device;
 	}
 
 	@Override
-	public ItenderDevice unbindRoom(String deviceId) throws APIException {
-		return null;
+	public ItenderDevice unbindRoom(ItenderDevice device) throws APIException {
+		device.setRoomId("");
+		return updateDevice(device);
 	}
 
 	@Override

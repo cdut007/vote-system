@@ -3,12 +3,21 @@
 <mapper namespace="com.itender.ms.mapper.ItenderRoomMapper">
     <resultMap id="itenderRoom" type="com.itender.ms.domain.ItenderRoom">
     	<id column="id" javaType="String" property="id"></id>
-
-        <result column="content" javaType="STRING" property="content"></result>
+        <result column="name" javaType="STRING" property="name"></result>
+        <result column="description" javaType="STRING" property="description"></result>
+        <result column="level" javaType="STRING" property="level"></result>
 
 
     </resultMap>
 
+
+    <update id="updateRoom" parameterType="com.itender.ms.domain.ItenderRoom">
+        UPDATE itender_room
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name=#{name},</if>
+        </trim>
+        WHERE id = #{id}
+    </update>
 
 
 

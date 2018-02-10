@@ -32,21 +32,24 @@ public interface ItenderDeviceService extends ItenderServiceBase<ItenderDevice> 
 	public List<ItenderDevice> getAvailableDeviceList() throws APIException;
 
 
+	public List<ItenderDevice> getRoomDeviceList() throws APIException;
+
+
 	/**
 	 * 绑定房间信息
-	 * @param deviceId
+	 * @param device
 	 * @param roomId
 	 * @return
 	 */
-	public ItenderDevice bindRoom(String deviceId,String roomId) throws APIException;
+	public ItenderDevice bindRoom(ItenderDevice device,String roomId) throws APIException;
 
 
 	/**
 	 * 解除绑定房间信息
-	 * @param deviceId
+	 * @param device
 	 * @return
 	 */
-	public ItenderDevice unbindRoom(String deviceId) throws APIException;
+	public ItenderDevice unbindRoom(ItenderDevice device) throws APIException;
 	
 
 }

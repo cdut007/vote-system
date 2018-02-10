@@ -37,6 +37,35 @@ layui.define(function (exports) {
                 }
             });
         }
+        ,updateRoom: function (data,callback) {
+            var syncServer = function (data, callback) {
+                var index = layui.layer.load(2);
+                $.ajax({
+                    url: "/room/updateRoom",
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    success: function (res) {
+                        layui.layer.close(index);
+                        if(res.status){
+                            callback(res, true);
+                        }else{
+                            callback(res.msg,false);
+                        }
+                    },
+                    error: function (xmlHttpReq, error, ex) {
+                        layui.layer.close(index);
+                    }
+                })
+            }
+            syncServer(data,function (res,status) {
+                if (typeof callback == "function") {
+                    callback(res, status);
+                }
+            });
+        }
+
 
         ,deleteRoom: function (roomId, callback) {
             //同步到服务端
@@ -155,6 +184,16 @@ layui.define(function (exports) {
          */
         ,deleteRoom: function (roomId, callback) {
             RoomObj.deleteRoom(roomId, callback);
+        }
+
+        /**
+         * 更新房间
+         * @param data
+         * @param callback
+         */
+        ,updateDevice: function (data,callback) {
+            console.log(data);
+            RoomObj.updateRoom(data,callback);
         }
 
     });

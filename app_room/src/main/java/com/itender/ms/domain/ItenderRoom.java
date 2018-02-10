@@ -1,6 +1,7 @@
 package com.itender.ms.domain;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -60,6 +61,23 @@ public class ItenderRoom {
 
     @Transient
     private  String devices_info;//设备信息
+
+
+    @Transient
+    private  List<ItenderDevice> deviceList;//添加设备信息
+
+
+    public List<ItenderDevice> getDeviceList() {
+        if(deviceList == null){
+            return  new ArrayList<>();
+        }
+        return deviceList;
+    }
+
+    public void setDeviceList(List<ItenderDevice> deviceList) {
+        this.deviceList = deviceList;
+    }
+
 
 
     @Override

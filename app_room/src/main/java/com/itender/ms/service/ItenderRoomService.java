@@ -1,5 +1,6 @@
 package com.itender.ms.service;
 
+import com.itender.ms.domain.ItenderDevice;
 import com.itender.ms.domain.ItenderRoom;
 import com.itender.ms.exception.APIException;
 
@@ -12,6 +13,13 @@ import java.util.List;
 public interface ItenderRoomService extends ItenderServiceBase<ItenderRoom> {
 
 
-	
+    /**
+     * 更新房间信息
+     * @param room
+     * @return
+     */
+    public ItenderRoom updateRoom(ItenderRoom room) throws APIException;
+
+
 
 }

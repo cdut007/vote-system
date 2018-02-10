@@ -66,4 +66,13 @@ public class ItenderRoomServiceImpl implements ItenderRoomService {
 	}
 
 
+	@Override
+	public ItenderRoom updateRoom(ItenderRoom room) throws APIException {
+		if(room == null){
+			return null;
+		}
+
+		int rows = itenderRoomMapper.updateRoom(room);
+		return rows == 0?null:room;
+	}
 }

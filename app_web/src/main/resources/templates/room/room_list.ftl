@@ -76,6 +76,29 @@
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             var roomId = data.id;
 
+            if (layEvent === 'edit') { //编辑
+                var data = {
+                    title: '房间编辑',//标题
+                    area: 'auto',//宽高
+                    closeBtn: 1,//关闭按钮
+                    shadeClose: true,//是否点击遮罩关闭
+                    queryId: roomId,
+                    queryUrl: '/room/edit_page'
+                }
+                itenderRoom.openModal(data,function (layerDom,index) {
+                    currentTable.reload();
+                });
+            } else if (layEvent === 'del') { //删除
+                itenderRoom.deleteRoom(roomId,function (res,status) {
+                    if(status){
+                        currentTable.reload();
+                        layui.layer.msg("删除成功！");
+                    }else{
+                        layui.layer.msg("操作失败！");
+                    }
+                });
+            }
+
         });
 
         $('#addRoom').click(function () {

@@ -31,7 +31,7 @@
     <orderEntry type="module" module-name="app_base" />
     <orderEntry type="library" name="Maven: ant:ant:1.6.5" level="project" />
     <orderEntry type="module" module-name="app_device" />
-    <orderEntry type="library" name="Maven: com.itender:app_log:0.0.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: com.itender:applog:0.0.1-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="app_room" />
     <orderEntry type="module" module-name="app_dashboard" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.12" level="project" />

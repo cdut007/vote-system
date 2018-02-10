@@ -108,7 +108,7 @@ public class DeviceController {
 
     @ApiOperation(value = "删除设备接口",notes = "用于删除设备信息")
     @RequestMapping(value = "/delDevice",method = RequestMethod.POST)
-    public ResponseEntity<Map<String,Object>> delPrivilege(HttpServletRequest request,
+    public ResponseEntity<Map<String,Object>> delDevice(HttpServletRequest request,
                                                            @ApiParam(name = "deviceId",value = "设备ID",required = true) @RequestParam(required = true) String deviceId
     ) throws APIException{
         Map<String,Object> result = new HashMap<>();
@@ -140,7 +140,7 @@ public class DeviceController {
          device = itenderDeviceService.updateDevice(device);
         if(device == null){
             result.put("status", false);
-            result.put("msg", "添加设备失败！");
+            result.put("msg", "跟新设备失败！");
         }else{
             result.put("status", true);
         }
