@@ -1,6 +1,7 @@
 package com.itender.ms.domain;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,7 +18,7 @@ public class ItenderLog {
     private String id;
 
     @Column(name="start_time")
-    private long startTime;//开始访问时间
+    private Date startTime;//开始访问时间
 
 
 
@@ -64,11 +65,11 @@ public class ItenderLog {
         this.id = id;
     }
 
-    public long getStartTime() {
+    public Date getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(long startTime) {
+    public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
 
