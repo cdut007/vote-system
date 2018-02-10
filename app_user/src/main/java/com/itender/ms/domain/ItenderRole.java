@@ -18,10 +18,11 @@ public class ItenderRole {
     @Column(name="role_name")
     private String roleName;
 
-//    private List<ItenderUser> users;
-
     @Transient
     private List<ItenderPrivilege> privileges;
+
+    @Transient
+    private List<ItenderIndustry> roleType;
 
     public String getId() {
         return id;
@@ -39,14 +40,6 @@ public class ItenderRole {
         this.roleName = roleName;
     }
 
-//    public List<ItenderUser> getUsers() {
-//        return users;
-//    }
-//
-//    public void setUsers(List<ItenderUser> users) {
-//        this.users = users;
-//    }
-
     public List<ItenderPrivilege> getPrivileges() {
         return privileges;
     }
@@ -55,9 +48,21 @@ public class ItenderRole {
         this.privileges = privileges;
     }
 
-	@Override
-	public String toString() {
-		return "ItenderRole [id=" + id + ", roleName=" + roleName + ", privileges=" + privileges + "]";
-	}
+    public List<ItenderIndustry> getRoleType() {
+        return roleType;
+    }
 
+    public void setRoleType(List<ItenderIndustry> roleType) {
+        this.roleType = roleType;
+    }
+
+    @Override
+    public String toString() {
+        return "ItenderRole{" +
+                "id='" + id + '\'' +
+                ", roleName='" + roleName + '\'' +
+                ", privileges=" + privileges +
+                ", roleType=" + roleType +
+                '}';
+    }
 }

@@ -16,8 +16,8 @@ layui.define(function (exports) {
                 success:function(result){
                     layui.layer.close(index);
                     if(result.status == true){
-                        var index = parent.layer.getFrameIndex(window.name);//关闭登录弹出层
-                        parent.layer.close(index);
+                        var indexFrame = parent.layer.getFrameIndex(window.name);//关闭登录弹出层
+                        parent.layer.close(indexFrame);
                         view.goto('/dashboard');
                     }else{
                         layui.layer.msg('登录失败，用户名或密码错误！', {icon: 5});

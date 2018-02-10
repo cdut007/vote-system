@@ -29,7 +29,8 @@ layui.config({
     itenderPrivilege:"itender_privilege",
     multipleSelect:"multipleSelect",
     documentTree:"document_tree",
-    formEditorCheckbox:"form_editor_checkbox"
+    formEditorCheckbox:"form_editor_checkbox",
+    itenderIndustry:"itender_industry"
 })
 
 var view = {

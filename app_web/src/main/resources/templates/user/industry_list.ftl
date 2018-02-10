@@ -1,49 +1,40 @@
 <div class="layui-container margin-top">
     <div class="layui-row">
         <div class="layui-col-md-12 margin-bottom">
-            <button class="layui-btn layui-btn-success" id="addRole">添加角色</button>
+            <button class="layui-btn layui-btn-success" id="addIndustryId">添加行业</button>
         </div>
     </div>
     <div class="layui-row">
         <div class="layui-col-md-12">
-            <table class="table table-bordered table-hover" id="roleTable" lay-filter="roleTable">
+            <table class="table table-bordered table-hover" id="industryTable" lay-filter="industryTable">
             </table>
         </div>
-
     </div>
 </div>
 
 <script type="text/html" id="indexTpl">
     {{d.LAY_TABLE_INDEX+1}}
 </script>
-<script type="text/html" id="roleType">
-        {{#  layui.each(d.roleType, function(index, item){ }}
-        <span>{{ item.industryName }}</span>
-        {{#  }); }}
-</script>
-<script type="text/html" id="roleTableTool">
+<script type="text/html" id="industryTableTableTool">
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-xs" lay-event="privilege">权限</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 
 <script type="text/javascript">
-    layui.use(['table', 'util', 'itenderRole','itenderUser'], function () {
+    layui.use(['table', 'itenderUser','itenderIndustry'], function () {
         var table = layui.table;
-        var itenderRole = layui.itenderRole;
+        var itenderIndustry = layui.itenderIndustry;
         var itenderUser = layui.itenderUser;
 
-        //第一个实例
         var currentTable = table.render({
-            elem: "#roleTable",
+            elem: "#industryTable",
             page: true,
-            url: "/management/role/listRole",
+            url: "/industry/list",
             method: "POST",
             cols: [[
                 {title: '序号',templet: '#indexTpl'},
-                {title: "角色名", field: 'roleName'},
-                {title: "角色属性", fixed: 'right', align: 'center', templet: '#roleType'},
-                {title: "操作",fixed: 'right', align: 'center', toolbar: '#roleTableTool'}
+                {title: "行业名称", field: 'industryName'},
+                {fixed: 'right', align: 'center', toolbar: '#industryTableTableTool'}
             ]],
             request: {
                 pageName: 'pageNum' //页码的参数名称，默认：page
@@ -60,63 +51,51 @@
                 //如果是异步请求数据方式，res即为你接口返回的信息。
                 //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
                 console.log(res);
+
                 //得到当前页码
                 console.log(curr);
+
                 //得到数据总量
                 console.log(count);
             }
         });
 
-        table.on('tool(roleTable)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+        table.on('tool(industryTable)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
-            var roleId = data.id;
+            var industryId = data.id;
 
             if (layEvent === 'edit') { //编辑
                 var data = {
-                    title: '角色详情',//标题
-                    area: ['400px','300px'],//宽高
+                    title: '行业类型编辑',//标题
+                    area: 'auto',//宽高
                     closeBtn: 1,//关闭按钮
                     shadeClose: true,//是否点击遮罩关闭
-                    queryId: roleId,
-                    queryUrl: '/management/role/roleDetils'
+                    queryId: industryId,
+                    queryUrl: '/industry/industryDetils'
                 }
-
                 itenderUser.openModal(data,function (layerDom,index) {
                     currentTable.reload();
                 });
             } else if (layEvent === 'del') { //删除
-                itenderRole.deleteRole(roleId,function (res,status) {
+                itenderIndustry.deleteIndustry(industryId,function (res,status) {
                     if(status){
                         currentTable.reload();
                         layui.layer.msg("删除成功！");
                     }else{
-                        layui.layer.msg("操作失败！"+res.msg);
+                        layui.layer.msg("操作失败！");
                     }
-                });
-            } else if(layEvent === 'privilege'){
-                var data = {
-                    title: '权限分配',//标题
-                    area: ['800px','500px'],//宽高
-                    closeBtn: 1,//关闭按钮
-                    shadeClose: true,//是否点击遮罩关闭
-                    queryId: roleId,
-                    queryUrl: '/management/role/rolePrivilegeEditModal'
-                }
-                itenderUser.openModal(data,function (layerDom,index) {
-                    currentTable.reload();
                 });
             }
         });
-
-        $('#addRole').click(function () {
+        $('#addIndustryId').click(function () {
             var data = {
-                title: '添加角色',//标题
-                area: ['60%','80%'],//宽高
+                title: '添加行业类型',//标题
+                area: 'auto',//宽高
                 closeBtn: 1,//关闭按钮
                 shadeClose: true,//是否点击遮罩关闭
                 queryId: '',
-                queryUrl: '/management/role/addRole'
+                queryUrl: '/industry/industryDetils'
             }
             itenderUser.openModal(data,function (layerDom,index) {
                 currentTable.reload();
