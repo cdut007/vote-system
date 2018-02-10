@@ -29,7 +29,7 @@
     <orderEntry type="module" module-name="app_base" />
     <orderEntry type="library" name="Maven: ant:ant:1.6.5" level="project" />
     <orderEntry type="module" module-name="app_device" />
-    <orderEntry type="module" module-name="app_log" />
+    <orderEntry type="module" module-name="app_room" />
     <orderEntry type="module" module-name="app_dashboard" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-configuration-processor:1.5.9.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: com.vaadin.external.google:android-json:0.0.20131108.vaadin1" level="project" />
@@ -118,5 +118,6 @@
     <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-juli:8.5.23" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-jdbc:4.3.13.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-tx:4.3.13.RELEASE" level="project" />
+    <orderEntry type="module" module-name="app_log" />
   </component>
 </module>
