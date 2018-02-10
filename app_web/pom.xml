@@ -29,6 +29,11 @@
         </dependency>
         <dependency>
             <groupId>com.itender</groupId>
+            <artifactId>app_room</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.itender</groupId>
             <artifactId>app_dashboard</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>

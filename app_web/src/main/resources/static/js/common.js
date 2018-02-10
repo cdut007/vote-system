@@ -23,6 +23,7 @@ layui.config({
     tableEditor:"table_editor",
     itenderUser:"itender_user",
     itenderLog:"itender_log",
+    itenderRoom:"itender_room",
     itenderDevice:"itender_device",
     itenderRole:"itender_role",
     itenderPrivilege:"itender_privilege",
