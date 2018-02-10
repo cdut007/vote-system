@@ -167,7 +167,7 @@ public class RoomController {
         logger.debug("==删除房间id=="+roomId);
          ItenderRoom room = itenderRoomService.findById(roomId);
         int row = itenderRoomService.deleteById(roomId);
-        List<ItenderDevice> deviceList = room.getDeviceList();
+        List<ItenderDevice> deviceList = getDeviceListByRoom(roomId);
         for (int i = 0; i < deviceList.size(); i++) {
             itenderDeviceService.unbindRoom(deviceList.get(i));
         }
@@ -197,7 +197,7 @@ public class RoomController {
             return ResponseEntity.ok(result);
         }
 
-        List<ItenderDevice> exsitDeviceList = roomExsit.getDeviceList();
+        List<ItenderDevice> exsitDeviceList = getDeviceListByRoom(roomExsit.getId());
         for (int i = 0; i < exsitDeviceList.size(); i++) {
             itenderDeviceService.unbindRoom(exsitDeviceList.get(i));
         }
@@ -218,6 +218,23 @@ public class RoomController {
         }
         result.put("data", room);
         return ResponseEntity.ok(result);
+    }
+
+
+    private List<ItenderDevice> getDeviceListByRoom(String roomId){
+        List<ItenderDevice>  deviceList = new ArrayList<>();
+        try {
+            deviceList = itenderDeviceService.getRoomDeviceList();
+        } catch (APIException e) {
+            e.printStackTrace();
+        }
+        List<ItenderDevice>  deviceRoomList = new ArrayList<>();
+        for (int i = 0; i < deviceList.size(); i++) {
+            if(roomId.equals(deviceList.get(i).getRoomId())){
+                deviceRoomList.add(deviceList.get(i));
+            }
+        }
+        return  deviceRoomList;
     }
 
 

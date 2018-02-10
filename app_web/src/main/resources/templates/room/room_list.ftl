@@ -45,6 +45,7 @@
                 {title: '序号',templet: '#indexTpl'},
                 {title: "房间名", field: 'name'},
                 {title: "设备名称", field: 'devices_info'},
+                {fixed: 'right', align: 'center', toolbar: '#roomTableTool'}
 
             ]],
             request: {

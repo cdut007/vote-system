@@ -1,5 +1,9 @@
 package com.itender.ms.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -50,6 +54,18 @@ public class ItenderDevice {
 
     @Column(name="room_id")
     private String roomId;//房间号
+
+
+    @JsonIgnore
+    public String toJson() {
+        ObjectMapper jsonMapper = new ObjectMapper();
+        try {
+            return jsonMapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return  null;
+    }
 
 
 

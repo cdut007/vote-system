@@ -12,9 +12,9 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">设备名</label>
                     <div class="layui-input-inline">
-                        <select name="device" id="device"  lay-filter="device_select">
+                        <select name="device" id="device"  lay-filter="device_select" lay-verify="required">
                             <#list availableDeviceList as device>
-                                <option value="${device.id}">${device.name!}</option>
+                                <option value='${device.toJson()}'>${device.name!}</option>
                             </#list>
                         </select>
                     </div>
@@ -41,6 +41,7 @@
         var layer = layui.layer;
         var itenderRoom = layui.itenderRoom;
 
+
         form.verify({
             name: function (value, item) {
                 if (value.length == 0){
@@ -52,6 +53,14 @@
         });
         form.on('submit(addRoom)', function(data){
             var formData = data.field;
+            formData.deviceList = [];
+            if(formData.device && formData.device.length>0){
+                formData.deviceList.push(JSON.parse(formData.device));
+            }else{
+                layer.msg("设备不能为空!");
+                return
+            }
+
             itenderRoom.addRoom(formData,function (res,status) {
                 if(status){
                     layer.closeAll('page'); //执行关闭

@@ -67,6 +67,9 @@ public class ItenderRoom {
     private  List<ItenderDevice> deviceList;//添加设备信息
 
 
+
+
+
     public List<ItenderDevice> getDeviceList() {
         if(deviceList == null){
             return  new ArrayList<>();

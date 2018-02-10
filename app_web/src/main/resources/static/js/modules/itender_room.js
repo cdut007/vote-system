@@ -13,7 +13,7 @@ layui.define(function (exports) {
             var syncServer = function (data, callback) {
                 var index = layui.layer.load(2);
                 $.ajax({
-                    url: "/log/addLog",
+                    url: "/room/addRoom",
                     type: "POST",
                     dataType: "json",
                     contentType: "application/json",
@@ -73,10 +73,10 @@ layui.define(function (exports) {
                 var index = layui.layer.load(2);
                 //TODO 异常处理
                 $.ajax({
-                    url: "/log/delLog",
+                    url: "/room/delRoom",
                     type: "POST",
                     dataType: "json",
-                    data: {logId:logId},
+                    data: {roomId:roomId},
                     success: function (res) {
                         layui.layer.close(index);
                         callback(res, true);
@@ -89,7 +89,7 @@ layui.define(function (exports) {
 
             //删除确认窗口
             layui.layer.confirm('您确定要删除该房间?删除后不可恢复!', {icon: 3, title: '删除确认'}, function (index) {
-                syncServer(logId, function (res, status) {
+                syncServer(roomId, function (res, status) {
                     layui.layer.close(index);
                     if (typeof callback == "function") {
                         callback(res, status);
@@ -191,7 +191,7 @@ layui.define(function (exports) {
          * @param data
          * @param callback
          */
-        ,updateDevice: function (data,callback) {
+        ,updateRoom: function (data,callback) {
             console.log(data);
             RoomObj.updateRoom(data,callback);
         }

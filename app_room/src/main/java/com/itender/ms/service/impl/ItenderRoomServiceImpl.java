@@ -38,7 +38,9 @@ public class ItenderRoomServiceImpl implements ItenderRoomService {
 
 	@Override
 	public ItenderRoom add(ItenderRoom itenderRoom) throws APIException {
-		return null;
+		int rows = itenderRoomMapper.insertSelective(itenderRoom);
+
+		return rows == 0?null:itenderRoom;
 	}
 
 	@Override
@@ -57,12 +59,14 @@ public class ItenderRoomServiceImpl implements ItenderRoomService {
 
 	@Override
 	public Integer deleteById(String id) {
-		return null;
+		ItenderRoom itenderRoom = new ItenderRoom();
+		itenderRoom.setId(id);
+		return itenderRoomMapper.delete(itenderRoom);
 	}
 
 	@Override
 	public ItenderRoom findById(String id) {
-		return null;
+		return itenderRoomMapper.selectByPrimaryKey(id);
 	}
 
 
