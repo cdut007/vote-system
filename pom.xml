@@ -116,18 +116,11 @@
             <version>2.7.0</version>
         </dependency>
 
-        <!--添加aspose依赖-->
-        <!--<dependency>-->
-            <!--<groupId>com.aspose</groupId>-->
-            <!--<artifactId>aspose-pdf</artifactId>-->
-            <!--<version>11.0.0</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>com.aspose</groupId>-->
-            <!--<artifactId>aspose-words</artifactId>-->
-            <!--<version>16.2.0</version>-->
-            <!--<classifier>jdk16</classifier>-->
-        <!--</dependency>-->
+        <!--添加aop配置-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>mysql</groupId>
