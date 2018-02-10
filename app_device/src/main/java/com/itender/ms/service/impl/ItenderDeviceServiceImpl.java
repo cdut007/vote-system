@@ -109,8 +109,8 @@ public class ItenderDeviceServiceImpl implements ItenderDeviceService {
 		PageHelper.startPage(pageNum,pagesize);
 
         Example example = new Example(ItenderDevice.class);
-        List<ItenderDevice> itenderUser = itenderDeviceMapper.selectByExample(example);
-        return new PageInfo<>(itenderUser);
+        List<ItenderDevice> itenderDevice = itenderDeviceMapper.selectByExample(example);
+        return new PageInfo<>(itenderDevice);
 	}
 
 
