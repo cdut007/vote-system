@@ -1,7 +1,11 @@
 package com.itender.test;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
+import com.itender.ms.domain.ItenderIndustry;
+import com.itender.ms.mapper.*;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,10 +19,6 @@ import com.itender.Application;
 import com.itender.ms.domain.ItenderRole;
 import com.itender.ms.domain.ItenderUser;
 import com.itender.ms.exception.APIException;
-import com.itender.ms.mapper.ItenderPrivilegeMapper;
-import com.itender.ms.mapper.ItenderRoleMapper;
-import com.itender.ms.mapper.ItenderRolePrivilegeMapper;
-import com.itender.ms.mapper.ItenderUserMapper;
 import com.itender.ms.service.ItenderPrivilegeService;
 import com.itender.ms.service.ItenderRoleService;
 import com.itender.ms.service.ItenderUserService;
@@ -42,6 +42,8 @@ public class ItenderUserTest {
     private ItenderPrivilegeMapper itenderPrivilegeMapper;
     @Autowired
     private ItenderRoleMapper itenderRoleMapper;
+    @Autowired
+    private ItenderIndustryMapper itenderIndustryMapper;
 
 
 //    @Test
@@ -157,4 +159,19 @@ public class ItenderUserTest {
 //        }
 //        logger.debug("#############################################");
 //    }
+
+    @Test
+    public void findIndustry(){
+        String[] a = new String[]{"1ed94c58-0e49-11e8-838b-201a06bed6c8","a2afae8f-0e49-11e8-838b-201a06bed6c8","3"};
+        for(String i : a){
+            i.toString();
+        }
+
+        List<ItenderIndustry> itenderIndustries =  itenderIndustryMapper.selectByIds(a);
+        for (ItenderIndustry i : itenderIndustries){
+            logger.debug("#############################################");
+            logger.debug(i.getIndustryName());
+            logger.debug("#############################################");
+        }
+    }
 }

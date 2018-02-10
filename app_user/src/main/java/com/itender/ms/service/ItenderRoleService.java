@@ -16,7 +16,7 @@ public interface ItenderRoleService extends ItenderServiceBase<ItenderRole>{
 	 * @param   
 	 * @return   
 	 */ 
-	public ItenderRole addRole(ItenderRole itenderRole,String[] privilegeId) throws APIException;
+	public ItenderRole addRole(ItenderRole itenderRole,String[] privilegeId,String[] roleTypeId) throws APIException;
 
 	public ItenderRole findByRoleId(String roleId);
 	
@@ -37,9 +37,17 @@ public interface ItenderRoleService extends ItenderServiceBase<ItenderRole>{
 	public boolean authRolePrivilege(String roleId,String[] privilegeId) throws APIException;
 
 	/**
+	 * 设置角色属性
+	 * @param   roleId
+	 * @param   roleTypeId
+	 * @return
+	 */
+	public boolean setRoleType(String roleId,String[] roleTypeId) throws APIException;
+
+	/**
 	 * 更新角色信息
 	 * @param itenderRole
 	 * @return
 	 */
-	public int updateRole(ItenderRole itenderRole);
+	public int updateRole(ItenderRole itenderRole,String[] roleTypeIds)  throws APIException;
 }

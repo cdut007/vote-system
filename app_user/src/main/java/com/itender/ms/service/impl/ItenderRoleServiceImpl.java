@@ -1,8 +1,12 @@
 package com.itender.ms.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.itender.ms.domain.*;
 import com.itender.ms.enums.ServiceCode;
+import com.itender.ms.mapper.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,17 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.itender.ms.domain.ItenderPrivilege;
-import com.itender.ms.domain.ItenderRole;
-import com.itender.ms.domain.ItenderRolePrivilege;
-import com.itender.ms.domain.ItenderUser;
-import com.itender.ms.domain.ItenderUserRole;
 import com.itender.ms.exception.APIException;
-import com.itender.ms.mapper.ItenderPrivilegeMapper;
-import com.itender.ms.mapper.ItenderRoleMapper;
-import com.itender.ms.mapper.ItenderRolePrivilegeMapper;
-import com.itender.ms.mapper.ItenderUserMapper;
-import com.itender.ms.mapper.ItenderUserRoleMapper;
 import com.itender.ms.service.ItenderRoleService;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +39,10 @@ public class ItenderRoleServiceImpl implements ItenderRoleService {
     private ItenderPrivilegeMapper itenderPrivilegeMapper;
     @Autowired
     private ItenderRolePrivilegeMapper itenderRolePrivilegeMapper;
+    @Autowired
+	private ItenderIndustryMapper itenderIndustryMapper;
+    @Autowired
+	private ItenderRoleTypeMapper itenderRoleTypeMapper;
 
     @Override
     public ItenderRole add(ItenderRole itenderRole) throws APIException {
@@ -63,6 +61,11 @@ public class ItenderRoleServiceImpl implements ItenderRoleService {
 
         Example example = new Example(ItenderRole.class);
         List<ItenderRole> itenderRole = itenderRoleMapper.selectByExample(example);
+		itenderRole = itenderRole.stream().map(role -> {
+        	role.setRoleType(itenderIndustryMapper.selectByRoleId(role.getId()));
+        	return role;
+		}).collect(Collectors.toList());
+
         return new PageInfo<>(itenderRole);
     }
 
@@ -78,13 +81,23 @@ public class ItenderRoleServiceImpl implements ItenderRoleService {
         return itenderRoleMapper.selectByRoleId(id);
     }
 
+    @Transactional
 	@Override
-	public ItenderRole addRole(ItenderRole itenderRole, String[] privilegeId) throws APIException {
+	public ItenderRole addRole(ItenderRole itenderRole, String[] privilegeId,String[] roleTypeId) throws APIException {
     	boolean status = false;
 		int rows = itenderRoleMapper.insertSelective(itenderRole);
 		if(rows != 0){
-			status = authRolePrivilege(itenderRole.getId(),privilegeId);
+			if(privilegeId==null||privilegeId.length==0){
+				status = setRoleType(itenderRole.getId(),roleTypeId);
+			}else if(roleTypeId==null||roleTypeId.length==0){
+				status = authRolePrivilege(itenderRole.getId(),privilegeId);
+			}else{
+				status = authRolePrivilege(itenderRole.getId(),privilegeId)?setRoleType(itenderRole.getId(),roleTypeId):false;
+			}
+		}else {
+			return null;
 		}
+
 		if(!status){
 			return null;
 		}
@@ -176,8 +189,53 @@ public class ItenderRoleServiceImpl implements ItenderRoleService {
 	}
 
 	@Override
-	public int updateRole(ItenderRole itenderRole) {
-		return itenderRoleMapper.updateByPrimaryKey(itenderRole);
+	public boolean setRoleType(String roleId, String[] roleTypeId) throws APIException {
+		ItenderRole role = itenderRoleMapper.selectByRoleId(roleId);
+		if(role == null){
+			logger.error("数据异常,角色不存在！");
+			throw new APIException(404,"100404","角色不存在！");
+		}
+
+		ItenderRoleType itenderRoleType = new ItenderRoleType();
+		itenderRoleType.setRoleId(roleId);
+		int row = 0;
+		Example example = new Example(ItenderRoleType.class);
+		Criteria criteria = example.createCriteria();
+		criteria.andEqualTo("roleId",roleId);
+
+		if(roleTypeId==null || roleTypeId.length==0){
+			row = itenderRoleTypeMapper.deleteByExample(example);
+			return row==0?false:true;
+		}
+		List<ItenderRoleType> exsitRoleType = itenderRoleTypeMapper.selectByExample(example);
+		if(exsitRoleType != null && exsitRoleType.size()>0){
+			row = itenderRoleTypeMapper.deleteByExample(example);
+			if(row == 0){
+				logger.error("更新角色属性出错！");
+				throw new APIException(500,"100500","更新角色属性出错！");
+			}
+		}
+
+		List<ItenderIndustry> itenderIndustries = itenderIndustryMapper.selectByIds(roleTypeId);
+		for (ItenderIndustry i : itenderIndustries){
+			ItenderRoleType itenderRoleType1 = new ItenderRoleType();
+			itenderRoleType1.setRoleId(roleId);
+			itenderRoleType1.setIndustryId(i.getId());
+			row = itenderRoleTypeMapper.insert(itenderRoleType1);
+		}
+
+		return row==0?false:true;
+	}
+
+	@Transactional
+	@Override
+	public int updateRole(ItenderRole itenderRole,String[] roleTypeIds) throws APIException{
+    	boolean status = setRoleType(itenderRole.getId(),roleTypeIds);
+		int row = 0;
+    	if(status){
+			row = itenderRoleMapper.updateByPrimaryKey(itenderRole);
+		}
+		return row;
 	}
 
 }
