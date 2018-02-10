@@ -39,7 +39,9 @@ public class ItenderLogServiceImpl implements ItenderLogService {
 
 	@Override
 	public ItenderLog add(ItenderLog itenderLog) throws APIException {
-		return null;
+		int rows = itenderLogMapper.insertSelective(itenderLog);
+
+		return rows == 0?null:itenderLog;
 	}
 
 	@Override

@@ -17,7 +17,7 @@ public class ItenderLog {
     private String id;
 
     @Column(name="start_time")
-    private String startTime;//开始访问时间
+    private long startTime;//开始访问时间
 
 
 
@@ -64,11 +64,11 @@ public class ItenderLog {
         this.id = id;
     }
 
-    public String getStartTime() {
+    public long getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(String startTime) {
+    public void setStartTime(long startTime) {
         this.startTime = startTime;
     }
 

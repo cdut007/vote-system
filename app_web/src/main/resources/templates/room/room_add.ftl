@@ -12,11 +12,11 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">设备名</label>
                     <div class="layui-input-inline">
-                        <#--<select name="device" id="device"  lay-filter="device_select">-->
-                            <#--<#list device as availableDeviceList>-->
-                                <#--<option value="${availableDeviceList.id}">${availableDeviceList.name}</option>-->
-                            <#--</#list>-->
-                        <#--</select>-->
+                        <select name="device" id="device"  lay-filter="device_select">
+                            <#list availableDeviceList as device>
+                                <option value="${device.id}">${device.name!}</option>
+                            </#list>
+                        </select>
                     </div>
                 </div>
 
@@ -69,8 +69,7 @@
             return false;
         });
 
-        <#--var deviceList = "${availableDeviceList!}";-->
-        <#--console.log("deviceList=="+JSON.stringify(deviceList));-->
+
 
     });
 </script>
