@@ -1,6 +1,7 @@
 package com.itender.ms.domain;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -62,6 +63,25 @@ public class ItenderBook {
 
     @Column(name="status")
     private String status;//订单状态
+
+
+    public String getBookTime() {
+       try{
+           SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+           String begin = formatter.format(beginTime);
+           String end = formatter.format(endTime);
+           int hours = (int) ((endTime.getTime() - beginTime.getTime()) / (3600*1000));
+           bookTime = begin+"~"+end + " ("+hours+"小时)";
+       }catch (Exception e){
+           e.printStackTrace();
+       }
+        return  bookTime;
+    }
+
+    @Transient
+    private  String bookTime;//预订信息
+
+
 
 
     public String getId() {

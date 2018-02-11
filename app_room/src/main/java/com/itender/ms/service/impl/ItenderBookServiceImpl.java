@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.itender.ms.domain.ItenderBook;
 import com.itender.ms.domain.ItenderRoom;
+import com.itender.ms.enums.BookStatus;
 import com.itender.ms.exception.APIException;
 import com.itender.ms.mapper.ItenderBookMapper;
 import com.itender.ms.mapper.ItenderRoomMapper;
@@ -75,7 +76,13 @@ public class ItenderBookServiceImpl implements ItenderBookService {
 
 	@Override
 	public ItenderBook cancelRoom(String bookId, String roomId) throws APIException {
+		ItenderBook book = findById(bookId);
+		if(book!=null){
+			book.setStatus(BookStatus.cancel.name());
+		}
 
-		return null;
+		itenderBookMapper.updateByPrimaryKey(book);
+
+		return book;
 	}
 }

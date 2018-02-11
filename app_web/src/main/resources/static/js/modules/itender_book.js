@@ -136,7 +136,7 @@ layui.define(function (exports) {
          * @param callback
          */
         addBook: function (data,callback) {
-            console.log('add book : '+data);
+            console.log('add book : '+JSON.stringify(data));
             BookObj.addNewBook(data,callback);
         }
         /**

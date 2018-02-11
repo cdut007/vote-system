@@ -35,9 +35,16 @@
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">预订时长</label>
+                    <label class="layui-form-label">开始时间</label>
                     <div class="layui-input-inline">
-                        <input  type="text" name="bookUser" lay-verify="required" lay-verType="tips" placeholder="输入预订人" autocomplete="off" class="layui-input">
+                        <input lay-verify="required" type="text" class="layui-input" id="start_date" placeholder="">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">结束时间</label>
+                    <div class="layui-input-inline">
+                        <input lay-verify="required" type="text" class="layui-input" id="end_date" placeholder="">
                     </div>
                 </div>
 
@@ -72,10 +79,37 @@
 </div>
 
 <script>
-    layui.use(['form','itenderBook','itenderRoom'], function () {
+    layui.use(['form','itenderBook','itenderRoom','laydate'], function () {
         var form = layui.form;
         var layer = layui.layer;
         var itenderBookModule = layui.itenderBook;
+        var beginTime ;
+        var endTime ;
+        layui.laydate.render({
+            elem: '#start_date'
+            ,type: 'datetime'
+            // ,min: '2017-8-11 12:30:00'
+            // ,max: '2017-8-18 12:30:00'
+            ,done: function(value, date){
+                var time = (new Date(value)).getTime();
+                beginTime = time;
+
+                //{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+        }
+        });
+
+        layui.laydate.render({
+            elem: '#end_date'
+            ,type: 'datetime'
+            // ,min: '2017-8-11 12:30:00'
+            // ,max: '2017-8-18 12:30:00'
+            ,done: function(value, date){
+                var time = (new Date(value)).getTime();
+                endTime = time;
+
+                //{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+            }
+        });
 
 
         form.verify({
@@ -89,6 +123,8 @@
         });
         form.on('submit(addBook)', function(data){
             var formData = data.field;
+            formData.beginTime = beginTime;
+            formData.endTime = endTime;
             formData.roomId = "${itenderRoom.id!}";
 
 

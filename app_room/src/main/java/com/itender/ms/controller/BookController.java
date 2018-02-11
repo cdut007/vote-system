@@ -95,7 +95,26 @@ public class BookController {
 
 
 
-    @ApiOperation(value = "订单列表接口",notes = "用于查询所有可预订房间信息")
+    @ApiOperation(value = "预订列表接口",notes = "用于查询所有预订房间信息")
+    @RequestMapping(value = "/listBookRecord",method = RequestMethod.POST)
+    public ResponseEntity<LayuiTableData> bookRecordList(HttpServletRequest request,
+                                                  @RequestParam(required = false) Integer pageNum,
+                                                  @RequestParam(required = false) Integer pagesize
+    ) throws APIException{
+
+        pageNum = pageNum == null?1:pageNum;
+        pagesize = pagesize == null?10:pagesize;
+
+        PageInfo<ItenderBook> page = itenderBookService.findPage(pageNum, pagesize);
+
+
+
+        return ResponseEntity.ok(PageDataConvert.convertToLayuiData(page,200,"success"));
+    }
+
+
+
+    @ApiOperation(value = "预订房间列表接口",notes = "用于查询所有可预订房间信息")
     @RequestMapping(value = "/listBook",method = RequestMethod.POST)
     public ResponseEntity<LayuiTableData> bookAll(HttpServletRequest request,
                                                     @RequestParam(required = false) Integer pageNum,
