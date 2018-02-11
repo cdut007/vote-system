@@ -39,7 +39,7 @@
             method: "POST",
             cols: [[
                 {title: '序号',templet: '#indexTpl'},
-                {title: "访问时间", field: 'startTime'},
+                {title: "访问时间", field: 'recordDate'},
                 {title: "用户名", field: 'user'},
                 {title: "登录地址", field: 'ip'},
                 {title: "访问内容", field: 'content'},
@@ -60,8 +60,9 @@
                 //如果是异步请求数据方式，res即为你接口返回的信息。
                 //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
                 // for(var i=0;i<res.data.length;i++) {
-                //     res.data[i].recordTime = layui.util.toDateString(res.data[i].startTime, 'yyyy-MM-dd HH:mm:ss')
+                //     res.data[i].startTime = layui.util.toDateString(res.data[i].startTime, 'yyyy-MM-dd HH:mm:ss')
                 // }
+                //
                 console.log(res);
 
                 //得到当前页码

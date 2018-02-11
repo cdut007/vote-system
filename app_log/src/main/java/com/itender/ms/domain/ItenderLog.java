@@ -1,6 +1,7 @@
 package com.itender.ms.domain;
 
 import javax.persistence.*;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -19,6 +20,7 @@ public class ItenderLog {
 
     @Column(name="start_time")
     private Date startTime;//开始访问时间
+
 
 
 
@@ -51,11 +53,22 @@ public class ItenderLog {
         this.level = level;
     }
 
+    @Transient
+    private String recordDate;
+
+
+
     //日志级别
     @Column(name="level")
     private String level;//日志级别
 
 
+    public String getRecordDate() {
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        recordDate = formatter.format(startTime);
+        return recordDate;
+    }
 
     public String getId() {
         return id;
@@ -66,6 +79,7 @@ public class ItenderLog {
     }
 
     public Date getStartTime() {
+
         return startTime;
     }
 
@@ -112,6 +126,8 @@ public class ItenderLog {
     public void setBrowserType(String browserType) {
         this.browserType = browserType;
     }
+
+
 
     @Override
     public boolean equals(Object o) {
