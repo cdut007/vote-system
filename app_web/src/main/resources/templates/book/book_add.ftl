@@ -5,18 +5,54 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">房间名</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="name" lay-verify="required" lay-verType="tips" placeholder="房间名" autocomplete="off" class="layui-input">
+                        <input readonly="true" type="text" name="room" value="${itenderRoom.name!}" lay-verify="required" lay-verType="tips" placeholder="房间名" autocomplete="off" class="layui-input">
                     </div>
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">设备名</label>
+                    <label class="layui-form-label">预订单位</label>
                     <div class="layui-input-inline">
-                        <select name="device" id="device"  lay-filter="device_select" lay-verify="required">
-                            <#list availableDeviceList as device>
-                                <option value='${device.toJson()}'>${device.name!}</option>
+                        <input  type="text" name="bookOrganization" lay-verify="required" lay-verType="tips" placeholder="输入预订单位" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">预订事项</label>
+                    <div class="layui-input-inline">
+                        <input  type="text" name="content" lay-verify="required" lay-verType="tips" placeholder="输入预订事项" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">预定类型</label>
+                    <div class="layui-input-inline">
+                        <select name="industry" id="industry"  lay-filter="industry_select" lay-verify="required">
+                            <#list industryList as industry>
+                                <option value='${industry.industryName!}'>${industry.industryName!}</option>
                             </#list>
                         </select>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">预订时长</label>
+                    <div class="layui-input-inline">
+                        <input  type="text" name="bookUser" lay-verify="required" lay-verType="tips" placeholder="输入预订人" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">预订人</label>
+                    <div class="layui-input-inline">
+                        <input  type="text" name="bookUser" lay-verify="required" lay-verType="tips" placeholder="输入预订人" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">联系方式</label>
+                    <div class="layui-input-inline">
+                        <input  type="text" name="bookUserMobile" lay-verify="required|phone" lay-verType="tips" placeholder="输入联系方式" autocomplete="off" class="layui-input">
                     </div>
                 </div>
 
@@ -25,7 +61,7 @@
 
                 <div class="layui-form-item">
                     <div class="layui-input-block">
-                        <button type="submit" class="layui-btn" lay-submit lay-filter="addRoom">提交</button>
+                        <button type="submit" class="layui-btn" lay-submit lay-filter="addBook">提交</button>
 
 
                         <button type="reset" class="layui-btn layui-btn-primary">重置</button>
@@ -36,32 +72,27 @@
 </div>
 
 <script>
-    layui.use(['form','itenderRoom'], function () {
+    layui.use(['form','itenderBook','itenderRoom'], function () {
         var form = layui.form;
         var layer = layui.layer;
-        var itenderRoom = layui.itenderRoom;
+        var itenderBookModule = layui.itenderBook;
 
 
         form.verify({
-            name: function (value, item) {
+            bookOrganization: function (value, item) {
                 if (value.length == 0){
 
-                    return "房间名不能为空";
+                    return "预订单位不能为空";
                 }
             },
 
         });
-        form.on('submit(addRoom)', function(data){
+        form.on('submit(addBook)', function(data){
             var formData = data.field;
-            formData.deviceList = [];
-            if(formData.device && formData.device.length>0){
-                formData.deviceList.push(JSON.parse(formData.device));
-            }else{
-                layer.msg("设备不能为空!");
-                return
-            }
+            formData.roomId = "${itenderRoom.id!}";
 
-            itenderRoom.addRoom(formData,function (res,status) {
+
+            itenderBookModule.addBook(formData,function (res,status) {
                 if(status){
                     layer.closeAll('page'); //执行关闭
                     layer.msg("添加成功!");
@@ -72,7 +103,7 @@
             return false;
         });
 
-        form.on('select(device_select)', function(data){
+        form.on('select(industry_select)', function(data){
 
 
             return false;

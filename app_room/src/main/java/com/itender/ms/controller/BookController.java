@@ -5,10 +5,13 @@ import com.itender.ms.convert.LayuiTableData;
 import com.itender.ms.convert.PageDataConvert;
 import com.itender.ms.domain.ItenderBook;
 import com.itender.ms.domain.ItenderDevice;
+import com.itender.ms.domain.ItenderIndustry;
 import com.itender.ms.domain.ItenderRoom;
+import com.itender.ms.enums.BookStatus;
 import com.itender.ms.exception.APIException;
 import com.itender.ms.service.ItenderBookService;
 import com.itender.ms.service.ItenderDeviceService;
+import com.itender.ms.service.ItenderIndustryService;
 import com.itender.ms.service.ItenderRoomService;
 import com.itender.ms.util.CommonUtility;
 import com.itender.ms.util.ViewUtil;
@@ -50,6 +53,11 @@ public class BookController {
 
 
 
+    @Autowired
+    private ItenderIndustryService itenderIndustryService;
+
+
+
     @ApiIgnore
     @RequestMapping("")
     public String index(HttpServletRequest request,HttpServletResponse response){
@@ -65,6 +73,21 @@ public class BookController {
     @ApiIgnore
     @RequestMapping(value = "/add_page",method = RequestMethod.GET)
     public String addBookPage(HttpServletRequest request,HttpServletResponse response){
+
+        String roomId = request.getParameter("id");
+        ItenderRoom room = null;
+        if(CommonUtility.isNonEmpty(roomId)){
+            room = itenderRoomService.findById(roomId);
+        }
+        request.setAttribute("itenderRoom",room);
+
+        try {
+            List<ItenderIndustry> industryList = itenderIndustryService.findAll();
+
+            request.setAttribute("industryList",industryList);
+        } catch (APIException e) {
+            e.printStackTrace();
+        }
 
 
         return ViewUtil.forward("book/book_add");
@@ -94,10 +117,10 @@ public class BookController {
 
     @ApiOperation(value = "添加预订接口",notes = "用于新增预订房间信息")
     @RequestMapping(value = "/addBook",method = RequestMethod.POST)
-    public ResponseEntity<Map<String,Object>> addRoom(HttpServletRequest request,
+    public ResponseEntity<Map<String,Object>> addBook(HttpServletRequest request,
                                                         @ApiParam(name = "name",value = "预订房间",required = true) @RequestBody ItenderBook book) throws APIException{
         Map<String,Object> result = new HashMap<>();
-
+        book.setStatus(BookStatus.ordered.name());
         book = itenderBookService.add(book);
 
         if(!CommonUtility.isNonEmpty(book.getId())){
@@ -112,7 +135,7 @@ public class BookController {
 
     @ApiOperation(value = "取消预订接口",notes = "用于取消预订房间信息")
     @RequestMapping(value = "/cancelBook",method = RequestMethod.POST)
-    public ResponseEntity<Map<String,Object>> delRoom(HttpServletRequest request,
+    public ResponseEntity<Map<String,Object>> cancelBook(HttpServletRequest request,
                                                            @ApiParam(name = "bookId",value = "订单ID",required = true) @RequestParam(required = true) String bookId
     ) throws APIException{
         Map<String,Object> result = new HashMap<>();

@@ -91,13 +91,14 @@
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
 
-
+            var bookId = data.id;
             if (layEvent === 'book') { //编辑
                 var data = {
                     title: '房间预订',//标题
                     area: 'auto',//宽高
                     closeBtn: 1,//关闭按钮
                     shadeClose: true,//是否点击遮罩关闭
+                    queryId: bookId,
                     queryUrl: '/book/add_page'
                 }
                 itenderBook.openModal(data,function (layerDom,index) {
