@@ -25,28 +25,28 @@
         </div>
 
         <div class="layui-tab-item layui-container margin-top">
-            <div class="layui-col-md-12 margin-bottom">
-                <button class="layui-btn layui-btn-success" id="addDevice">查询房间</button>
-            </div>
-            <div class="layui-form">
-                <div class="layui-form-item">
-                    <div class="layui-inline">
-                        <label class="layui-form-label">开始时间</label>
-                        <div class="layui-input-inline">
-                            <input type="text" class="layui-input" id="begin_time" placeholder="">
-                        </div>
+
+            <div class="searchTable">
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">开始时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" id="begin_time" placeholder="">
                     </div>
 
-                    <div class="layui-inline">
-                        <label class="layui-form-label">结束时间</label>
-                        <div class="layui-input-inline">
-                            <input type="text" class="layui-input" id="end_time" placeholder="">
-                        </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">结束时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" id="end_time" placeholder="">
                     </div>
                 </div>
 
-
+                <button class="layui-btn" data-type="reload" id="search_room">查询房间</button>
             </div>
+
+
 
 
             <div class="layui-row">
@@ -87,15 +87,31 @@
         var table = layui.table;
         var itenderBook = layui.itenderBook;
         var element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+        var beginTime,endTime;
 
         layui.laydate.render({
             elem: '#begin_time'
             ,type: 'datetime'
+            ,value: new Date()
+            ,done: function(value, date){
+                var time = (new Date(value)).getTime();
+                beginTime = time;
+
+                //{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+            }
         });
 
         layui.laydate.render({
             elem: '#end_time'
             ,type: 'datetime'
+            ,value: new Date()
+            ,done: function(value, date){
+                var time = (new Date(value)).getTime();
+                endTime = time;
+
+                //{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+            }
+
         });
 
 
@@ -173,6 +189,7 @@
             page: true,
             url: "/book/listBook",
             method: "POST",
+            id: 'bookReload',
             cols: [[
                 {title: '序号',width:80,templet: '#indexTpl'},
                 {title: "房间名", width:80,field: 'name'},
@@ -221,6 +238,37 @@
                     currentTable.reload();
                 });
             }
+
+        });
+
+        $('#search_room').click(function () {
+            if(!beginTime){
+                layer.msg("请选择开始日期!");
+                return ;
+            }
+
+            if(!endTime){
+                layer.msg("请选择结束日期!");
+                return ;
+            }
+
+            if(endTime < beginTime){
+                layer.msg("结束日期不能早于开始日期");
+                return ;
+            }
+
+            //执行重载
+            currentTable.reload({
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                },
+                where:{beginTime:beginTime},
+                request: {
+                    beginTime:'beginTime',
+                    endTime:'endTime'
+                }
+
+            });
 
         });
 

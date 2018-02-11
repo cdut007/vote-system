@@ -118,14 +118,37 @@ public class BookController {
     @RequestMapping(value = "/listBook",method = RequestMethod.POST)
     public ResponseEntity<LayuiTableData> bookAll(HttpServletRequest request,
                                                     @RequestParam(required = false) Integer pageNum,
-                                                    @RequestParam(required = false) Integer pagesize
+                                                    @RequestParam(required = false) Integer pagesize,
+                                                  @RequestParam(required = false) Long beginTime,
+                                                  @RequestParam(required = false) Long endTime
+
     ) throws APIException{
 
         pageNum = pageNum == null?1:pageNum;
-        pagesize = pagesize == null?10:pagesize;
-       // List<ItenderRoom> roomList = itenderRoomService.findAll();
+        pagesize = pagesize == null?50:pagesize;//一次取完
+        //订房开始时间大于订单截止时间的房间才可用
+        logger.debug("==获取开始时间="+beginTime);
+        logger.debug("==获取结束时间="+endTime);
 
-        PageInfo<ItenderRoom> page = itenderRoomService.findPage(pageNum, pagesize);
+        if(beginTime == null){
+            beginTime = new Long(0L);
+        }
+
+        if(endTime == null){
+            endTime = new Long(0L);
+        }
+
+        List<ItenderBook> bookList = itenderBookService.findByBeginTime(beginTime,endTime);
+
+
+        PageInfo<ItenderRoom> page = null;
+
+        if(bookList!=null && bookList.size() > 0 ){
+
+            page = itenderRoomService.findPageByFilterBookRooms(pageNum, pagesize,bookList);
+        }else{
+             page = itenderRoomService.findPage(pageNum, pagesize);
+        }
 
 
 

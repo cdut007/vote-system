@@ -53,6 +53,12 @@ public class ItenderBookServiceImpl implements ItenderBookService {
 	}
 
 	@Override
+	public List<ItenderBook> findByBeginTime(long startTime,long endTime) throws APIException {
+		Example example = new Example(ItenderBook.class);
+		return itenderBookMapper.selectByExample(example);
+	}
+
+	@Override
 	public PageInfo<ItenderBook> findPage(Integer pageNum, Integer pagesize) throws APIException {
 		PageHelper.startPage(pageNum,pagesize);
 

@@ -1,5 +1,7 @@
 package com.itender.ms.service;
 
+import com.github.pagehelper.PageInfo;
+import com.itender.ms.domain.ItenderBook;
 import com.itender.ms.domain.ItenderDevice;
 import com.itender.ms.domain.ItenderRoom;
 import com.itender.ms.exception.APIException;
@@ -19,6 +21,9 @@ public interface ItenderRoomService extends ItenderServiceBase<ItenderRoom> {
      * @return
      */
     public ItenderRoom updateRoom(ItenderRoom room) throws APIException;
+
+
+    public PageInfo<ItenderRoom> findPageByFilterBookRooms(Integer pageNum, Integer pagesize , List<ItenderBook> bookList)throws APIException;
 
 
 

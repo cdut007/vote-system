@@ -2,6 +2,7 @@ package com.itender.ms.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.itender.ms.domain.ItenderBook;
 import com.itender.ms.domain.ItenderRoom;
 import com.itender.ms.exception.APIException;
 import com.itender.ms.mapper.ItenderRoomMapper;
@@ -55,6 +56,19 @@ public class ItenderRoomServiceImpl implements ItenderRoomService {
         Example example = new Example(ItenderRoom.class);
         List<ItenderRoom> itenderRoom = itenderRoomMapper.selectByExample(example);
         return new PageInfo<>(itenderRoom);
+	}
+
+	@Override
+	public PageInfo<ItenderRoom> findPageByFilterBookRooms(Integer pageNum, Integer pagesize , List<ItenderBook> bookList) throws APIException {
+		PageHelper.startPage(pageNum,pagesize);
+
+		Example example = new Example(ItenderRoom.class);
+
+		List<ItenderRoom> itenderRoom = itenderRoomMapper.selectByExample(example);
+
+
+
+		return new PageInfo<>(itenderRoom);
 	}
 
 	@Override
