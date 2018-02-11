@@ -24,6 +24,7 @@ layui.config({
     itenderUser:"itender_user",
     itenderLog:"itender_log",
     itenderRoom:"itender_room",
+    itenderBook:"itender_book",
     itenderDevice:"itender_device",
     itenderRole:"itender_role",
     itenderPrivilege:"itender_privilege",

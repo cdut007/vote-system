@@ -8,7 +8,6 @@ import com.itender.ms.convert.LayuiTableData;
 import com.itender.ms.convert.PageDataConvert;
 import com.itender.ms.domain.ItenderDevice;
 import com.itender.ms.domain.ItenderRoom;
-import com.itender.ms.enums.DeviceStatus;
 import com.itender.ms.service.ItenderDeviceService;
 import com.itender.ms.util.CommonUtility;
 import com.itender.ms.util.ViewUtil;
@@ -95,7 +94,7 @@ public class RoomController {
 
     @ApiOperation(value = "房间列表接口",notes = "用于查询所有房间信息")
     @RequestMapping(value = "/listRoom",method = RequestMethod.POST)
-    public ResponseEntity<LayuiTableData> logAll(HttpServletRequest request,
+    public ResponseEntity<LayuiTableData> roomAll(HttpServletRequest request,
                                                     @RequestParam(required = false) Integer pageNum,
                                                     @RequestParam(required = false) Integer pagesize
     ) throws APIException{

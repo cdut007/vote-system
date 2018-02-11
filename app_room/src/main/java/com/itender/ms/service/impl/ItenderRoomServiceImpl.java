@@ -45,7 +45,7 @@ public class ItenderRoomServiceImpl implements ItenderRoomService {
 
 	@Override
 	public List<ItenderRoom> findAll() throws APIException {
-		return null;
+		return itenderRoomMapper.selectAll();
 	}
 
 	@Override

@@ -3,6 +3,7 @@
     <span class="logo">综改区监督平台</span>
     <ul class="layui-nav no-border-radius layui-header">
         <li class="layui-nav-item"><a href="/dashboard">综改区监督平台</a></li>
+        <li class="layui-nav-item"><a href="/book">房间预订</a></li>
         <li class="layui-nav-item"><a href="/room">房间管理</a></li>
         <li class="layui-nav-item"><a href="/device">设备管理</a></li>
         <li class="layui-nav-item"><a href="/log">日志管理</a></li>
