@@ -123,6 +123,12 @@
         });
         form.on('submit(addBook)', function(data){
             var formData = data.field;
+
+            if(endTime - beginTime < 3600 * 1000 ){
+                layer.msg("预订时间一个小时以上");
+                return false;
+            }
+
             formData.beginTime = beginTime;
             formData.endTime = endTime;
             formData.roomId = "${itenderRoom.id!}";

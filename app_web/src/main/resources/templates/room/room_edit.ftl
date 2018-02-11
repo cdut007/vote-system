@@ -59,7 +59,7 @@
                 formData.deviceList.push(JSON.parse(formData.device));
             }else{
                 layer.msg("设备不能为空!");
-                return
+                return false;
             }
             itenderRoomModule.updateRoom(formData,function (res,status) {
                 if(status){
