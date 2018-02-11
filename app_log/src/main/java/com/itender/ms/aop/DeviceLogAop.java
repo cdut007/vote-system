@@ -56,4 +56,35 @@ public class DeviceLogAop {
 
         itenderLogService.add(itenderLog);
     }
+
+
+    @Pointcut("execution(public * com.itender.ms.controller.DeviceController.updateDevice(..))")
+    public void updateCut() {
+    }
+
+    @After("updateCut()")
+    public void afterUpdateDevice(JoinPoint joinPoint) throws APIException {
+        ItenderDevice device = null;
+        Object[] args = joinPoint.getArgs();
+        for (Object arg : args) {
+            if (arg instanceof ItenderDevice) {
+                device = (ItenderDevice) arg;
+            }
+        }
+
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+
+        ItenderLog itenderLog = AopUtil.initInfo(requestAttributes.getRequest());
+
+        if (device != null) {
+            itenderLog.setContent("更新设备:" + device.getName());
+        } else {
+            itenderLog.setContent("更新设备:设备名称丢失!");
+        }
+
+        itenderLogService.add(itenderLog);
+    }
+
+
+
 }
