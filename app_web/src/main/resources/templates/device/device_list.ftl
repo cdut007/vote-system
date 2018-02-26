@@ -48,7 +48,7 @@
                 {title: "设备名称", field: 'name'},
                 {title: "设备地址", field: 'ip'},
                 {title: "登录信息", field: 'account'},
-                {title: "设备状态", field: 'status'},
+                {title: "设备状态", field: 'statusLabel'},
                 {title: "维护电话", field: 'maintenancePhone'},
                 {fixed: 'right', align: 'center', toolbar: '#deviceTableTool'}
             ]],

@@ -61,7 +61,12 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">设备状态</label>
                     <div class="layui-input-inline">
-                        <input type="checkbox" checked="" name="status" lay-skin="switch" lay-filter="switchStatus" lay-text="正常|不可用">
+                         <#if itenderDevice.status=='normal'>
+                             <input type="checkbox" checked="" name="status" lay-skin="switch" lay-filter="switchStatus" lay-text="正常|损坏">
+                         <#else>
+                          <input type="checkbox"  name="status" lay-skin="switch" lay-filter="switchStatus" lay-text="正常|损坏">
+                         </#if>
+
                     </div>
                 </div>
 
@@ -87,6 +92,7 @@
         var form = layui.form;
         var layer = layui.layer;
         var itenderDeviceModule = layui.itenderDevice;
+        var status = "${itenderDevice.status!}";
 
         form.verify({
             model: function (value, item) {
@@ -106,16 +112,24 @@
 
         //监听指定开关
         form.on('switch(switchStatus)', function(data){
-            layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
-                offset: '6px'
-            });
-            layer.tips('更新状态：', data.othis)
+
+            if(this.checked){
+                status = 'normal';
+            }else{
+                status = 'unavailable';
+            }
+
+            // layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
+            //     offset: '6px'
+            // });
+
         });
 
 
         form.on('submit(updateDevice)', function(data){
             var formData = data.field;
             formData.id = "${itenderDevice.id!}";
+            formData.status = status;
             itenderDeviceModule.updateDevice(formData,function (res,status) {
                 if(status){
                     layer.closeAll('page'); //执行关闭

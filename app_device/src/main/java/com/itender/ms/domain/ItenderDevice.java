@@ -3,6 +3,7 @@ package com.itender.ms.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itender.ms.enums.DeviceStatus;
 
 import javax.persistence.*;
 import java.util.List;
@@ -56,6 +57,10 @@ public class ItenderDevice {
     private String roomId;//房间号
 
 
+    @Transient
+    private String statusLabel;//显示中文
+
+
     @JsonIgnore
     public String toJson() {
         ObjectMapper jsonMapper = new ObjectMapper();
@@ -68,6 +73,14 @@ public class ItenderDevice {
     }
 
 
+    public String getStatusLabel() {
+        if(DeviceStatus.normal.name().equals(status)){
+            statusLabel = "正常";
+        }else{
+            statusLabel = "损坏";
+        }
+        return statusLabel;
+    }
 
     public String getRoomId() {
         return roomId;
