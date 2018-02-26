@@ -197,9 +197,13 @@
                 {fixed: 'right', align: 'center',width:80, toolbar: '#bookTableTool'}
 
             ]],
+                where:{beginTime:beginTime,endTime:endTime},
+
             request: {
-                pageName: 'pageNum' //页码的参数名称，默认：page
-                , limitName: 'pagesize' //每页数据量的参数名，默认：limit
+                beginTime:'beginTime',
+                endTime:'endTime',
+                pageName: 'pageNum', //页码的参数名称，默认：page
+                limitName: 'pagesize' //每页数据量的参数名，默认：limit
             },
             response: {
                 statusName: 'statusCode' //数据状态的字段名称，默认：code
