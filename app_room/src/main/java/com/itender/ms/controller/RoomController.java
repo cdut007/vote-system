@@ -82,6 +82,18 @@ public class RoomController {
             room = itenderRoomService.findById(roomId);
         }
         request.setAttribute("itenderRoom",room);
+
+        List<ItenderDevice> bindDeviceList = null;
+        if(CommonUtility.isNonEmpty(roomId)){
+            try {
+                bindDeviceList = itenderDeviceService.getRoomDeviceListByRoomId(roomId);
+            } catch (APIException e) {
+                e.printStackTrace();
+            }
+        }
+
+        request.setAttribute("itenderDeviceList",bindDeviceList);
+
         try {
             request.setAttribute("availableDeviceList",itenderDeviceService.getAvailableDeviceList());
         } catch (APIException e) {

@@ -31,6 +31,8 @@ public interface ItenderDeviceService extends ItenderServiceBase<ItenderDevice> 
 
 	public List<ItenderDevice> getAvailableDeviceList() throws APIException;
 
+	public List<ItenderDevice> getRoomDeviceListByRoomId(String roomId) throws APIException;
+
 
 	public List<ItenderDevice> getRoomDeviceList() throws APIException;
 

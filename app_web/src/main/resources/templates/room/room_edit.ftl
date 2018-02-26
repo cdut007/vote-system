@@ -12,11 +12,16 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">设备名</label>
                 <div class="layui-input-inline">
-                    <select name="device" id="device"  lay-filter="device_select" lay-verify="required">
+
+                     <#list itenderDeviceList as usedDevice>
+                         <select name="device" id="device"  lay-filter="device_select" lay-verify="required">
+                             <option value='${usedDevice.toJson()}' selected>${usedDevice.name!}</option>
                             <#list availableDeviceList as device>
                                 <option value='${device.toJson()}'>${device.name!}</option>
                             </#list>
-                    </select>
+                         </select>
+                     </#list>
+
                 </div>
             </div>
 
@@ -55,6 +60,7 @@
             var formData = data.field;
             formData.deviceList = [];
             formData.id = "${itenderRoom.id!}";
+            console.log(formData.device);
             if(formData.device && formData.device.length>0){
                 formData.deviceList.push(JSON.parse(formData.device));
             }else{
@@ -73,7 +79,7 @@
         });
 
         form.on('select(device_select)', function(data){
-
+            console.log(data);
 
             return false;
         });

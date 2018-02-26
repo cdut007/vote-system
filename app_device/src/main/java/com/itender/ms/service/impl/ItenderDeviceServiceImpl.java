@@ -96,6 +96,23 @@ public class ItenderDeviceServiceImpl implements ItenderDeviceService {
 		return available;
 	}
 
+
+	@Override
+	public List<ItenderDevice> getRoomDeviceListByRoomId(String roomId) throws APIException {
+		List<ItenderDevice>  deviceList = itenderDeviceMapper.selectAll();
+		List<ItenderDevice> available = new ArrayList<>();
+		if(deviceList!=null && deviceList.size() > 0){
+			for (int i = 0; i < deviceList.size(); i++) {
+				ItenderDevice device = deviceList.get(i);
+				if(roomId.equals(device.getRoomId())){
+					available.add(device);
+				}
+
+			}
+		}
+		return available;
+	}
+
 	@Override
 	public List<ItenderDevice> getAvailableDeviceList() throws APIException {
 		List<ItenderDevice>  deviceList = itenderDeviceMapper.selectAll();
