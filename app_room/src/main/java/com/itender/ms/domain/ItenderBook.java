@@ -2,9 +2,7 @@ package com.itender.ms.domain;
 
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * 设备
@@ -172,11 +170,13 @@ public class ItenderBook {
                 ", bookOrganization='" + bookOrganization + '\'' +
                 ", industry='" + industry + '\'' +
                 ", room='" + room + '\'' +
+                ", roomId='" + roomId + '\'' +
                 ", beginTime=" + beginTime +
                 ", endTime=" + endTime +
                 ", bookUser='" + bookUser + '\'' +
                 ", bookUserMobile='" + bookUserMobile + '\'' +
                 ", status='" + status + '\'' +
+                ", bookTime='" + bookTime + '\'' +
                 '}';
     }
 }

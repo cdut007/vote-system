@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -54,8 +55,9 @@ public class ItenderBookServiceImpl implements ItenderBookService {
 
 	@Override
 	public List<ItenderBook> findByBeginTime(long startTime,long endTime) throws APIException {
-		Example example = new Example(ItenderBook.class);
-		return itenderBookMapper.selectByExample(example);
+
+		//搜索出在开始时间到结束时间期间有哪些房间被占用。
+		return itenderBookMapper.findBookRoomByTime(new Date(startTime),new Date(endTime));
 	}
 
 	@Override

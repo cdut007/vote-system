@@ -87,12 +87,14 @@
         var table = layui.table;
         var itenderBook = layui.itenderBook;
         var element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
-        var beginTime,endTime;
+        var beginDate = new Date();
+        var endDate = new Date(beginDate.getTime() + 8 * 3600 *1000);
+        var beginTime = beginDate.getTime(),endTime = endDate.getTime();
 
         layui.laydate.render({
             elem: '#begin_time'
             ,type: 'datetime'
-            ,value: new Date()
+            ,value:beginDate
             ,done: function(value, date){
                 var time = (new Date(value)).getTime();
                 beginTime = time;
@@ -104,11 +106,10 @@
         layui.laydate.render({
             elem: '#end_time'
             ,type: 'datetime'
-            ,value: new Date()
+            ,value: endDate
             ,done: function(value, date){
                 var time = (new Date(value)).getTime();
                 endTime = time;
-
                 //{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
             }
 
@@ -262,7 +263,7 @@
                 page: {
                     curr: 1 //重新从第 1 页开始
                 },
-                where:{beginTime:beginTime},
+                where:{beginTime:beginTime,endTime:endTime},
                 request: {
                     beginTime:'beginTime',
                     endTime:'endTime'

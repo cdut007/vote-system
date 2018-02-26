@@ -20,5 +20,14 @@
     </update>
 
 
+    <select id="filterAvaliableRoom" resultMap="itenderRoom">
+        select * from itender_room where id
+        NOT IN
+        <foreach collection="roomIds" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+
 
 </mapper>

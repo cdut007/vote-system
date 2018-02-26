@@ -13,7 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -54,19 +57,28 @@ public class ItenderRoomServiceImpl implements ItenderRoomService {
 		PageHelper.startPage(pageNum,pagesize);
 
         Example example = new Example(ItenderRoom.class);
+       // example.createCriteria().
         List<ItenderRoom> itenderRoom = itenderRoomMapper.selectByExample(example);
         return new PageInfo<>(itenderRoom);
 	}
 
 	@Override
 	public PageInfo<ItenderRoom> findPageByFilterBookRooms(Integer pageNum, Integer pagesize , List<ItenderBook> bookList) throws APIException {
-		PageHelper.startPage(pageNum,pagesize);
+		PageHelper.startPage(1,80);
+		Set<String> roomSet=new HashSet<String>();
+		for (int i = 0; i < bookList.size(); i++) {
+			roomSet.add(bookList.get(i).getRoomId());
+		}
+		logger.info("find bookList :"+bookList.toString());
 
-		Example example = new Example(ItenderRoom.class);
+		List<String> roomIds = new ArrayList<>(roomSet);
 
-		List<ItenderRoom> itenderRoom = itenderRoomMapper.selectByExample(example);
+		logger.info("find the roomIds :"+roomIds.toString() +" room size:"+roomIds.size());
 
 
+		List<ItenderRoom> itenderRoom = itenderRoomMapper.filterAvaliableRoom(roomIds);
+
+		logger.info("find the filter romm left size:"+itenderRoom.size());
 
 		return new PageInfo<>(itenderRoom);
 	}
