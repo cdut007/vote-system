@@ -9,16 +9,16 @@
                     </div>
                 </div>
 
-                <div class="layui-form-item">
-                    <label class="layui-form-label">设备名</label>
-                    <div class="layui-input-inline">
-                        <select name="device" id="device"  lay-filter="device_select" lay-verify="required">
-                            <#list availableDeviceList as device>
-                                <option value='${device.toJson()}'>${device.name!}</option>
-                            </#list>
-                        </select>
-                    </div>
-                </div>
+
+
+                 <#list availableDeviceList as device>
+                          <div class="layui-form-item">
+                              <label class="layui-form-label">可选设备</label>
+                              <div class="layui-input-inline">
+                                  <input type="checkbox" class="device" name="${device.id!}" value='${device.toJson()}' title="${device.name!}" lay-skin="primary">
+                              </div>
+                          </div>
+                 </#list>
 
 
 
@@ -54,11 +54,12 @@
         form.on('submit(addRoom)', function(data){
             var formData = data.field;
             formData.deviceList = [];
-            if(formData.device && formData.device.length>0){
-                formData.deviceList.push(JSON.parse(formData.device));
-            }else{
-                layer.msg("设备不能为空!");
-                return false;
+            var  items = document.querySelectorAll('.device');
+            for(var i=0;i<items.length;i++){
+                if(items[i].checked){
+
+                    formData.deviceList.push(JSON.parse(items[i].value));
+                }
             }
 
             itenderRoom.addRoom(formData,function (res,status) {

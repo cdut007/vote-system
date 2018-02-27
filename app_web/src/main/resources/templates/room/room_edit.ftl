@@ -9,21 +9,27 @@
                 </div>
             </div>
 
-            <div class="layui-form-item">
-                <label class="layui-form-label">设备名</label>
-                <div class="layui-input-inline">
 
                      <#list itenderDeviceList as usedDevice>
-                         <select name="device" id="device"  lay-filter="device_select" lay-verify="required">
-                             <option value='${usedDevice.toJson()}' selected>${usedDevice.name!}</option>
-                            <#list availableDeviceList as device>
-                                <option value='${device.toJson()}'>${device.name!}</option>
-                            </#list>
-                         </select>
+                      <div class="layui-form-item">
+                         <label class="layui-form-label">已选设备</label>
+                         <div class="layui-input-inline">
+
+                         <input type="checkbox"  class="device" name="${usedDevice.id!}" value='${usedDevice.toJson()}' title="${usedDevice.name!}" lay-skin="primary" checked>
+                         </div>
+                      </div>
                      </#list>
 
-                </div>
-            </div>
+              <#list availableDeviceList as device>
+                          <div class="layui-form-item">
+                              <label class="layui-form-label">可选设备</label>
+                              <div class="layui-input-inline">
+                                  <input type="checkbox" class="device" name="${device.id!}" value='${device.toJson()}' title="${device.name!}" lay-skin="primary">
+                              </div>
+                          </div>
+              </#list>
+
+
 
 
 
@@ -60,13 +66,16 @@
             var formData = data.field;
             formData.deviceList = [];
             formData.id = "${itenderRoom.id!}";
-            console.log(formData.device);
-            if(formData.device && formData.device.length>0){
-                formData.deviceList.push(JSON.parse(formData.device));
-            }else{
-                layer.msg("设备不能为空!");
-                return false;
+            var  items = document.querySelectorAll('.device');
+            for(var i=0;i<items.length;i++){
+                if(items[i].checked){
+
+                    formData.deviceList.push(JSON.parse(items[i].value));
+                }
             }
+
+
+
             itenderRoomModule.updateRoom(formData,function (res,status) {
                 if(status){
                     layer.closeAll('page'); //执行关闭
