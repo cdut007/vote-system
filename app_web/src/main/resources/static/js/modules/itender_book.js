@@ -8,6 +8,35 @@ layui.define(function (exports) {
 
     var BookObj = {
 
+        downloadBook:function (data,callback) {
+            var syncServer = function (data, callback) {
+                var index = layui.layer.load(2);
+                window.location.href ="/book/downloadRecord?beginTime="+data.beginTime+"&endTime="+data.endTime;
+                layui.layer.close(index);
+                // $.ajax({
+                //     url: "/book/downloadRecord",
+                //     type: "GET",
+                //     data: {beginTime:data.beginTime,endTime:data.endTime},
+                //     success: function (res) {
+                //         layui.layer.close(index);
+                //         if(res.status){
+                //             callback(res, true);
+                //         }else{
+                //             callback(res.msg,false);
+                //         }
+                //     },
+                //     error: function (xmlHttpReq, error, ex) {
+                //         layui.layer.close(index);
+                //     }
+                // })
+            }
+            syncServer(data,function (res,status) {
+                if (typeof callback == "function") {
+                    callback(res, status);
+                }
+            });
+        },
+
 
         addNewBook: function (data,callback) {
             var syncServer = function (data, callback) {
@@ -139,6 +168,10 @@ layui.define(function (exports) {
         addBook: function (data,callback) {
             console.log('add book : '+JSON.stringify(data));
             BookObj.addNewBook(data,callback);
+        },
+        downloadBook: function (data,callback) {
+            console.log('downloadBook : '+JSON.stringify(data));
+            BookObj.downloadBook(data,callback);
         }
         /**
          * 打开弹出层

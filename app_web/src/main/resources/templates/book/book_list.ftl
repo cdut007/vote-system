@@ -16,6 +16,27 @@
     <div class="layui-tab-content">
         <div class="layui-tab-item layui-show layui-container margin-top">
 
+            <div class="searchTable">
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">开始时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" id="record_begin_time" placeholder="">
+                    </div>
+
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">结束时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" id="record_end_time" placeholder="">
+                    </div>
+                </div>
+
+                <button class="layui-btn" data-type="reload" id="download_record">下载报表</button>
+            </div>
+
+
             <div class="layui-row">
                 <div class="layui-col-md-12">
                     <table class="table table-bordered table-hover" id="bookRecordTable" lay-filter="bookRecordTable">
@@ -100,11 +121,38 @@
 <script type="text/javascript">
     layui.use(['element','table', 'util', 'itenderBook','laydate'], function () {
         var table = layui.table;
-        var itenderBook = layui.itenderBook;
+        var itenderBookModule = layui.itenderBook;
         var element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
         var beginDate = new Date();
         var endDate = new Date(beginDate.getTime() + 8 * 3600 *1000);
         var beginTime = beginDate.getTime(),endTime = endDate.getTime();
+        var recordBeginTime = beginDate.getTime(),recordEndTime = endDate.getTime();
+
+
+        layui.laydate.render({
+            elem: '#record_begin_time'
+            ,type: 'datetime'
+            ,value:beginDate
+            ,done: function(value, date){
+                var time = (new Date(value)).getTime();
+                recordBeginTime = time;
+
+                //{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+            }
+        });
+
+        layui.laydate.render({
+            elem: '#record_end_time'
+            ,type: 'datetime'
+            ,value: endDate
+            ,done: function(value, date){
+                var time = (new Date(value)).getTime();
+                recordEndTime = time;
+                //{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+            }
+
+        });
+
 
         layui.laydate.render({
             elem: '#begin_time'
@@ -186,7 +234,7 @@
 
             var bookId = data.id;
             if (layEvent === 'cancelBook') { //编辑
-                itenderBook.cancelBook(bookId,function (res,status) {
+                itenderBookModule.cancelBook(bookId,function (res,status) {
                     if(status){
                         data.status = 'cancel';
                         recordTable.reload();
@@ -257,12 +305,43 @@
                     endTime:endTime,
                     queryUrl: '/book/add_page'
                 }
-                itenderBook.openModal(data,function (layerDom,index) {
+                itenderBookModule.openModal(data,function (layerDom,index) {
                     currentTable.reload();
                 });
             }
 
         });
+
+
+
+        $('#download_record').click(function () {
+            if(!beginTime){
+                layer.msg("请选择开始日期!");
+                return ;
+            }
+
+            if(!endTime){
+                layer.msg("请选择结束日期!");
+                return ;
+            }
+
+            if(endTime < beginTime){
+                layer.msg("结束日期不能早于开始日期");
+                return ;
+            }
+
+            var data = {beginTime:recordBeginTime,endTime:recordEndTime}
+            itenderBookModule.downloadBook(data,function (res,status) {
+                if(status){
+                    layer.closeAll('page'); //执行关闭
+                    layer.msg("下载成功!");
+                }else{
+                    layer.msg("下载失败!");
+                }
+            });
+
+        });
+
 
         $('#search_room').click(function () {
             if(!beginTime){

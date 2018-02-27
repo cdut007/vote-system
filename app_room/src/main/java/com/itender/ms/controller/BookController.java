@@ -3,10 +3,7 @@ package com.itender.ms.controller;
 import com.github.pagehelper.PageInfo;
 import com.itender.ms.convert.LayuiTableData;
 import com.itender.ms.convert.PageDataConvert;
-import com.itender.ms.domain.ItenderBook;
-import com.itender.ms.domain.ItenderDevice;
-import com.itender.ms.domain.ItenderIndustry;
-import com.itender.ms.domain.ItenderRoom;
+import com.itender.ms.domain.*;
 import com.itender.ms.enums.BookStatus;
 import com.itender.ms.exception.APIException;
 import com.itender.ms.service.ItenderBookService;
@@ -18,6 +15,12 @@ import com.itender.ms.util.ViewUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +35,8 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -197,6 +202,137 @@ public class BookController {
         }
         return ResponseEntity.ok(result);
     }
+
+
+
+
+    @ApiOperation(value = "下载报表接口",notes = "用于下载报表预订房间信息")
+    @RequestMapping(value = "/downloadRecord",method = RequestMethod.GET)
+    public void  getExcel (HttpServletRequest request,HttpServletResponse response)
+     throws APIException{
+
+        String beginTime = request.getParameter("beginTime");
+        String endTime = request.getParameter("endTime");
+
+        List<ItenderBook> bookList = itenderBookService.findAll();
+
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet =wb.createSheet("获取房间预订表格");
+        HSSFRow row = null;
+
+        row = sheet.createRow(0);
+        row.setHeight((short)(26.25*20));
+        row.createCell(0).setCellValue("房间预订信息列表");
+        row.getCell(0).setCellStyle(getStyle(wb,0));//设置样式
+        for(int i = 1;i <= 3;i++){
+            row.createCell(i).setCellStyle(getStyle(wb,0));
+        }
+        CellRangeAddress rowRegion = new CellRangeAddress(0,0,0,3);
+        sheet.addMergedRegion(rowRegion);
+
+        CellRangeAddress columnRegion = new CellRangeAddress(1,4,0,0);
+        sheet.addMergedRegion(columnRegion);
+
+        row = sheet.createRow(1);
+        row.createCell(0).setCellStyle(getStyle(wb,3));
+        row.setHeight((short)(22.50*20));
+        row.createCell(1).setCellValue("房间Id");
+        row.createCell(2).setCellValue("房间名");
+        row.createCell(3).setCellValue("预定时间");
+        for(int i = 1;i <= 3;i++){
+            row.getCell(i).setCellStyle(getStyle(wb,1));
+        }
+
+        for(int i = 0;i<bookList.size();i++){
+            row = sheet.createRow(i+2);
+            ItenderBook book = bookList.get(i);
+            row.createCell(1).setCellValue(book.getId());
+            row.createCell(2).setCellValue(book.getRoom());
+            row.createCell(3).setCellValue(book.getBookTime());
+            for(int j = 1;j <= 3;j++){
+                row.getCell(j).setCellStyle(getStyle(wb,2));
+            }
+        }
+
+        //默认行高
+        sheet.setDefaultRowHeight((short)(16.5*20));
+        //列宽自适应
+        for(int i=0;i<=13;i++){
+            sheet.autoSizeColumn(i);
+        }
+
+        response.setContentType("application/vnd.ms-excel;charset=utf-8");
+        response.setHeader("Content-disposition","attachment;filename="+new String("room_record")+".xls");
+
+        OutputStream os = null;
+        try {
+            os = response.getOutputStream();
+            wb.write(os);
+            os.flush();
+            os.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        Map<String,Object> result = new HashMap<>();
+        logger.debug("==生成报表完毕==");
+        result.put("status", true);
+        result.put("msg", "生成报表完毕！");
+       // return ResponseEntity.ok(result);
+
+    }
+
+    /**
+     * 获取样式
+     * @param hssfWorkbook
+     * @param styleNum
+     * @return
+     */
+    public HSSFCellStyle getStyle(HSSFWorkbook hssfWorkbook, Integer styleNum){
+        HSSFCellStyle style = hssfWorkbook.createCellStyle();
+        style.setBorderRight(BorderStyle.THIN);//右边框
+        style.setBorderBottom(BorderStyle.THIN);//下边框
+
+        HSSFFont font = hssfWorkbook.createFont();
+        font.setFontName("微软雅黑");//设置字体为微软雅黑
+
+        HSSFPalette palette = hssfWorkbook.getCustomPalette();//拿到palette颜色板,可以根据需要设置颜色
+        switch (styleNum){
+            case(0):{
+                style.setAlignment(HorizontalAlignment.CENTER_SELECTION);//跨列居中
+                font.setBold(true);//粗体
+                font.setFontHeightInPoints((short) 14);//字体大小
+                style.setFont(font);
+                palette.setColorAtIndex(HSSFColor.BLUE.index,(byte)184,(byte)204,(byte)228);//替换颜色板中的颜色
+                style.setFillForegroundColor(HSSFColor.BLUE.index);
+                style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            }
+            break;
+            case(1):{
+                font.setBold(true);//粗体
+                font.setFontHeightInPoints((short) 11);//字体大小
+                style.setFont(font);
+            }
+            break;
+            case(2):{
+                font.setFontHeightInPoints((short)10);
+                style.setFont(font);
+            }
+            break;
+            case(3):{
+                style.setFont(font);
+
+                palette.setColorAtIndex(HSSFColor.GREEN.index,(byte)0,(byte)32,(byte)96);//替换颜色板中的颜色
+                style.setFillForegroundColor(HSSFColor.GREEN.index);
+                style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            }
+            break;
+        }
+
+        return style;
+    }
+
 
 
 

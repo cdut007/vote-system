@@ -44,6 +44,7 @@ public class ItenderBookServiceImpl implements ItenderBookService {
 
 	@Override
 	public ItenderBook add(ItenderBook itenderBook) throws APIException {
+
 		int rows = itenderBookMapper.insertSelective(itenderBook);
 
 		return rows == 0?null:itenderBook;
@@ -51,7 +52,7 @@ public class ItenderBookServiceImpl implements ItenderBookService {
 
 	@Override
 	public List<ItenderBook> findAll() throws APIException {
-		return null;
+		return itenderBookMapper.selectAll();
 	}
 
 	@Override
@@ -66,6 +67,7 @@ public class ItenderBookServiceImpl implements ItenderBookService {
 		PageHelper.startPage(pageNum,pagesize);
 
         Example example = new Example(ItenderBook.class);
+		example.setOrderByClause("begin_time desc");
         List<ItenderBook> itenderBook = itenderBookMapper.selectByExample(example);
         itenderBook  = checkBookListStatus(itenderBook);
         return new PageInfo<>(itenderBook);
