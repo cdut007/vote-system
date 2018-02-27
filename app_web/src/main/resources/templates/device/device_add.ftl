@@ -47,7 +47,7 @@
 
 
                     <div class="layui-input-inline">
-                        <input type="password" id="password" name="password" lay-verify="required" lay-verType="tips" placeholder="设备密码" autocomplete="off" class="layui-input">
+                        <input type="text" id="password" name="password" lay-verify="required" lay-verType="tips" placeholder="设备密码" autocomplete="off" class="layui-input">
                     </div>
                 </div>
 

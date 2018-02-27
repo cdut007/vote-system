@@ -131,13 +131,13 @@
             url: "/book/listBookRecord",
             method: "POST",
             cols: [[
-                {title: '序号',width:80,templet: '#indexTpl'},
-                {title: "房间名", width:80,field: 'room'},
-                {title: "预订单位", width:160,field: 'bookOrganization'},
-                {title: "预订事项", width:160,field: 'content'},
-                {title: "预订类型", width:80,field: 'industry'},
-                {title: "预订时间", width:80,field: 'bookTime'},
-                {fixed: 'right', align: 'center',width:80, toolbar: '#bookRecordTableTool'}
+                {title: '序号',templet: '#indexTpl'},
+                {title: "房间名", field: 'room'},
+                {title: "预订单位", field: 'bookOrganization'},
+                {title: "预订事项", field: 'content'},
+                {title: "预订类型", field: 'industry'},
+                {title: "预订时间", field: 'bookTime'},
+                {fixed: 'right', align: 'center',toolbar: '#bookRecordTableTool'}
 
             ]],
             request: {
@@ -173,7 +173,7 @@
                 itenderBook.cancelBook(bookId,function (res,status) {
                     if(status){
                         data.status = 'cancel';
-                        currentTable.reload();
+                        recordTable.reload();
                         layui.layer.msg("取消成功！");
                     }else{
                         layui.layer.msg("操作失败！");
@@ -192,9 +192,9 @@
             method: "POST",
             id: 'bookReload',
             cols: [[
-                {title: '序号',width:80,templet: '#indexTpl'},
-                {title: "房间名", width:80,field: 'name'},
-                {fixed: 'right', align: 'center',width:80, toolbar: '#bookTableTool'}
+                {title: '序号',width:120,templet: '#indexTpl'},
+                {title: "房间名", width:400,field: 'name'},
+                {fixed: 'right', width:120,align: 'center',toolbar: '#bookTableTool'}
 
             ]],
                 where:{beginTime:beginTime,endTime:endTime},
