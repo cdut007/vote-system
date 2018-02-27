@@ -126,13 +126,16 @@
         var beginDate = new Date();
         var endDate = new Date(beginDate.getTime() + 8 * 3600 *1000);
         var beginTime = beginDate.getTime(),endTime = endDate.getTime();
-        var recordBeginTime = beginDate.getTime(),recordEndTime = endDate.getTime();
+        var record_beginDate = new Date();
+        var record_endDate = new Date(record_beginDate.getTime() + 30*24 * 3600 *1000);
+
+        var recordBeginTime = record_beginDate.getTime(),recordEndTime = record_endDate.getTime();
 
 
         layui.laydate.render({
             elem: '#record_begin_time'
             ,type: 'datetime'
-            ,value:beginDate
+            ,value:record_beginDate
             ,done: function(value, date){
                 var time = (new Date(value)).getTime();
                 recordBeginTime = time;
@@ -144,7 +147,7 @@
         layui.laydate.render({
             elem: '#record_end_time'
             ,type: 'datetime'
-            ,value: endDate
+            ,value: record_endDate
             ,done: function(value, date){
                 var time = (new Date(value)).getTime();
                 recordEndTime = time;
@@ -201,6 +204,8 @@
                 {title: "预订事项", field: 'content'},
                 {title: "预订类型", field: 'industry'},
                 {title: "预订时间", field: 'bookTime'},
+                {title: "创建时间", field: 'createTimeStr'},
+
                 {fixed: 'right', align: 'center',toolbar: '#bookRecordTableTool'}
 
             ]],

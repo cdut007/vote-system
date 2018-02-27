@@ -40,6 +40,9 @@ public class ItenderBook {
     @Column(name="end_time")
     private Date endTime;//预订结束时间
 
+    @Column(name="create_time")
+    private Date createTime;//创建时间
+
 
 
     @Column(name="book_user")
@@ -79,10 +82,30 @@ public class ItenderBook {
     }
 
     @Transient
+    private  String createTimeStr;
+
+    public String getCreateTimeStr() {
+        try{
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            createTimeStr = formatter.format(createTime);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return  createTimeStr;
+    }
+
+    @Transient
     private  String bookTime;//预订信息
 
 
+    public Date getCreateTime() {
+        return createTime;
+    }
 
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
 
     public String getId() {
         return id;

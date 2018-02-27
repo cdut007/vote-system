@@ -14,7 +14,7 @@
         <result column="book_organization" javaType="STRING" property="bookOrganization"></result>
         <result column="room_id" javaType="STRING" property="roomId"></result>
         <result column="status" javaType="STRING" property="status"></result>
-        <result column="create_time" javaType="STRING" property="createTime"></result>
+        <result column="create_time" javaType="DATE" property="createTime"></result>
     </resultMap>
 
     <select id="findBookRoomByTime"
