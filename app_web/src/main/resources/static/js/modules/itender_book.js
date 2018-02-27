@@ -83,10 +83,11 @@ layui.define(function (exports) {
         openModal: function (data,callback) {
             var layer = layui.layer;
             var synServer = function (data,callback) {
+
                 $.ajax({
                     url: data.queryUrl,
                     type: "GET",
-                    data: {id: data.queryId},
+                    data: {id: data.queryId,beginTime:data.beginTime,endTime:data.endTime},
                     success: function (res) {
                         var isJson = BookObj.isJsonString(res);
                         if(isJson){
@@ -145,7 +146,7 @@ layui.define(function (exports) {
          * @param callback
          */
         ,openModal: function (data,callback) {
-            console.log(data);
+            console.log('open book modal dialog:'+JSON.stringify(data));
             BookObj.openModal(data,callback);
         }
 

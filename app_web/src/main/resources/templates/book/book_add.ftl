@@ -37,7 +37,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">开始时间</label>
                     <div class="layui-input-inline">
-                        <input lay-verify="required" type="text" class="layui-input" id="start_date" placeholder="">
+                        <input lay-verify="required"  type="text" class="layui-input" id="start_date" placeholder="">
                     </div>
                 </div>
 
@@ -83,13 +83,15 @@
         var form = layui.form;
         var layer = layui.layer;
         var itenderBookModule = layui.itenderBook;
-        var beginTime ;
-        var endTime ;
+        var beginTime =parseInt("${beginTime!}");
+        var endTime =parseInt("${endTime!}");
+
         layui.laydate.render({
             elem: '#start_date'
             ,type: 'datetime'
-            // ,min: '2017-8-11 12:30:00'
-            // ,max: '2017-8-18 12:30:00'
+            ,value: new Date(beginTime)
+             ,min: beginTime
+             ,max: endTime
             ,done: function(value, date){
                 var time = (new Date(value)).getTime();
                 beginTime = time;
@@ -101,8 +103,9 @@
         layui.laydate.render({
             elem: '#end_date'
             ,type: 'datetime'
-            // ,min: '2017-8-11 12:30:00'
-            // ,max: '2017-8-18 12:30:00'
+            ,value: new Date(endTime)
+            ,min: beginTime
+            ,max: endTime
             ,done: function(value, date){
                 var time = (new Date(value)).getTime();
                 endTime = time;

@@ -76,9 +76,24 @@
 
     {{#  if(d.status === 'cancel'){ }}
     <span style="color: #F581B1;">{{ '已取消' }}</span>
-    {{#  } else { }}
-    <a class="layui-btn layui-btn-xs" lay-event="cancelBook">取消预订</a>
+
     {{#  } }}
+
+    {{#  if(d.status === 'occupy'){ }}
+    <span style="color: #00F7DE;">{{ '使用中' }}</span>
+
+    {{#  } }}
+
+    {{#  if(d.status === 'expired'){ }}
+    <span style="color: #e8e8e8;">{{ '已完成' }}</span>
+
+    {{#  } }}
+
+    {{#  if(d.status === 'ordered'){ }}
+    <a class="layui-btn layui-btn-xs" lay-event="cancelBook">取消预订</a>
+
+    {{#  } }}
+
 
 </script>
 
@@ -118,6 +133,7 @@
 
         element.on('tab(booktab)', function(elem){
             if(elem.index == 0){
+                recordTable.reload();
 
             }else{
 
@@ -230,13 +246,15 @@
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
 
             var bookId = data.id;
-            if (layEvent === 'book') { //编辑
+            if (layEvent === 'book') { //预订
                 var data = {
                     title: '房间预订',//标题
                     area: 'auto',//宽高
                     closeBtn: 1,//关闭按钮
                     shadeClose: true,//是否点击遮罩关闭
                     queryId: bookId,
+                    beginTime:beginTime,
+                    endTime:endTime,
                     queryUrl: '/book/add_page'
                 }
                 itenderBook.openModal(data,function (layerDom,index) {

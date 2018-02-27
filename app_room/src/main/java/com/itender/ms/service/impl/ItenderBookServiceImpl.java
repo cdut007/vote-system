@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class ItenderBookServiceImpl implements ItenderBookService {
 	public List<ItenderBook> findByBeginTime(long startTime,long endTime) throws APIException {
 
 		//搜索出在开始时间到结束时间期间有哪些房间被占用。
-		return itenderBookMapper.findBookRoomByTime(new Date(startTime),new Date(endTime));
+		return checkBookListStatus(itenderBookMapper.findBookRoomByTime(new Date(startTime),new Date(endTime)));
 	}
 
 	@Override
@@ -66,6 +67,7 @@ public class ItenderBookServiceImpl implements ItenderBookService {
 
         Example example = new Example(ItenderBook.class);
         List<ItenderBook> itenderBook = itenderBookMapper.selectByExample(example);
+        itenderBook  = checkBookListStatus(itenderBook);
         return new PageInfo<>(itenderBook);
 	}
 
@@ -73,12 +75,13 @@ public class ItenderBookServiceImpl implements ItenderBookService {
 	public Integer deleteById(String id) {
 		ItenderBook itenderBook = new ItenderBook();
 		itenderBook.setId(id);
+		itenderBook.setStatus(BookStatus.cancel.name());
 		return itenderBookMapper.delete(itenderBook);
 	}
 
 	@Override
 	public ItenderBook findById(String id) {
-		return itenderBookMapper.selectByPrimaryKey(id);
+		return checkBookStatus(itenderBookMapper.selectByPrimaryKey(id));
 	}
 
 
@@ -91,6 +94,37 @@ public class ItenderBookServiceImpl implements ItenderBookService {
 
 		itenderBookMapper.updateByPrimaryKey(book);
 
-		return book;
+		return checkBookStatus(book);
+	}
+
+
+	private  List<ItenderBook> checkBookListStatus(List<ItenderBook> itenderBookList){
+		if(itenderBookList!=null && !itenderBookList.isEmpty()){
+			int size = itenderBookList.size();
+			List<ItenderBook> newBookList = new ArrayList<>();
+			for (int i = 0; i < size; i++) {
+				newBookList.add(checkBookStatus(itenderBookList.get(i)));
+			}
+			return  newBookList;
+		}
+		return  itenderBookList;
+	}
+	private ItenderBook checkBookStatus(ItenderBook itenderBook){
+		if(itenderBook!=null && BookStatus.ordered.name().equals(itenderBook.getStatus())){
+			//check time
+			Date bookStartDate = itenderBook.getBeginTime();
+			Date bookEndDate = itenderBook.getEndTime();
+			long currentTime = System.currentTimeMillis();
+			if(bookStartDate.getTime() <= currentTime && bookEndDate.getTime() > currentTime){
+				itenderBook.setStatus(BookStatus.occupy.name());
+				itenderBookMapper.updateByPrimaryKey(itenderBook);
+			}else if(bookEndDate.getTime() <= currentTime){
+				//expired
+				itenderBook.setStatus(BookStatus.expired.name());
+				itenderBookMapper.updateByPrimaryKey(itenderBook);
+			}
+		}
+
+		return  itenderBook;
 	}
 }

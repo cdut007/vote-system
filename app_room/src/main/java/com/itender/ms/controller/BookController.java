@@ -79,6 +79,10 @@ public class BookController {
         if(CommonUtility.isNonEmpty(roomId)){
             room = itenderRoomService.findById(roomId);
         }
+        String beginTime = request.getParameter("beginTime");
+        String endTime = request.getParameter("endTime");
+        request.setAttribute("beginTime",beginTime);
+        request.setAttribute("endTime",endTime);
         request.setAttribute("itenderRoom",room);
 
         try {
