@@ -54,6 +54,7 @@ public class ItenderLogServiceImpl implements ItenderLogService {
 		PageHelper.startPage(pageNum,pagesize);
 
         Example example = new Example(ItenderLog.class);
+		example.setOrderByClause("start_time desc");
         List<ItenderLog> itenderLog = itenderLogMapper.selectByExample(example);
         return new PageInfo<>(itenderLog);
 	}

@@ -2,6 +2,7 @@ package com.itender.ms.domain;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,6 +24,17 @@ public class ItenderRoom {
     @Column(name="description")
     private String description;//房间描述
 
+    @Column(name="create_time")
+    private Date createTime;//创建时间
+
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
 
 
 

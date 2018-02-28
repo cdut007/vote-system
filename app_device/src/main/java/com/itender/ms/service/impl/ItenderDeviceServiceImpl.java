@@ -144,6 +144,7 @@ public class ItenderDeviceServiceImpl implements ItenderDeviceService {
 
 	@Override
 	public ItenderDevice add(ItenderDevice device) throws APIException {
+		device.setCreateTime(new Date(System.currentTimeMillis()));
 		int rows = itenderDeviceMapper.insertSelective(device);
 
 		return rows == 0?null:device;
@@ -159,6 +160,7 @@ public class ItenderDeviceServiceImpl implements ItenderDeviceService {
 		PageHelper.startPage(pageNum,pagesize);
 
         Example example = new Example(ItenderDevice.class);
+		example.setOrderByClause("create_time desc");
         List<ItenderDevice> itenderDevice = itenderDeviceMapper.selectByExample(example);
         return new PageInfo<>(itenderDevice);
 	}

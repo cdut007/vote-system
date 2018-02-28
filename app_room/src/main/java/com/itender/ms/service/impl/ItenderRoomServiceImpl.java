@@ -13,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 /**
@@ -42,6 +39,7 @@ public class ItenderRoomServiceImpl implements ItenderRoomService {
 
 	@Override
 	public ItenderRoom add(ItenderRoom itenderRoom) throws APIException {
+		itenderRoom.setCreateTime(new Date(System.currentTimeMillis()));
 		int rows = itenderRoomMapper.insertSelective(itenderRoom);
 
 		return rows == 0?null:itenderRoom;
@@ -57,7 +55,7 @@ public class ItenderRoomServiceImpl implements ItenderRoomService {
 		PageHelper.startPage(pageNum,pagesize);
 
         Example example = new Example(ItenderRoom.class);
-       // example.createCriteria().
+		example.setOrderByClause("create_time desc");
         List<ItenderRoom> itenderRoom = itenderRoomMapper.selectByExample(example);
         return new PageInfo<>(itenderRoom);
 	}

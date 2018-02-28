@@ -12,6 +12,7 @@
         <result column="status" javaType="STRING" property="status"></result>
         <result column="maintenance_phone" javaType="STRING" property="maintenancePhone"></result>
 		<result column="room_id" javaType="STRING" property="roomId"></result>
+		<result column="create_time" javaType="DATE" property="createTime"></result>
 
     </resultMap>
 

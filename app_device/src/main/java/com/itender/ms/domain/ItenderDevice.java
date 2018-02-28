@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itender.ms.enums.DeviceStatus;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -56,6 +57,12 @@ public class ItenderDevice {
     @Column(name="room_id")
     private String roomId;//房间号
 
+    @Column(name="create_time")
+    private Date createTime;//创建时间
+
+
+
+
 
     @Transient
     private String statusLabel;//显示中文
@@ -80,6 +87,15 @@ public class ItenderDevice {
             statusLabel = "损坏";
         }
         return statusLabel;
+    }
+
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
     public String getRoomId() {

@@ -6,6 +6,7 @@
         <result column="name" javaType="STRING" property="name"></result>
         <result column="description" javaType="STRING" property="description"></result>
         <result column="level" javaType="STRING" property="level"></result>
+        <result column="create_time" javaType="DATE" property="createTime"></result>
 
 
     </resultMap>
@@ -26,6 +27,7 @@
         <foreach collection="roomIds" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
+
     </select>
 
 
