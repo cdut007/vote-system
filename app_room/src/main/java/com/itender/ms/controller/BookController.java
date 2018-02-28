@@ -169,6 +169,22 @@ public class BookController {
     public ResponseEntity<Map<String,Object>> addBook(HttpServletRequest request,
                                                         @ApiParam(name = "name",value = "预订房间",required = true) @RequestBody ItenderBook book) throws APIException{
         Map<String,Object> result = new HashMap<>();
+        //first check book
+        List<ItenderBook> bookList = itenderBookService.findByBeginTime(book.getBeginTime().getTime(),book.getEndTime().getTime());
+        if(bookList!=null && bookList.size() > 0 ){
+            for (int i = 0; i < bookList.size(); i++) {
+                if(book.getRoomId()!=null && book.getRoomId().equals(bookList.get(i).getRoomId())){
+
+                    result.put("status", false);
+                    result.put("msg", "该时间段已经被预订，请重新选择时间！");
+                    result.put("code", "-1002");
+                    result.put("data", book);
+                    return ResponseEntity.ok(result);
+                }
+            }
+        }
+
+
         book.setStatus(BookStatus.ordered.name());
         book = itenderBookService.add(book);
 

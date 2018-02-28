@@ -72,7 +72,7 @@
 
             <div class="layui-row">
                 <div class="layui-col-md-12">
-                    <table class="table table-bordered table-hover" id="bookTable" lay-filter="bookTable">
+                    <table class="table table-bordered table-hover"  id="bookTable" lay-filter="bookTable">
                     </table>
                 </div>
             </div>
@@ -118,18 +118,54 @@
 
 </script>
 
+
+<script type="text/html" id="beginTime">
+    {{ new Date(beginTime).format("yyyy-MM-dd hh:mm:ss") }}
+</script>
+
+<script type="text/html" id="endTime">
+    {{ new Date(endTime).format("yyyy-MM-dd hh:mm:ss") }}
+</script>
+
+
 <script type="text/javascript">
+
+    Date.prototype.format = function (format) {
+        var args = {
+            "M+": this.getMonth() + 1,
+            "d+": this.getDate(),
+            "h+": this.getHours(),
+            "m+": this.getMinutes(),
+            "s+": this.getSeconds(),
+            "q+": Math.floor((this.getMonth() + 3) / 3),  //quarter
+            "S": this.getMilliseconds()
+        };
+        if (/(y+)/.test(format))
+            format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var i in args) {
+            var n = args[i];
+            if (new RegExp("(" + i + ")").test(format))
+                format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? n : ("00" + n).substr(("" + n).length));
+        }
+        return format;
+    };
+
+
+    var beginDate = new Date();
+    var endDate = new Date(beginDate.getTime() + 8 * 3600 *1000);
+    var beginTime = beginDate.getTime(),endTime = endDate.getTime();
+
     layui.use(['element','table', 'util', 'itenderBook','laydate'], function () {
         var table = layui.table;
         var itenderBookModule = layui.itenderBook;
         var element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
-        var beginDate = new Date();
-        var endDate = new Date(beginDate.getTime() + 8 * 3600 *1000);
-        var beginTime = beginDate.getTime(),endTime = endDate.getTime();
+
         var record_beginDate = new Date(beginDate.getTime() - 30*24 * 3600 *1000);
         var record_endDate = new Date(record_beginDate.getTime() + 30*24 * 3600 *1000);
 
         var recordBeginTime = record_beginDate.getTime(),recordEndTime = record_endDate.getTime();
+
+        var searchDate = {beginTime:beginTime,endTime:endTime};
 
 
         layui.laydate.render({
@@ -164,6 +200,7 @@
             ,done: function(value, date){
                 var time = (new Date(value)).getTime();
                 beginTime = time;
+                //reloadBookList();
 
                 //{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
             }
@@ -176,6 +213,7 @@
             ,done: function(value, date){
                 var time = (new Date(value)).getTime();
                 endTime = time;
+                //reloadBookList();
                 //{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
             }
 
@@ -262,7 +300,9 @@
             id: 'bookReload',
             cols: [[
                 {title: '序号',width:120,templet: '#indexTpl'},
-                {title: "房间名", width:400,field: 'name'},
+                {title: "房间名", width:300,field: 'name'},
+                {title: "预订开始时间",width:180,field: 'beginTime', templet: '#beginTime'},
+                {title: "预订结束时间",width:180,field: 'endTime', templet: '#endTime'},
                 {fixed: 'right', width:120,align: 'center',toolbar: '#bookTableTool'}
 
             ]],
@@ -300,14 +340,16 @@
 
             var bookId = data.id;
             if (layEvent === 'book') { //预订
+
+
                 var data = {
                     title: '房间预订',//标题
                     area: 'auto',//宽高
                     closeBtn: 1,//关闭按钮
                     shadeClose: true,//是否点击遮罩关闭
                     queryId: bookId,
-                    beginTime:beginTime,
-                    endTime:endTime,
+                    beginTime:searchDate.beginTime,
+                    endTime:searchDate.endTime,
                     queryUrl: '/book/add_page'
                 }
                 itenderBookModule.openModal(data,function (layerDom,index) {
@@ -349,6 +391,12 @@
 
 
         $('#search_room').click(function () {
+            reloadBookList();
+
+        });
+
+        
+        function reloadBookList() {
             if(!beginTime){
                 layer.msg("请选择开始日期!");
                 return ;
@@ -363,6 +411,8 @@
                 layer.msg("结束日期不能早于开始日期");
                 return ;
             }
+            searchDate.beginTime = beginTime;
+            searchDate.endTime = endTime;
 
             //执行重载
             currentTable.reload({
@@ -376,8 +426,8 @@
                 }
 
             });
-
-        });
+        }
+        
 
 
     });

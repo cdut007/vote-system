@@ -142,7 +142,7 @@
                     layer.closeAll('page'); //执行关闭
                     layer.msg("添加成功!");
                 }else{
-                    layer.msg("添加失败!");
+                    layer.msg(res+" 添加失败!");
                 }
             });
             return false;
