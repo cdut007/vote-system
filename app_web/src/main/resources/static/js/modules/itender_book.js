@@ -11,7 +11,8 @@ layui.define(function (exports) {
         downloadBook:function (data,callback) {
             var syncServer = function (data, callback) {
                 var index = layui.layer.load(2);
-                window.location.href ="/book/downloadRecord?beginTime="+data.beginTime+"&endTime="+data.endTime;
+
+                window.location.href ="/book/downloadRecord?beginTime="+data.beginTime+"&endTime="+data.endTime+"&roomId="+data.roomId;
                 layui.layer.close(index);
                 // $.ajax({
                 //     url: "/book/downloadRecord",

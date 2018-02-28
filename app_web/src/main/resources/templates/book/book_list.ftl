@@ -7,6 +7,7 @@
 </head>
 <body>
 <#include "../top_menus.ftl">
+
 <div class="layui-tab" lay-filter="booktab">
 <ul class="layui-tab-title">
     <li class="layui-this">预订记录</li>
@@ -17,6 +18,25 @@
         <div class="layui-tab-item layui-show layui-container margin-top">
 
             <div class="searchTable">
+                <div class="layui-inline">
+
+                    <form class="layui-form" action="">
+
+                            <label class="layui-form-label">房间</label>
+                            <div class="layui-input-inline">
+                                <select name="roomId" lay-verify="required" lay-filter="room_select" lay-search="">
+                                    <option value="">直接选择或搜索选择</option>
+                                     <#list roomList as room>
+                                     <option value='${room.id!}'>${room.name!}</option>
+                                     </#list>
+
+                                </select>
+                            </div>
+
+
+                    </form>
+
+                </div>
 
                 <div class="layui-inline">
                     <label class="layui-form-label">开始时间</label>
@@ -32,7 +52,7 @@
                         <input type="text" class="layui-input" id="record_end_time" placeholder="">
                     </div>
                 </div>
-
+                <button class="layui-btn" data-type="reload" id="search_book_record">查询记录</button>
                 <button class="layui-btn" data-type="reload" id="download_record">下载报表</button>
             </div>
 
@@ -155,23 +175,33 @@
     var endDate = new Date(beginDate.getTime() + 8 * 3600 *1000);
     var beginTime = beginDate.getTime(),endTime = endDate.getTime();
 
-    layui.use(['element','table', 'util', 'itenderBook','laydate'], function () {
+    layui.use(['form','element','table', 'util', 'itenderBook','laydate'], function () {
         var table = layui.table;
+        var form = layui.form;
         var itenderBookModule = layui.itenderBook;
         var element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
 
         var record_beginDate = new Date(beginDate.getTime() - 30*24 * 3600 *1000);
         var record_endDate = new Date(record_beginDate.getTime() + 30*24 * 3600 *1000);
 
-        var recordBeginTime = record_beginDate.getTime(),recordEndTime = record_endDate.getTime();
+        var recordBeginTime = null,recordEndTime = null;
+        var roomId=null;
 
         var searchDate = {beginTime:beginTime,endTime:endTime};
+        var searchRecordDate = {beginTime:recordBeginTime,endTime:recordEndTime};
 
+
+
+
+        form.on('select(room_select)', function(data){
+            roomId = data.value;
+
+            return false;
+        });
 
         layui.laydate.render({
             elem: '#record_begin_time'
             ,type: 'datetime'
-            ,value:record_beginDate
             ,done: function(value, date){
                 var time = (new Date(value)).getTime();
                 recordBeginTime = time;
@@ -183,7 +213,6 @@
         layui.laydate.render({
             elem: '#record_end_time'
             ,type: 'datetime'
-            ,value: record_endDate
             ,done: function(value, date){
                 var time = (new Date(value)).getTime();
                 recordEndTime = time;
@@ -247,7 +276,12 @@
                 {fixed: 'right', align: 'center',toolbar: '#bookRecordTableTool'}
 
             ]],
+            where:{beginTime:recordBeginTime,endTime:recordEndTime,roomId:roomId},
+
             request: {
+                beginTime:'beginTime',
+                endTime:'endTime',
+                roomId:'roomId',
                 pageName: 'pageNum' //页码的参数名称，默认：page
                 , limitName: 'pagesize' //每页数据量的参数名，默认：limit
             },
@@ -362,22 +396,22 @@
 
 
         $('#download_record').click(function () {
-            if(!beginTime){
+            if(!recordBeginTime){
                 layer.msg("请选择开始日期!");
                 return ;
             }
 
-            if(!endTime){
+            if(!recordEndTime){
                 layer.msg("请选择结束日期!");
                 return ;
             }
 
-            if(endTime < beginTime){
+            if(recordEndTime < recordBeginTime){
                 layer.msg("结束日期不能早于开始日期");
                 return ;
             }
 
-            var data = {beginTime:recordBeginTime,endTime:recordEndTime}
+            var data = {beginTime:recordBeginTime,endTime:recordEndTime,roomId:roomId}
             itenderBookModule.downloadBook(data,function (res,status) {
                 if(status){
                     layer.closeAll('page'); //执行关闭
@@ -395,7 +429,46 @@
 
         });
 
-        
+        $('#search_book_record').click(function () {
+            reloadBookRecordList();
+
+        });
+
+        function reloadBookRecordList() {
+            if(!recordBeginTime){
+                layer.msg("请选择开始日期!");
+                return ;
+            }
+
+            if(!recordEndTime){
+                layer.msg("请选择结束日期!");
+                return ;
+            }
+
+            if(recordEndTime < recordBeginTime){
+                layer.msg("结束日期不能早于开始日期");
+                return ;
+            }
+            searchRecordDate.beginTime = recordBeginTime;
+            searchRecordDate.endTime = recordEndTime;
+
+            //执行重载
+            recordTable.reload({
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                },
+                where:{beginTime:recordBeginTime,endTime:recordEndTime,roomId:roomId},
+                request: {
+                    beginTime:'beginTime',
+                    endTime:'endTime',
+                    roomId:roomId
+                }
+
+            });
+        }
+
+
+
         function reloadBookList() {
             if(!beginTime){
                 layer.msg("请选择开始日期!");
@@ -427,7 +500,7 @@
 
             });
         }
-        
+
 
 
     });

@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.ArrayList;
@@ -63,22 +64,56 @@ public class ItenderBookServiceImpl implements ItenderBookService {
 	}
 
 	@Override
-	public List<ItenderBook> exportBookRoomByTime(long startTime,long endTime) throws APIException {
+	public List<ItenderBook> exportBookRoomByTime(long startTime,long endTime,String roomId) throws APIException {
 
 		//搜索出在开始时间到结束时间期间有哪些房间被占用。
-		return checkBookListStatus(itenderBookMapper.exportBookRoomByTime(new Date(startTime),new Date(endTime)));
+		return checkBookListStatus(itenderBookMapper.exportBookRoomByTime(new Date(startTime),new Date(endTime),roomId));
 	}
 
 
+    private  boolean  searchModel = false;
 
+    private long searchStartTime,searchEndTime;
+
+    private String searchRoomId;
+
+	@Override
+	public void setSearchInfo(long startTime, long endTime, String roomId) {
+         if(roomId!=null){
+			 roomId = roomId.trim();
+		 }
+		if(startTime >0 || endTime >0 || !StringUtils.isEmpty(roomId)){
+			searchStartTime = startTime;
+			searchEndTime = endTime;
+			searchRoomId = roomId;
+			searchModel = true;
+		}
+
+	}
+
+	void resetSearch(){
+		searchModel = false;
+		searchStartTime = 0;
+		searchEndTime = 0;
+		searchRoomId = null;
+	}
 
 	@Override
 	public PageInfo<ItenderBook> findPage(Integer pageNum, Integer pagesize) throws APIException {
 		PageHelper.startPage(pageNum,pagesize);
-
+		List<ItenderBook> itenderBook ;
         Example example = new Example(ItenderBook.class);
-		example.setOrderByClause("create_time desc");
-        List<ItenderBook> itenderBook = itenderBookMapper.selectByExample(example);
+        if(searchModel){
+			logger.debug("==searchModel=");
+
+			itenderBook = itenderBookMapper.exportBookRoomByTime(new Date(searchStartTime),new Date(searchEndTime),searchRoomId);
+			//reset
+			resetSearch();
+        }else{
+			example.setOrderByClause("create_time desc");
+			itenderBook = itenderBookMapper.selectByExample(example);
+		}
+
         itenderBook  = checkBookListStatus(itenderBook);
         return new PageInfo<>(itenderBook);
 	}

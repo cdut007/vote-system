@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,12 +65,30 @@ public class BookController {
     @ApiIgnore
     @RequestMapping("")
     public String index(HttpServletRequest request,HttpServletResponse response){
+
+        try {
+            List<ItenderRoom> roomList = itenderRoomService.findAll();
+
+            request.setAttribute("roomList",roomList);
+        } catch (APIException e) {
+            e.printStackTrace();
+        }
+
+
         return "book/book_list";
     }
 
     @ApiIgnore
     @RequestMapping(value = "/book_page",method = RequestMethod.GET)
     public String bookPage(HttpServletRequest request, HttpServletResponse response){
+        try {
+            List<ItenderRoom> roomList = itenderRoomService.findAll();
+
+            request.setAttribute("roomList",roomList);
+        } catch (APIException e) {
+            e.printStackTrace();
+        }
+
         return ViewUtil.forward("/book/book_list");
     }
 
@@ -106,11 +125,28 @@ public class BookController {
     @RequestMapping(value = "/listBookRecord",method = RequestMethod.POST)
     public ResponseEntity<LayuiTableData> bookRecordList(HttpServletRequest request,
                                                   @RequestParam(required = false) Integer pageNum,
-                                                  @RequestParam(required = false) Integer pagesize
+                                                  @RequestParam(required = false) Integer pagesize,
+                                                         @RequestParam(required = false) Long beginTime,
+                                                         @RequestParam(required = false) Long endTime,
+                                                         @RequestParam(required = false) String roomId
     ) throws APIException{
 
         pageNum = pageNum == null?1:pageNum;
         pagesize = pagesize == null?10:pagesize;
+
+        logger.debug("==获取查询开始时间="+beginTime);
+        logger.debug("==获取查询结束时间="+endTime);
+        logger.debug("==获取查询房间="+roomId);
+
+        if(beginTime == null){
+            beginTime = new Long(0L);
+        }
+
+        if(endTime == null){
+            endTime = new Long(0L);
+        }
+        itenderBookService.setSearchInfo(beginTime,endTime,roomId);
+
 
         PageInfo<ItenderBook> page = itenderBookService.findPage(pageNum, pagesize);
 
@@ -227,11 +263,18 @@ public class BookController {
 
         String beginTime = request.getParameter("beginTime");
         String endTime = request.getParameter("endTime");
+        String roomId = request.getParameter("roomId");
+        if(roomId!=null){
+            roomId = roomId.trim();
+            if(StringUtils.isEmpty(roomId)){
+                roomId = null;
+            }
+        }
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         String date = formatter.format(new Date(Long.parseLong(beginTime))) +"~"+ formatter.format(new Date(Long.parseLong(endTime)));
 
-        List<ItenderBook> bookList = itenderBookService.exportBookRoomByTime(Long.parseLong(beginTime),Long.parseLong(endTime));
+        List<ItenderBook> bookList = itenderBookService.exportBookRoomByTime(Long.parseLong(beginTime),Long.parseLong(endTime),roomId);
         //List<ItenderBook> bookList = itenderBookService.findAll();
 
         HSSFWorkbook wb = new HSSFWorkbook();
