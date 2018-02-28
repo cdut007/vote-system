@@ -122,19 +122,30 @@ public class ItenderBookServiceImpl implements ItenderBookService {
 		return  itenderBookList;
 	}
 	private ItenderBook checkBookStatus(ItenderBook itenderBook){
-		if(itenderBook!=null && BookStatus.ordered.name().equals(itenderBook.getStatus())){
-			//check time
-			Date bookStartDate = itenderBook.getBeginTime();
-			Date bookEndDate = itenderBook.getEndTime();
-			long currentTime = System.currentTimeMillis();
-			if(bookStartDate.getTime() <= currentTime && bookEndDate.getTime() > currentTime){
-				itenderBook.setStatus(BookStatus.occupy.name());
-				itenderBookMapper.updateByPrimaryKey(itenderBook);
-			}else if(bookEndDate.getTime() <= currentTime){
-				//expired
-				itenderBook.setStatus(BookStatus.expired.name());
-				itenderBookMapper.updateByPrimaryKey(itenderBook);
+		if(itenderBook!=null){
+			if(BookStatus.ordered.name().equals(itenderBook.getStatus())){
+				//check time
+				Date bookStartDate = itenderBook.getBeginTime();
+				Date bookEndDate = itenderBook.getEndTime();
+				long currentTime = System.currentTimeMillis();
+				if(bookStartDate.getTime() <= currentTime && bookEndDate.getTime() > currentTime){
+					itenderBook.setStatus(BookStatus.occupy.name());
+					itenderBookMapper.updateByPrimaryKey(itenderBook);
+				}else if(bookEndDate.getTime() <= currentTime){
+					//expired
+					itenderBook.setStatus(BookStatus.expired.name());
+					itenderBookMapper.updateByPrimaryKey(itenderBook);
+				}
+			}else if(BookStatus.occupy.name().equals(itenderBook.getStatus())){
+				long currentTime = System.currentTimeMillis();
+				Date bookEndDate = itenderBook.getEndTime();
+				if(bookEndDate.getTime() <= currentTime){
+					//expired
+					itenderBook.setStatus(BookStatus.expired.name());
+					itenderBookMapper.updateByPrimaryKey(itenderBook);
+				}
 			}
+
 		}
 
 		return  itenderBook;
