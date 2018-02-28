@@ -157,7 +157,7 @@ public class RoomController {
         room = itenderRoomService.add(room);
         List<ItenderDevice> deviceList = room.getDeviceList();
         for (int i = 0; i < deviceList.size(); i++) {
-            itenderDeviceService.bindRoom(deviceList.get(i),room.getId());
+            itenderDeviceService.bindRoom(deviceList.get(i),room.getId(),room.getName());
         }
         if(!CommonUtility.isNonEmpty(room.getId())){
             result.put("status", false);
@@ -216,7 +216,7 @@ public class RoomController {
 
         List<ItenderDevice> deviceList = room.getDeviceList();
         for (int i = 0; i < deviceList.size(); i++) {
-            itenderDeviceService.bindRoom(deviceList.get(i),room.getId());
+            itenderDeviceService.bindRoom(deviceList.get(i),room.getId(),room.getName());
         }
 
 

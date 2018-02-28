@@ -57,6 +57,10 @@ public class ItenderDevice {
     @Column(name="room_id")
     private String roomId;//房间号
 
+
+    @Column(name="room_name")
+    private String roomName;//房间名字
+
     @Column(name="create_time")
     private Date createTime;//创建时间
 
@@ -96,6 +100,14 @@ public class ItenderDevice {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
     }
 
     public String getRoomId() {

@@ -15,7 +15,7 @@
                          <label class="layui-form-label">已选设备</label>
                          <div class="layui-input-inline">
 
-                         <input type="checkbox"  class="device" name="${usedDevice.id!}" value='${usedDevice.toJson()}' title="${usedDevice.name!}" lay-skin="primary" checked>
+                         <input type="checkbox"  class="device" name="${usedDevice.id!}" value='${usedDevice.toJson()}' title="${usedDevice.name!}(${usedDevice.statusLabel!})" lay-skin="primary" checked>
                          </div>
                       </div>
                      </#list>
@@ -24,7 +24,7 @@
                           <div class="layui-form-item">
                               <label class="layui-form-label">可选设备</label>
                               <div class="layui-input-inline">
-                                  <input type="checkbox" class="device" name="${device.id!}" value='${device.toJson()}' title="${device.name!}" lay-skin="primary">
+                                  <input type="checkbox" class="device" name="${device.id!}" value='${device.toJson()}' title="${device.name!}(${device.statusLabel!})" lay-skin="primary">
                               </div>
                           </div>
               </#list>

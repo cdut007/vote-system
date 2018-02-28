@@ -41,9 +41,10 @@ public interface ItenderDeviceService extends ItenderServiceBase<ItenderDevice> 
 	 * 绑定房间信息
 	 * @param device
 	 * @param roomId
+     *  @param roomName
 	 * @return
 	 */
-	public ItenderDevice bindRoom(ItenderDevice device,String roomId) throws APIException;
+	public ItenderDevice bindRoom(ItenderDevice device,String  roomId,String roomName) throws APIException;
 
 
 	/**

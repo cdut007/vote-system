@@ -12,6 +12,7 @@
         <result column="status" javaType="STRING" property="status"></result>
         <result column="maintenance_phone" javaType="STRING" property="maintenancePhone"></result>
 		<result column="room_id" javaType="STRING" property="roomId"></result>
+		<result column="room_name" javaType="STRING" property="roomName"></result>
 		<result column="create_time" javaType="DATE" property="createTime"></result>
 
     </resultMap>
@@ -47,6 +48,7 @@
 		  <if test="status != null">status=#{status},</if>
 		  <if test="maintenancePhone != null">maintenance_phone=#{maintenancePhone},</if>
 		  <if test="roomId != null">room_id=#{roomId},</if>
+			<if test="roomName != null">room_name=#{roomName},</if>
 		</trim>
         WHERE id = #{id}
     </update>

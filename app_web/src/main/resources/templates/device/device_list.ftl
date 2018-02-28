@@ -73,6 +73,7 @@
                 {title: "设备地址", field: 'ip'},
                 {title: "登录信息", templet: '#accountInfo'},
                 {title: "设备状态", templet: '#statusLabel'},
+                {title: "房间", field: 'roomName'},
                 {title: "维护电话", field: 'maintenancePhone'},
                 {fixed: 'right', align: 'center', toolbar: '#deviceTableTool'}
             ]],

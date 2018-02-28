@@ -130,8 +130,9 @@ public class ItenderDeviceServiceImpl implements ItenderDeviceService {
 	}
 
 	@Override
-	public ItenderDevice bindRoom(ItenderDevice device, String roomId) throws APIException {
+	public ItenderDevice bindRoom(ItenderDevice device, String  roomId,String roomName) throws APIException {
 		device.setRoomId(roomId);
+		device.setRoomName(roomName);
 		int rows = itenderDeviceMapper.updateDevice(device);
 		return rows == 0?null:device;
 	}
@@ -139,6 +140,7 @@ public class ItenderDeviceServiceImpl implements ItenderDeviceService {
 	@Override
 	public ItenderDevice unbindRoom(ItenderDevice device) throws APIException {
 		device.setRoomId("");
+		device.setRoomName("");
 		return updateDevice(device);
 	}
 
@@ -164,6 +166,9 @@ public class ItenderDeviceServiceImpl implements ItenderDeviceService {
         List<ItenderDevice> itenderDevice = itenderDeviceMapper.selectByExample(example);
         return new PageInfo<>(itenderDevice);
 	}
+
+
+	//private ItenderDevice
 
 
 }
