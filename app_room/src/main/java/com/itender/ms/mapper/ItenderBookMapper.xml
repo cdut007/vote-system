@@ -26,6 +26,13 @@
     </select>
 
 
+    <select id="findByIndustry"
+            resultMap="itenderBook">
+        select * from itender_book where
+         industry =  #{industry}
+    </select>
+
+
     <select id="exportBookRoomByTime"
             resultMap="itenderBook">
         select * from itender_book where

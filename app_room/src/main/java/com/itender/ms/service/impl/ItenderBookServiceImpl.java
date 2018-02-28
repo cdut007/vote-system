@@ -72,8 +72,13 @@ public class ItenderBookServiceImpl implements ItenderBookService {
 		return checkBookListStatus(itenderBookMapper.exportBookRoomByTime(new Date(startTime),new Date(endTime),roomId));
 	}
 
+	@Override
+	public List<ItenderBook> findByIndustry(String industry) throws APIException {
+		return checkBookListStatus(itenderBookMapper.findByIndustry(industry));
+	}
 
-    private  boolean  searchModel = false;
+
+	private  boolean  searchModel = false;
 
     private long searchStartTime,searchEndTime;
 

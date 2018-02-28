@@ -1,6 +1,7 @@
 package com.itender.ms.mapper;
 
 import com.itender.ms.domain.ItenderBook;
+import com.itender.ms.exception.APIException;
 import org.apache.ibatis.annotations.Param;
 import tk.mybatis.mapper.common.Mapper;
 
@@ -20,5 +21,7 @@ public interface ItenderBookMapper extends Mapper<ItenderBook> {
 
     public List<ItenderBook> exportBookRoomByTime(@Param(value="startTime") Date startTime, @Param(value="endTime") Date endTime, @Param(value="roomId")String roomId);
 
+
+    public List<ItenderBook> findByIndustry(@Param(value="industry")String industry);
 
 }

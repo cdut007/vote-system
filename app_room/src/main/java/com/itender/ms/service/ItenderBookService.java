@@ -35,6 +35,10 @@ public interface ItenderBookService extends ItenderServiceBase<ItenderBook> {
 
 
 
+    public List<ItenderBook> findByIndustry(String industry) throws APIException;
+
+
+
 
 
 
