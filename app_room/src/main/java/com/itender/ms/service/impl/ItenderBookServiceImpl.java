@@ -63,6 +63,16 @@ public class ItenderBookServiceImpl implements ItenderBookService {
 	}
 
 	@Override
+	public List<ItenderBook> exportBookRoomByTime(long startTime,long endTime) throws APIException {
+
+		//搜索出在开始时间到结束时间期间有哪些房间被占用。
+		return checkBookListStatus(itenderBookMapper.exportBookRoomByTime(new Date(startTime),new Date(endTime)));
+	}
+
+
+
+
+	@Override
 	public PageInfo<ItenderBook> findPage(Integer pageNum, Integer pagesize) throws APIException {
 		PageHelper.startPage(pageNum,pagesize);
 

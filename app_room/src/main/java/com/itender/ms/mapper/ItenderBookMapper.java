@@ -17,4 +17,8 @@ public interface ItenderBookMapper extends Mapper<ItenderBook> {
 
     public List<ItenderBook> findBookRoomByTime(@Param(value="startTime") Date startTime, @Param(value="endTime") Date endTime);
 
+
+    public List<ItenderBook> exportBookRoomByTime(@Param(value="startTime") Date startTime, @Param(value="endTime") Date endTime);
+
+
 }

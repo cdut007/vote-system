@@ -31,6 +31,30 @@
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 
+
+<script type="text/html" id="statusLabel">
+    {{#  if(d.status != 'normal'){ }}
+    <span style="color: #FF0000;">{{ d.statusLabel }}</span>
+    {{#  } else { }}
+
+      {{# if(d.roomId){ }}
+            <span style="color: #00F7DE;">{{ '使用中' }}</span>
+        {{#  } else { }}
+        {{ d.statusLabel }}
+       {{#  } }}
+
+    {{#  } }}
+</script>
+
+<script type="text/html" id="accountInfo">
+
+    {{ d.account}} / {{ d.password}}
+
+
+</script>
+
+
+
 <script type="text/javascript">
     layui.use(['table', 'util', 'itenderDevice'], function () {
         var table = layui.table;
@@ -47,8 +71,8 @@
                 {title: "设备型号", field: 'model'},
                 {title: "设备名称", field: 'name'},
                 {title: "设备地址", field: 'ip'},
-                {title: "登录信息", field: 'account'},
-                {title: "设备状态", field: 'statusLabel'},
+                {title: "登录信息", templet: '#accountInfo'},
+                {title: "设备状态", templet: '#statusLabel'},
                 {title: "维护电话", field: 'maintenancePhone'},
                 {fixed: 'right', align: 'center', toolbar: '#deviceTableTool'}
             ]],

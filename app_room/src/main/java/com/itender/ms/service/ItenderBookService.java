@@ -24,5 +24,18 @@ public interface ItenderBookService extends ItenderServiceBase<ItenderBook> {
     public List<ItenderBook> findByBeginTime(long startTime,long endTime) throws APIException;
 
 
+    /**
+     * 导出订单记录
+     * @param startTime,endTime
+     * @return
+     */
+    public List<ItenderBook> exportBookRoomByTime(long startTime,long endTime) throws APIException;
+
+
+
+
+
+
+
 
 }

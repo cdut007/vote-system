@@ -37,10 +37,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Api(description = "预订房间模块接口")
 @Validated
@@ -213,8 +211,12 @@ public class BookController {
 
         String beginTime = request.getParameter("beginTime");
         String endTime = request.getParameter("endTime");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        List<ItenderBook> bookList = itenderBookService.findAll();
+        String date = formatter.format(new Date(Long.parseLong(beginTime))) +"~"+ formatter.format(new Date(Long.parseLong(endTime)));
+
+        List<ItenderBook> bookList = itenderBookService.exportBookRoomByTime(Long.parseLong(beginTime),Long.parseLong(endTime));
+        //List<ItenderBook> bookList = itenderBookService.findAll();
 
         HSSFWorkbook wb = new HSSFWorkbook();
         HSSFSheet sheet =wb.createSheet("获取房间预订表格");
@@ -236,20 +238,37 @@ public class BookController {
         row = sheet.createRow(1);
         row.createCell(0).setCellStyle(getStyle(wb,3));
         row.setHeight((short)(22.50*20));
-        row.createCell(1).setCellValue("房间Id");
-        row.createCell(2).setCellValue("房间名");
-        row.createCell(3).setCellValue("预定时间");
-        for(int i = 1;i <= 3;i++){
+        row.createCell(1).setCellValue("房间名");
+        row.createCell(2).setCellValue("预定时间");
+        row.createCell(3).setCellValue("预定事项");
+        row.createCell(4).setCellValue("预定单位");
+        row.createCell(5).setCellValue("预定人");
+        row.createCell(6).setCellValue("联系方式");
+        row.createCell(7).setCellValue("预订类型");
+        row.createCell(8).setCellValue("创建时间");
+        row.createCell(9).setCellValue("是否取消");
+        for(int i = 1;i <= 9;i++){
             row.getCell(i).setCellStyle(getStyle(wb,1));
         }
 
         for(int i = 0;i<bookList.size();i++){
             row = sheet.createRow(i+2);
             ItenderBook book = bookList.get(i);
-            row.createCell(1).setCellValue(book.getId());
-            row.createCell(2).setCellValue(book.getRoom());
-            row.createCell(3).setCellValue(book.getBookTime());
-            for(int j = 1;j <= 3;j++){
+            row.createCell(1).setCellValue(book.getRoom());
+            row.createCell(2).setCellValue(book.getBookTime());
+            row.createCell(3).setCellValue(book.getContent());
+            row.createCell(4).setCellValue(book.getBookOrganization());
+            row.createCell(5).setCellValue(book.getBookUser());
+            row.createCell(6).setCellValue(book.getBookUserMobile());
+            row.createCell(7).setCellValue(book.getIndustry());
+            row.createCell(8).setCellValue(book.getCreateTimeStr());
+            if(BookStatus.cancel.name().equals(book.getStatus())){
+                row.createCell(9).setCellValue("已取消");
+            }else{
+                row.createCell(9).setCellValue("");
+            }
+
+            for(int j = 1;j <= 9;j++){
                 row.getCell(j).setCellStyle(getStyle(wb,2));
             }
         }
@@ -262,7 +281,7 @@ public class BookController {
         }
 
         response.setContentType("application/vnd.ms-excel;charset=utf-8");
-        response.setHeader("Content-disposition","attachment;filename="+new String("room_record")+".xls");
+        response.setHeader("Content-disposition","attachment;filename="+new String("room_record_")+date+".xls");
 
         OutputStream os = null;
         try {

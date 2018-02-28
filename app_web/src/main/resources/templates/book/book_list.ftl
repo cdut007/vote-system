@@ -126,7 +126,7 @@
         var beginDate = new Date();
         var endDate = new Date(beginDate.getTime() + 8 * 3600 *1000);
         var beginTime = beginDate.getTime(),endTime = endDate.getTime();
-        var record_beginDate = new Date();
+        var record_beginDate = new Date(beginDate.getTime() - 30*24 * 3600 *1000);
         var record_endDate = new Date(record_beginDate.getTime() + 30*24 * 3600 *1000);
 
         var recordBeginTime = record_beginDate.getTime(),recordEndTime = record_endDate.getTime();

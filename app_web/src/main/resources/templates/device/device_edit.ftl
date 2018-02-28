@@ -61,10 +61,18 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">设备状态</label>
                     <div class="layui-input-inline">
-                         <#if itenderDevice.status=='normal'>
-                             <input type="checkbox" checked="" name="status" lay-skin="switch" lay-filter="switchStatus" lay-text="正常|损坏">
+                         <#if itenderDevice.roomId??>
+                              <#if itenderDevice.status=='normal'>
+                             <input type="checkbox" checked="" name="status" lay-skin="switch" lay-filter="switchStatus" lay-text="使用中|损坏">
+                              <#else>
+                          <input type="checkbox"  name="status" lay-skin="switch" lay-filter="switchStatus" lay-text="使用中|损坏">
+                              </#if>
                          <#else>
+                             <#if itenderDevice.status=='normal'>
+                             <input type="checkbox" checked="" name="status" lay-skin="switch" lay-filter="switchStatus" lay-text="正常|损坏">
+                             <#else>
                           <input type="checkbox"  name="status" lay-skin="switch" lay-filter="switchStatus" lay-text="正常|损坏">
+                             </#if>
                          </#if>
 
                     </div>

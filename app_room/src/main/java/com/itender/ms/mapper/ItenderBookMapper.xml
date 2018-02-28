@@ -26,6 +26,15 @@
     </select>
 
 
+    <select id="exportBookRoomByTime"
+            resultMap="itenderBook">
+        select * from itender_book where
+        NOT ((end_time <![CDATA[ < ]]> #{startTime})
+        OR (begin_time <![CDATA[ > ]]> #{endTime})
+        )
+    </select>
+
+
 
 
 
