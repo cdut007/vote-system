@@ -143,8 +143,10 @@ public class BookController {
         }
 
         if(endTime == null){
-            endTime = new Long(0L);
+            long tenYear =  315360000000L;
+            endTime = System.currentTimeMillis()+tenYear;//加10年
         }
+
         itenderBookService.setSearchInfo(beginTime,endTime,roomId);
 
 
@@ -178,7 +180,7 @@ public class BookController {
         }
 
         if(endTime == null){
-            endTime = new Long(0L);
+            endTime = System.currentTimeMillis()+365*10*24*3600*1000;//加10年
         }
 
         List<ItenderBook> bookList = itenderBookService.findByBeginTime(beginTime,endTime);
@@ -270,6 +272,16 @@ public class BookController {
                 roomId = null;
             }
         }
+
+        if(beginTime == null){
+            beginTime = "0";
+        }
+
+        if(endTime == null){
+            long tenYear =  315360000000L;
+            endTime = String.valueOf(System.currentTimeMillis()+tenYear);//加10年
+        }
+
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         String date = formatter.format(new Date(Long.parseLong(beginTime))) +"~"+ formatter.format(new Date(Long.parseLong(endTime)));

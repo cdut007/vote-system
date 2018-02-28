@@ -67,6 +67,8 @@ public class ItenderBookServiceImpl implements ItenderBookService {
 	public List<ItenderBook> exportBookRoomByTime(long startTime,long endTime,String roomId) throws APIException {
 
 		//搜索出在开始时间到结束时间期间有哪些房间被占用。
+		logger.debug("==startTime="+new Date(startTime).toString());
+		logger.debug("==endTime="+new Date(endTime).toString());
 		return checkBookListStatus(itenderBookMapper.exportBookRoomByTime(new Date(startTime),new Date(endTime),roomId));
 	}
 
@@ -105,6 +107,12 @@ public class ItenderBookServiceImpl implements ItenderBookService {
         Example example = new Example(ItenderBook.class);
         if(searchModel){
 			logger.debug("==searchModel=");
+			logger.debug("==searchRoomId="+searchRoomId);
+			logger.debug("==startTime="+new Date(searchStartTime).toString());
+			logger.debug("==endTime="+new Date(searchEndTime).toString());
+			if(StringUtils.isEmpty(searchRoomId)){
+				searchRoomId = null;
+			}
 
 			itenderBook = itenderBookMapper.exportBookRoomByTime(new Date(searchStartTime),new Date(searchEndTime),searchRoomId);
 			//reset

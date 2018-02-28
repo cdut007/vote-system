@@ -203,8 +203,16 @@
             elem: '#record_begin_time'
             ,type: 'datetime'
             ,done: function(value, date){
-                var time = (new Date(value)).getTime();
-                recordBeginTime = time;
+                if(!value){
+                    recordBeginTime = 0;
+
+                }else{
+                    var time = (new Date(value)).getTime();
+                    recordBeginTime = time;
+                }
+
+
+
 
                 //{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
             }
@@ -214,8 +222,15 @@
             elem: '#record_end_time'
             ,type: 'datetime'
             ,done: function(value, date){
-                var time = (new Date(value)).getTime();
-                recordEndTime = time;
+                if(!value){
+                    recordEndTime = 0;
+
+                }else{
+                    var time = (new Date(value)).getTime();
+                    recordEndTime = time;
+                }
+
+
                 //{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
             }
 
@@ -435,20 +450,27 @@
         });
 
         function reloadBookRecordList() {
-            if(!recordBeginTime){
+
+            if(recordBeginTime && !recordBeginTime){
                 layer.msg("请选择开始日期!");
                 return ;
             }
 
-            if(!recordEndTime){
+            if(recordBeginTime && !recordEndTime){
                 layer.msg("请选择结束日期!");
                 return ;
             }
 
-            if(recordEndTime < recordBeginTime){
-                layer.msg("结束日期不能早于开始日期");
-                return ;
+
+            if(!recordBeginTime && !recordEndTime){
+                if(recordEndTime < recordBeginTime){
+                    layer.msg("结束日期不能早于开始日期");
+                    return ;
+                }
             }
+
+
+
             searchRecordDate.beginTime = recordBeginTime;
             searchRecordDate.endTime = recordEndTime;
 
