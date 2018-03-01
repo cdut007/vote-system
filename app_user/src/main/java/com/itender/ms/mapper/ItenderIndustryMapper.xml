@@ -32,4 +32,22 @@
 			#{item}
 		</foreach>
 	</select>
+	<select id="selectByUserId" parameterType="java.lang.String" resultMap="itenderIndustry">
+		SELECT
+			a.*
+		FROM
+			itender_industry a
+		LEFT JOIN
+			itender_role_type b
+		ON
+			a.id=b.industry_id
+		LEFT JOIN
+			itender_user_role c
+		ON
+			b.role_id=c.role_id
+		WHERE
+			c.user_id=#{userId,jdbcType=VARCHAR}
+		GROUP BY
+			a.id
+	</select>
 </mapper>

@@ -13,7 +13,9 @@ import java.util.List;
  */
 public interface ItenderIndustryMapper extends Mapper<ItenderIndustry> {
 
-    public List<ItenderIndustry> selectByRoleId(String roleId);
+    List<ItenderIndustry> selectByRoleId(String roleId);
 
-    public List<ItenderIndustry> selectByIds(String[] ids);
+    List<ItenderIndustry> selectByIds(String[] ids);
+
+    List<ItenderIndustry> selectByUserId(String userId);
 }

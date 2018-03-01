@@ -62,4 +62,9 @@ public class ItenderIndustryServiceImpl implements com.itender.ms.service.Itende
     public int updateIndustry(ItenderIndustry itenderIndustry) {
         return itenderIndustryMapper.updateByPrimaryKeySelective(itenderIndustry);
     }
+
+    @Override
+    public List<ItenderIndustry> findByUserId(String userId) {
+        return itenderIndustryMapper.selectByUserId(userId);
+    }
 }

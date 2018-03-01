@@ -18,4 +18,11 @@ public interface ItenderIndustryService extends ItenderServiceBase<ItenderIndust
      * @return
      */
     public int updateIndustry(ItenderIndustry itenderIndustry);
+
+    /**
+     * 根据用户ID查询其角色类型
+     * @param
+     * @return
+     */
+    List<ItenderIndustry> findByUserId(String userId);
 }
