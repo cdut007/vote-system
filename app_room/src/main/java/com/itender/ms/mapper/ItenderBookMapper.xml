@@ -29,7 +29,7 @@
     <select id="findByIndustry"
             resultMap="itenderBook">
         select * from itender_book where
-         industry =  #{industry}
+         industry =  #{industry} AND status IN ('ordered','occupy')
     </select>
 
 
