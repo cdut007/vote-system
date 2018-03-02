@@ -37,6 +37,11 @@
             <artifactId>app_dashboard</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.itender</groupId>
+            <artifactId>app_supervision</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>app_sys_${version}</finalName>

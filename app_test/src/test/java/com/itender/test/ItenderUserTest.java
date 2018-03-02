@@ -162,12 +162,14 @@ public class ItenderUserTest {
 
     @Test
     public void findIndustry(){
-        String[] a = new String[]{"1ed94c58-0e49-11e8-838b-201a06bed6c8","a2afae8f-0e49-11e8-838b-201a06bed6c8","3"};
-        for(String i : a){
-            i.toString();
-        }
+//        String[] a = new String[]{"1ed94c58-0e49-11e8-838b-201a06bed6c8","a2afae8f-0e49-11e8-838b-201a06bed6c8","3"};
+//        for(String i : a){
+//            i.toString();
+//        }
 
-        List<ItenderIndustry> itenderIndustries =  itenderIndustryMapper.selectByIds(a);
+//        List<ItenderIndustry> itenderIndustries =  itenderIndustryMapper.selectByIds(a);
+
+        List<ItenderIndustry> itenderIndustries =  itenderIndustryMapper.selectByUserId("1");
         for (ItenderIndustry i : itenderIndustries){
             logger.debug("#############################################");
             logger.debug(i.getIndustryName());

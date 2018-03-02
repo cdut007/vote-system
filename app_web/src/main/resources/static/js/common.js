@@ -31,7 +31,8 @@ layui.config({
     multipleSelect:"multipleSelect",
     documentTree:"document_tree",
     formEditorCheckbox:"form_editor_checkbox",
-    itenderIndustry:"itender_industry"
+    itenderIndustry:"itender_industry",
+    itenderSupervision:"itender_supervision"
 })
 
 var view = {

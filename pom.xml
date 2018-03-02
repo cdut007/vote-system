@@ -17,6 +17,7 @@
         <module>app_test</module>
         <module>app_user</module>
         <module>app_dashboard</module>
+        <module>app_supervision</module>
     </modules>
 
     <parent>
