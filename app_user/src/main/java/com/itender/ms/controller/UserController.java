@@ -59,11 +59,21 @@ public class UserController {
 
 	@ApiOperation(value = "用户登录接口",notes = "用于用户登录")
     @RequestMapping(value = "/login",method = RequestMethod.POST)
-    public ResponseEntity<Map<String,Object>> login(
+    public ResponseEntity<Map<String,Object>> login(HttpServletRequest request,
     		@ApiParam(name = "username",value = "用户名",required = true) @RequestParam(required = true) String username,
     		@ApiParam(name = "password",value = "密码",required = true) @RequestParam(required = true) String password,
-    		HttpServletRequest req) throws APIException{
+			@ApiParam(name = "captcha",value = "验证码",required = true) @RequestParam(required = true) String captcha
+	) throws APIException{
 		Map<String,Object> result = new HashMap<>();
+		HttpSession session = request.getSession();
+		String captchaSession = (String)session.getAttribute("captcha");
+		if(!captcha.equals(captchaSession)){
+			result.put("status", false);
+			result.put("msg", "验证码错误!");
+			logger.info("用户验证码："+captcha);
+			return ResponseEntity.ok(result);
+		}
+
     	ItenderUser user = itenderUserService.userLogin(username, password, true);
     	if(user == null){
     		result.put("status", false);
@@ -82,6 +92,7 @@ public class UserController {
 		//将验证码存入Session
 		HttpSession session = request.getSession();
 		session.setAttribute("captcha",objs[0]);
+		logger.info("验证码："+objs[0]);
 		//将图片输出给浏览器
 		BufferedImage image = (BufferedImage) objs[1];
 		response.setContentType("image/png");

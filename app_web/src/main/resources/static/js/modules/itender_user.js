@@ -20,7 +20,7 @@ layui.define(function (exports) {
                         parent.layer.close(indexFrame);
                         view.goto('/dashboard');
                     }else{
-                        layui.layer.msg('登录失败，用户名或密码错误！', {icon: 5});
+                        layui.layer.msg('登录失败，'+result.msg, {icon: 5});
                     }
                 },
                 error: function (xmlHttpReq, error, ex) {
