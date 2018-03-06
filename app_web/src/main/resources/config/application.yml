@@ -89,6 +89,7 @@ privilege-uri-init:
     - /
     - /error
     - /login
+    - /management/user/code
     - /management/user/login
     - /management/user/logout
     - /management/user/register

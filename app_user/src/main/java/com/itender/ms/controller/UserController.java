@@ -1,8 +1,12 @@
 package com.itender.ms.controller;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -13,6 +17,7 @@ import com.itender.ms.convert.PageDataConvert;
 import com.itender.ms.domain.ItenderRole;
 import com.itender.ms.service.ItenderRoleService;
 import com.itender.ms.util.CommonUtility;
+import com.itender.ms.util.ImageUtil;
 import com.itender.ms.util.ViewUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,11 +59,21 @@ public class UserController {
 
 	@ApiOperation(value = "用户登录接口",notes = "用于用户登录")
     @RequestMapping(value = "/login",method = RequestMethod.POST)
-    public ResponseEntity<Map<String,Object>> login(
+    public ResponseEntity<Map<String,Object>> login(HttpServletRequest request,
     		@ApiParam(name = "username",value = "用户名",required = true) @RequestParam(required = true) String username,
     		@ApiParam(name = "password",value = "密码",required = true) @RequestParam(required = true) String password,
-    		HttpServletRequest req) throws APIException{
+			@ApiParam(name = "captcha",value = "验证码",required = true) @RequestParam(required = true) String captcha
+	) throws APIException{
 		Map<String,Object> result = new HashMap<>();
+		HttpSession session = request.getSession();
+		String captchaSession = (String)session.getAttribute("captcha");
+		if(!captcha.equals(captchaSession)){
+			result.put("status", false);
+			result.put("msg", "验证码错误!");
+			logger.info("用户验证码："+captcha);
+			return ResponseEntity.ok(result);
+		}
+
     	ItenderUser user = itenderUserService.userLogin(username, password, true);
     	if(user == null){
     		result.put("status", false);
@@ -70,6 +85,20 @@ public class UserController {
     	
         return ResponseEntity.ok(result);
     }
+
+	@RequestMapping(value = "code")
+	public void code(HttpServletRequest request,HttpServletResponse response) throws IOException {
+		Object[] objs = ImageUtil.createImage();
+		//将验证码存入Session
+		HttpSession session = request.getSession();
+		session.setAttribute("captcha",objs[0]);
+		logger.info("验证码："+objs[0]);
+		//将图片输出给浏览器
+		BufferedImage image = (BufferedImage) objs[1];
+		response.setContentType("image/png");
+		OutputStream os = response.getOutputStream();
+		ImageIO.write(image, "png", os);
+	}
     
 	@ApiOperation(value = "用户注销接口",notes = "用于用户退出系统")
     @RequestMapping(value = "/logout",method = RequestMethod.GET)
