@@ -35,6 +35,13 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
+                    <label class="layui-form-label" for="password">验证码</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" name="verifyCode" id="verifyCode" lay-verify="verifyCode" lay-verType="tips" placeholder="验证码">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux"><img lay-filter="refreshVerifyImg" src="management/user/code" style="height: 35px;margin-top: -7px;" title="点击刷新验证码"></div>
+                </div>
+                <div class="layui-form-item">
                     <div class="layui-input-block">
                         <button type="submit" class="layui-btn layui-btn-default layui-btn-block" lay-submit lay-filter="login" style="width: 100%">
                             登录
@@ -48,9 +55,10 @@
 </div>
 </body>
 <script>
-    layui.use(['form','itenderUser'], function () {
+    layui.use(['form','layer','itenderUser'], function () {
         var form = layui.form;
         var itenderUser = layui.itenderUser;
+        var layer = layui.layer;
 
   		form.verify({
             username: function (value, item) {
@@ -66,6 +74,9 @@
             itenderUser.userLogin(formData);//用户登录
 			return false;
 		});
+        form.on('refreshVerifyImg',function (data) {
+            layer.msg("家居就安静安静");
+        });
 	  });
 </script>
 </html>

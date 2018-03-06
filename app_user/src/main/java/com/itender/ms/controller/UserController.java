@@ -1,8 +1,12 @@
 package com.itender.ms.controller;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -13,6 +17,7 @@ import com.itender.ms.convert.PageDataConvert;
 import com.itender.ms.domain.ItenderRole;
 import com.itender.ms.service.ItenderRoleService;
 import com.itender.ms.util.CommonUtility;
+import com.itender.ms.util.ImageUtil;
 import com.itender.ms.util.ViewUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,6 +75,19 @@ public class UserController {
     	
         return ResponseEntity.ok(result);
     }
+
+	@RequestMapping(value = "code")
+	public void code(HttpServletRequest request,HttpServletResponse response) throws IOException {
+		Object[] objs = ImageUtil.createImage();
+		//将验证码存入Session
+		HttpSession session = request.getSession();
+		session.setAttribute("captcha",objs[0]);
+		//将图片输出给浏览器
+		BufferedImage image = (BufferedImage) objs[1];
+		response.setContentType("image/png");
+		OutputStream os = response.getOutputStream();
+		ImageIO.write(image, "png", os);
+	}
     
 	@ApiOperation(value = "用户注销接口",notes = "用于用户退出系统")
     @RequestMapping(value = "/logout",method = RequestMethod.GET)
