@@ -1,0 +1,13 @@
+[
+    {
+        "id":"",
+        "privilegeName":"设备管理",
+        "alias":"设备管理",
+        "privilegeUri":"/device",
+        "privilegeMethod":"GET",
+        "icon":"",
+        "seq":0,
+        "level":1,
+        "ref":""
+    }
+]

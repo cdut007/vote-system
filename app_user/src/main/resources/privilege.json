@@ -273,5 +273,16 @@
   "seq":0,
   "level":2,
   "ref":"权限"
-}
+},
+  {
+    "id":"",
+    "privilegeName":"用户",
+    "alias":"用户",
+    "privilegeUri":"/management/user",
+    "privilegeMethod":"GET",
+    "icon":"",
+    "seq":0,
+    "level":1,
+    "ref":""
+  }
 ]

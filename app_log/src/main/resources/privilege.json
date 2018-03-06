@@ -1,0 +1,13 @@
+[
+    {
+        "id":"",
+        "privilegeName":"日志管理",
+        "alias":"日志管理",
+        "privilegeUri":"/log",
+        "privilegeMethod":"GET",
+        "icon":"",
+        "seq":0,
+        "level":1,
+        "ref":""
+    }
+]

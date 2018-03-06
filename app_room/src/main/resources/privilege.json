@@ -1,0 +1,13 @@
+[
+    {
+        "id":"",
+        "privilegeName":"房间预订",
+        "alias":"房间预订",
+        "privilegeUri":"/book",
+        "privilegeMethod":"GET",
+        "icon":"",
+        "seq":0,
+        "level":1,
+        "ref":""
+    }
+]
