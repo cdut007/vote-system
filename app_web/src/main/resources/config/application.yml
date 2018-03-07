@@ -106,6 +106,10 @@ privilege-uri-init:
     - /login
     - /management/user/logout
     - /management/user/register
+    - /management/user/detilsModal
+    - /management/user/detils
+    - /management/user/updateMy
+    - /supervision/logRecord
   #后台登录URI
   backend_login_uri: /
   #前台登录URI

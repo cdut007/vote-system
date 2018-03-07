@@ -76,7 +76,7 @@
 		});
 
         $("#verifyImg").click(function () {
-
+            layer.msg("功能完善中，请刷新页面刷新验证码");
         });
 
 	  });

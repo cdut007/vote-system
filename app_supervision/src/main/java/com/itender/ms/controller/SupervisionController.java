@@ -73,7 +73,7 @@ public class SupervisionController {
         return "/supervision/index";
     }
 
-    @RequestMapping(value = "/startVideo")
+    @RequestMapping(value = "/startVideo",method = RequestMethod.GET)
     public String startSupervise(HttpServletRequest request) throws APIException{
         String roomId = request.getParameter("room");
         request.setAttribute("roomId",roomId);
@@ -81,7 +81,7 @@ public class SupervisionController {
     }
 
 
-    @RequestMapping(value = "/roomDevList")
+    @RequestMapping(value = "/roomDevList",method = RequestMethod.GET)
     public ResponseEntity<Map<String,Object>> devList(HttpServletRequest request,@RequestParam(name = "roomId") String roomId) throws APIException{
         Map<String,Object> result = new HashMap<>();
         List<ItenderDevice> devices = new ArrayList<>();
