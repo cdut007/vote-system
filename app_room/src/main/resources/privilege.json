@@ -9,5 +9,145 @@
         "seq":0,
         "level":1,
         "ref":""
-    }
+    },{
+    "id":"",
+    "privilegeName":"房间预订记录",
+    "alias":"房间预订记录",
+    "privilegeUri":"/book/listBookRecord",
+    "privilegeMethod":"POST",
+    "icon":"",
+    "seq":0,
+    "level":2,
+    "ref":"房间预订"
+},{
+    "id":"",
+    "privilegeName":"查询房间预订",
+    "alias":"查询房间预订",
+    "privilegeUri":"/book/listBook",
+    "privilegeMethod":"POST",
+    "icon":"",
+    "seq":0,
+    "level":2,
+    "ref":"房间预订"
+},{
+    "id":"",
+    "privilegeName":"预订房间",
+    "alias":"预订房间",
+    "privilegeUri":"/book/add_page",
+    "privilegeMethod":"GET",
+    "icon":"",
+    "seq":0,
+    "level":2,
+    "ref":"房间预订"
+},{
+    "id":"",
+    "privilegeName":"创建预订房间",
+    "alias":"创建预订房间",
+    "privilegeUri":"/book/addBook",
+    "privilegeMethod":"POST",
+    "icon":"",
+    "seq":0,
+    "level":2,
+    "ref":"房间预订"
+},{
+    "id":"",
+    "privilegeName":"下载报表",
+    "alias":"下载报表",
+    "privilegeUri":"/book/downloadRecord",
+    "privilegeMethod":"GET",
+    "icon":"",
+    "seq":0,
+    "level":2,
+    "ref":"房间预订"
+},{
+    "id":"",
+    "privilegeName":"取消预订",
+    "alias":"取消预订",
+    "privilegeUri":"/book/cancelBook",
+    "privilegeMethod":"POST",
+    "icon":"",
+    "seq":0,
+    "level":2,
+    "ref":"房间预订"
+},{
+    "id":"",
+    "privilegeName":"房间管理",
+    "alias":"房间管理",
+    "privilegeUri":"/room",
+    "privilegeMethod":"GET",
+    "icon":"",
+    "seq":0,
+    "level":1,
+    "ref":""
+},{
+    "id":"",
+    "privilegeName":"房间列表",
+    "alias":"房间列表",
+    "privilegeUri":"/room/listRoom",
+    "privilegeMethod":"POST",
+    "icon":"",
+    "seq":0,
+    "level":2,
+    "ref":"房间管理"
+},{
+    "id":"",
+    "privilegeName":"添加房间",
+    "alias":"添加房间",
+    "privilegeUri":"/room/addRoom",
+    "privilegeMethod":"POST",
+    "icon":"",
+    "seq":0,
+    "level":2,
+    "ref":"房间管理"
+},{
+    "id":"",
+    "privilegeName":"删除房间",
+    "alias":"删除房间",
+    "privilegeUri":"/room/delRoom",
+    "privilegeMethod":"POST",
+    "icon":"",
+    "seq":0,
+    "level":2,
+    "ref":"房间管理"
+},{
+    "id":"",
+    "privilegeName":"更新房间",
+    "alias":"更新房间",
+    "privilegeUri":"/room/updateRoom",
+    "privilegeMethod":"POST",
+    "icon":"",
+    "seq":0,
+    "level":2,
+    "ref":"房间管理"
+},{
+    "id":"",
+    "privilegeName":"更新房间页面",
+    "alias":"更新房间页面",
+    "privilegeUri":"/room/edit_page",
+    "privilegeMethod":"GET",
+    "icon":"",
+    "seq":0,
+    "level":2,
+    "ref":"房间管理"
+},{
+    "id":"",
+    "privilegeName":"添加房间页面",
+    "alias":"添加房间页面",
+    "privilegeUri":"/room/add_page",
+    "privilegeMethod":"GET",
+    "icon":"",
+    "seq":0,
+    "level":2,
+    "ref":"房间管理"
+},{
+    "id":"",
+    "privilegeName":"管理房间页面",
+    "alias":"管理房间页面",
+    "privilegeUri":"/room/room_page",
+    "privilegeMethod":"GET",
+    "icon":"",
+    "seq":0,
+    "level":2,
+    "ref":"房间管理"
+}
 ]
