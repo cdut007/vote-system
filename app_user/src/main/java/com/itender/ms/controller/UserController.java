@@ -121,14 +121,22 @@ public class UserController {
     @RequestMapping(value = "/register",method = RequestMethod.POST)
 	public ResponseEntity<Map<String,Object>> userRegister(HttpServletRequest request,
 			@ApiParam(name = "username",value = "用户名",required = true) @RequestParam(required = true) String username,
-    		@ApiParam(name = "password",value = "密码",required = true) @RequestParam(required = true) String password,
-    		@ApiParam(name = "email",value = "Email",required = true) @RequestParam(required = false) String email
+			@ApiParam(name = "nickName",value = "用户姓名",required = true) @RequestParam(required = true) String nickName,
+			@ApiParam(name = "company",value = "单位") @RequestParam(required = false) String company,
+            @ApiParam(name = "position",value = "职位") @RequestParam(required = false) String position,
+            @ApiParam(name = "email",value = "Email") @RequestParam(required = false) String email,
+    		@ApiParam(name = "phone",value = "联系电话") @RequestParam(required = false) String phone,
+			@ApiParam(name = "password",value = "密码",required = true) @RequestParam(required = true) String password
     		) throws APIException{
 		Map<String,Object> result = new HashMap<>();
 		ItenderUser user = new ItenderUser();
 		user.setUserName(username);
-		user.setPassword(password);
+		user.setNickName(nickName);
+		user.setCompany(company);
+		user.setPosition(position);
 		user.setEmail(email);
+		user.setPassword(password);
+		user.setPhone(phone);
 		user.setRegisterTime(new Date());
 		user.setRegisterIp(request.getRemoteAddr());
 		user.setDefaultAdmin(false);

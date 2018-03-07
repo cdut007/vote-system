@@ -5,13 +5,37 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">用户名</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="username" lay-verify="username" lay-verType="tips" placeholder="用户名" autocomplete="off" class="layui-input">
+                        <input type="text" name="username" lay-verify="username" lay-verType="tips" placeholder="用户名*" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">姓名</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="nickName" lay-verify="nickName" lay-verType="tips" placeholder="姓名*" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">单位</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="company" lay-verify="" lay-verType="tips" placeholder="单位" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">职位</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="position" lay-verify="" lay-verType="tips" placeholder="职位" autocomplete="off" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">联系电话</label>
                     <div class="layui-input-inline">
                         <input type="text" name="phone" lay-verify="" lay-verType="tips" placeholder="联系电话" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">邮箱地址</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="email" lay-verify="" lay-verType="tips" placeholder="邮箱地址" autocomplete="off" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -23,7 +47,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">确认密码</label>
                     <div class="layui-input-inline">
-                        <input type="password" id="rePassword" name="rePassword" lay-verify="rePassword" lay-verType="tips" placeholder="密码" autocomplete="off" class="layui-input">
+                        <input type="password" id="rePassword" name="rePassword" lay-verify="rePassword" lay-verType="tips" placeholder="再次输入密码" autocomplete="off" class="layui-input">
                     </div>
                 </div>
 
@@ -45,8 +69,12 @@
         form.verify({
             username: function (value, item) {
                 if (value.length == 0){
-
                     return "用户名不能为空";
+                }
+            },
+            nickName: function(value, item){
+                if (value.length == 0){
+                    return "姓名不能为空";
                 }
             },
             password: function (value, item) {
