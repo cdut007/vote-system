@@ -30,8 +30,6 @@ import com.itender.ms.convert.ThumbnailConvert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 /**
  * 图片处理工具类
@@ -259,13 +257,19 @@ public class ImageUtil {
 			g.drawImage(src_biao, (wideth - wideth_biao) / 2, (height - height_biao) / 2, wideth_biao, height_biao, null);
 			// 水印文件结束
 			g.dispose();
-			FileOutputStream out = new FileOutputStream(targetImg);
-			JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
-			encoder.encode(image);
-			out.close();
+
+			saveImage(image,targetImg);
 		} catch (Exception e) {
 			throw new RuntimeException("图片水印写入异常");
 		}
+	}
+
+	static void saveImage(BufferedImage dstImage, String dstName) throws IOException {
+		String formatName = dstName.substring(dstName.lastIndexOf(".") + 1);
+		//FileOutputStream out = new FileOutputStream(dstName);
+		//JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+		//encoder.encode(dstImage);
+		ImageIO.write(dstImage, /*"GIF"*/ formatName /* format desired */ , new File(dstName) /* target */ );
 	}
 
 	/**
@@ -303,10 +307,7 @@ public class ImageUtil {
 
 			g.drawString(pressText, wideth - fontSize - x, height - fontSize / 2 - y);
 			g.dispose();
-			FileOutputStream out = new FileOutputStream(targetImg);
-			JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
-			encoder.encode(image);
-			out.close();
+			saveImage(image,targetImg);
 		} catch (Exception e) {
 			throw new RuntimeException("图片水印写入异常");
 		}
