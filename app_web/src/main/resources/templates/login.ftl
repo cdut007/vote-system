@@ -39,7 +39,7 @@
                     <div class="layui-input-inline">
                         <input type="text" class="layui-input" name="captcha" id="captcha" lay-verify="captcha" lay-verType="tips" placeholder="验证码">
                     </div>
-                    <div class="layui-form-mid layui-word-aux"><img id="verifyImg" src="management/user/code" style="height: 35px;margin-top: -7px;" title="点击刷新验证码">(区分大小写)</div>
+                    <div class="layui-form-mid layui-word-aux" id="verifyImgDiv"><img id="verifyImg" src="management/user/code" style="height: 35px;margin-top: -7px;" title="点击刷新验证码">(区分大小写)</div>
                 </div>
                 <div class="layui-form-item">
                     <div class="layui-input-block">
@@ -66,6 +66,9 @@
             },
             password: function (value, item) {
                 if (value.length == 0) return "密码不能为空"
+            },
+            captcha: function (value, item) {
+                if (value.length == 0) return "验证码不能为空"
             }
         });
         form.on('submit(login)', function(data){
@@ -75,8 +78,9 @@
 			return false;
 		});
 
-        $("#verifyImg").click(function () {
-            layer.msg("功能完善中，请刷新页面刷新验证码");
+        $("#verifyImgDiv").click(function () {
+            var time = new Date().getTime();
+            $("#verifyImgDiv").empty().append('<img id="verifyImg" src="management/user/code?'+time+'" style="height: 35px;margin-top: -7px;" title="点击刷新验证码">(区分大小写)');
         });
 
 	  });

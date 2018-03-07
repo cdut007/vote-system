@@ -69,8 +69,8 @@ public class UserController {
 		String captchaSession = (String)session.getAttribute("captcha");
 		if(!captcha.equals(captchaSession)){
 			result.put("status", false);
-			result.put("msg", "验证码错误!");
-			logger.info("用户验证码："+captcha);
+			result.put("msg", "验证码错误");
+			logger.debug("登录验证码：["+captchaSession+"] 用户输入验证码：["+captcha+"]");
 			return ResponseEntity.ok(result);
 		}
 
@@ -92,7 +92,6 @@ public class UserController {
 		//将验证码存入Session
 		HttpSession session = request.getSession();
 		session.setAttribute("captcha",objs[0]);
-		logger.info("验证码："+objs[0]);
 		//将图片输出给浏览器
 		BufferedImage image = (BufferedImage) objs[1];
 		response.setContentType("image/png");
