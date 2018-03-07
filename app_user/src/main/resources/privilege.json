@@ -276,9 +276,9 @@
 },
   {
     "id":"",
-    "privilegeName":"用户",
-    "alias":"用户",
-    "privilegeUri":"/management/user",
+    "privilegeName":"行业管理",
+    "alias":"行业管理",
+    "privilegeUri":"/industry/list",
     "privilegeMethod":"GET",
     "icon":"",
     "seq":0,

@@ -168,7 +168,12 @@ layui.define(function (exports) {
                 })();
                 cfg["events"] = Main.EventMap;
                 SupervisionObj.sdk_viewer = new Utils.Player(cfg);                                       //初始化控件
-                var retcode = SupervisionObj.sdk_viewer.execFunction("NetSDKSetPlayWndNum" , 1);         //分屏
+                var retcode ;
+                try{
+                    retcode = SupervisionObj.sdk_viewer.execFunction("NetSDKSetPlayWndNum" , 1);         //分屏
+                }catch (e){
+                    layui.layer.alert("实况窗口实例化失败!");
+                }
                 if(0!=retcode){
                     layui.layer.alert("实况窗口实例化失败!");
                 }
