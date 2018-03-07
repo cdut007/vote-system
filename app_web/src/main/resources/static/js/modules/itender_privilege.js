@@ -69,6 +69,7 @@ layui.define(function (exports) {
                 $.ajax({
                     url: "/management/privilege/delPrivilege",
                     type: "GET",
+                    cache:false,
                     dataType: "json",
                     data: {privilegeId:privilegeId},
                     success: function (res) {

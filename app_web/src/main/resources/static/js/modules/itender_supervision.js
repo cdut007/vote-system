@@ -80,6 +80,7 @@ layui.define(function (exports) {
                 $.ajax({
                     url: "/supervision/roomDevList",
                     type: "GET",
+                    cache:false,
                     dataType: "json",
                     contentType: "application/json",
                     data: {
@@ -262,6 +263,7 @@ layui.define(function (exports) {
                 $.ajax({
                     url: '/supervision/searchRoom',
                     type: "GET",
+                    cache:false,
                     dataType: "json",
                     data: data,
                     success: function (res) {

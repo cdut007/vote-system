@@ -13,7 +13,8 @@
  * layui全局配置，加载扩展模块
  */
 layui.config({
-    base:"/js/modules/"
+    base:"/js/modules/",
+    version: false
 }).extend({
     metaTemplate:"meta_template",
     invitationDocuments:"invitation_documents",

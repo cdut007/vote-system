@@ -113,6 +113,7 @@ layui.define(function (exports) {
                 $.ajax({
                     url: data.queryUrl,
                     type: "GET",
+                    cache:false,
                     data: {id: data.queryId},
                     success: function (res) {
                         var isJson = RoomObj.isJsonString(res);

@@ -16,6 +16,7 @@ layui.define(function (exports) {
             $.ajax({
                 url: "/itender/projects",
                 dataType: "json",
+                cache:false,
                 type: "GET",
                 success: function (data) {
                     if (callback && typeof callback == "function") {

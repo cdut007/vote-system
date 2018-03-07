@@ -93,7 +93,8 @@
              ,min: beginTime
              ,max: endTime
             ,done: function(value, date){
-                var time = (new Date(value)).getTime();
+                var time = Date.parse(value.replace(/-/g,"/"));
+
                 beginTime = time;
 
                 //{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
@@ -107,7 +108,7 @@
             ,min: beginTime
             ,max: endTime
             ,done: function(value, date){
-                var time = (new Date(value)).getTime();
+                var time = Date.parse(value.replace(/-/g,"/"));
                 endTime = time;
 
                 //{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}

@@ -10,7 +10,7 @@
 
 <div class="layui-tab" lay-filter="booktab">
 <ul class="layui-tab-title">
-    <li class="layui-this">预订记录</li>
+    <li lay-id="record" class="layui-this">预订记录</li>
     <li>房间预订</li>
 
 </ul>
@@ -207,7 +207,8 @@
                     recordBeginTime = 0;
 
                 }else{
-                    var time = (new Date(value)).getTime();
+                    var time = Date.parse(value.replace(/-/g,"/"));
+
                     recordBeginTime = time;
                 }
 
@@ -226,7 +227,7 @@
                     recordEndTime = 0;
 
                 }else{
-                    var time = (new Date(value)).getTime();
+                    var time = Date.parse(value.replace(/-/g,"/"));
                     recordEndTime = time;
                 }
 
@@ -242,7 +243,7 @@
             ,type: 'datetime'
             ,value:beginDate
             ,done: function(value, date){
-                var time = (new Date(value)).getTime();
+                var time = Date.parse(value.replace(/-/g,"/"));
                 beginTime = time;
                 //reloadBookList();
 
@@ -255,7 +256,7 @@
             ,type: 'datetime'
             ,value: endDate
             ,done: function(value, date){
-                var time = (new Date(value)).getTime();
+                var time = Date.parse(value.replace(/-/g,"/"));
                 endTime = time;
                 //reloadBookList();
                 //{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
@@ -402,7 +403,16 @@
                     queryUrl: '/book/add_page'
                 }
                 itenderBookModule.openModal(data,function (layerDom,index) {
-                    currentTable.reload();
+
+                    if(layerDom == 'end'){
+                        recordTable.reload();
+                        currentTable.reload();
+                        element.tabChange('booktab', 'record');
+                    }else if(layerDom == 'cancel'){
+
+                        currentTable.reload();
+                    }
+
                 });
             }
 

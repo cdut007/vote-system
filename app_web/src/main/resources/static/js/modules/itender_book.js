@@ -113,10 +113,12 @@ layui.define(function (exports) {
         openModal: function (data,callback) {
             var layer = layui.layer;
             var synServer = function (data,callback) {
+                var cancel = false;
 
                 $.ajax({
                     url: data.queryUrl,
                     type: "GET",
+                    cache:false,
                     data: {id: data.queryId,beginTime:data.beginTime,endTime:data.endTime},
                     success: function (res) {
                         var isJson = BookObj.isJsonString(res);
@@ -140,8 +142,18 @@ layui.define(function (exports) {
                                     layui.form.render();
                                     callback(layerDom, index);
                                 },
+                                cancel: function(index, layero){
+                                    cancel = true;
+
+                                    return true;
+                                },
                                 end: function () {
-                                    callback();
+                                    if(cancel){
+                                        callback('cancel');
+                                    }else{
+                                        callback('end');
+                                    }
+
                                 }
                             });
                         }

@@ -10,9 +10,9 @@ server:
 
 #数据库IP
 db:
-  ip: 47.94.241.88:3306
+  ip: 127.0.0.1
   name: itender_supervise
-  username: dev
+  username: root
   password: Ycp7WyjzNA
 
 
