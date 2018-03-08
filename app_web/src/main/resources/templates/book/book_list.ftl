@@ -353,7 +353,7 @@
                 {title: "房间名", width:300,field: 'name'},
                 {title: "预订开始时间",width:180,field: 'beginTime', templet: '#beginTime'},
                 {title: "预订结束时间",width:180,field: 'endTime', templet: '#endTime'},
-                {fixed: 'right', width:120,align: 'center',toolbar: '#bookTableTool'}
+                {fixed: 'right', width:354,align: 'center',toolbar: '#bookTableTool'}
 
             ]],
                 where:{beginTime:beginTime,endTime:endTime},
