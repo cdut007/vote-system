@@ -27,7 +27,7 @@ public class ItenderLog {
 
     @Column(name="end_time")
 
-    private String endTime;//结束访问时间
+    private Date endTime;//结束访问时间
 
 
     //设备地址信息
@@ -87,11 +87,11 @@ public class ItenderLog {
         this.startTime = startTime;
     }
 
-    public String getEndTime() {
+    public Date getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(String endTime) {
+    public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
 

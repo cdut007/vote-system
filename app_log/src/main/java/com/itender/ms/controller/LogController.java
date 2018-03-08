@@ -57,13 +57,33 @@ public class LogController {
     @RequestMapping(value = "/listLog",method = RequestMethod.POST)
     public ResponseEntity<LayuiTableData> logAll(HttpServletRequest request,
                                                     @RequestParam(required = false) Integer pageNum,
-                                                    @RequestParam(required = false) Integer pagesize
+                                                    @RequestParam(required = false) Integer pagesize,
+                                                 @RequestParam(required = false) Long beginTime,
+                                                 @RequestParam(required = false) Long endTime,
+                                                 @RequestParam(required = false) String keyword
     ) throws APIException{
 
         pageNum = pageNum == null?1:pageNum;
         pagesize = pagesize == null?10:pagesize;
 
-        PageInfo<ItenderLog> page = itenderLogService.findPage(pageNum, pagesize);
+        logger.debug("==获取开始时间="+beginTime);
+        logger.debug("==获取结束时间="+endTime);
+
+        if(beginTime == null){
+            beginTime = new Long(0L);
+        }
+
+        if(endTime == null){
+            long tenYear =  315360000000L;
+            endTime = System.currentTimeMillis()+tenYear;//加10年
+        }
+
+
+        PageInfo<ItenderLog> page = null;
+        itenderLogService.setSearchInfo(beginTime,endTime,keyword);
+
+        page = itenderLogService.findPage(pageNum, pagesize);
+
 
         return ResponseEntity.ok(PageDataConvert.convertToLayuiData(page,200,"success"));
     }

@@ -6,9 +6,29 @@
 
         <result column="content" javaType="STRING" property="content"></result>
         <result column="ip" javaType="STRING" property="ip"></result>
+        <result column="start_time" javaType="DATE" property="startTime"></result>
+        <result column="end_time" javaType="DATE" property="endTime"></result>
+        <result column="browser_type" javaType="STRING" property="browserType"></result>
+        <result column="level" javaType="STRING" property="level"></result>
+        <result column="user" javaType="STRING" property="user"></result>
 
 
     </resultMap>
+
+
+    <select id="selectByFilter"
+            resultMap="itenderLog">
+        select * from itender_log log where
+        NOT ((end_time <![CDATA[ < ]]> #{startTime})
+        OR (start_time <![CDATA[ > ]]> #{endTime})
+        )
+        <if test="keyword != null">
+            AND UPPER(CONCAT(log.content,log.user,log.ip,log.browser_type)) LIKE UPPER (CONCAT(CONCAT('%', #{keyword, jdbcType=VARCHAR}),'%')) ESCAPE '/'
+        </if>
+        ORDER BY start_time desc
+
+    </select>
+
 
 
 

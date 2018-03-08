@@ -180,7 +180,8 @@ public class BookController {
         }
 
         if(endTime == null){
-            endTime = System.currentTimeMillis()+365*10*24*3600*1000;//加10年
+            long tenYear =  315360000000L;
+            endTime = System.currentTimeMillis()+tenYear;//加10年
         }
 
         List<ItenderBook> bookList = itenderBookService.findByBeginTime(beginTime,endTime);

@@ -243,6 +243,55 @@ public class DeviceLogAop {
         itenderLogService.add(itenderLog);
     }
 
+/**
+ * 进入房间 ，离开房间 ，打开视频
+ * */
+    @Pointcut("execution(public * com.itender.ms.controller.SupervisionController.logRecord(..))")
+    public void logRecord() {
+    }
+
+    @After("logRecord()")
+    public void afterlogRecord(JoinPoint joinPoint) throws APIException {
+
+        Object[] args = joinPoint.getArgs();
+        for (Object arg : args) {
+
+        }
+
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+
+        ItenderLog itenderLog = AopUtil.initInfo(requestAttributes.getRequest());
+
+
+
+       // itenderLogService.add(itenderLog);
+    }
+
+    @Pointcut("execution(public * com.itender.ms.controller.SupervisionController.startSupervise(..))")
+    public void startSupervise() {
+    }
+
+    @After("startSupervise()")
+    public void afterstartSupervise(JoinPoint joinPoint) throws APIException {
+
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+
+        ItenderLog itenderLog = AopUtil.initInfo(requestAttributes.getRequest());
+
+        Object[] args = joinPoint.getArgs();
+        for (Object arg : args) {
+
+        }
+
+        itenderLog.setContent("打开视频:打开监控视频!");
+
+        itenderLogService.add(itenderLog);
+    }
+
+
+
+
+
 
 
 }

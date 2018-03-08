@@ -11,7 +11,10 @@ import java.util.List;
  */
 public interface ItenderLogService extends ItenderServiceBase<ItenderLog> {
 
+    public void setSearchInfo(long startTime,long endTime,String keyword);
 
-	
+
+
+
 
 }

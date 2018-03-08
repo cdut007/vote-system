@@ -77,6 +77,7 @@ public class SupervisionController {
     public String startSupervise(HttpServletRequest request) throws APIException{
         String roomId = request.getParameter("room");
         request.setAttribute("roomId",roomId);
+        //
         return "/supervision/startVideo";
     }
 

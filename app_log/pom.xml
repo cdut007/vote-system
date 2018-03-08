@@ -32,6 +32,11 @@
             <artifactId>app_user</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.itender</groupId>
+            <artifactId>app_supervision</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/eu.bitwalker/UserAgentUtils -->
         <dependency>
             <groupId>eu.bitwalker</groupId>
