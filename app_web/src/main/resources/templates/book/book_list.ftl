@@ -243,8 +243,14 @@
             ,type: 'datetime'
             ,value:beginDate
             ,done: function(value, date){
+                if(!value){
+                    beginTime = 0;
+
+                }else{
+                    var time = Date.parse(value.replace(/-/g,"/"));
+                    beginTime = time;
+                }
                 var time = Date.parse(value.replace(/-/g,"/"));
-                beginTime = time;
                 //reloadBookList();
 
                 //{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
@@ -256,8 +262,14 @@
             ,type: 'datetime'
             ,value: endDate
             ,done: function(value, date){
-                var time = Date.parse(value.replace(/-/g,"/"));
-                endTime = time;
+                if(!value){
+                    endTime = 0;
+
+                }else{
+                    var time = Date.parse(value.replace(/-/g,"/"));
+                    endTime = time;
+                }
+
                 //reloadBookList();
                 //{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
             }
@@ -405,6 +417,8 @@
                 itenderBookModule.openModal(data,function (layerDom,index) {
 
                     if(layerDom == 'end'){
+                        //
+
                         recordTable.reload();
                         currentTable.reload();
                         element.tabChange('booktab', 'record');
