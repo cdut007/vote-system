@@ -89,25 +89,29 @@ layui.define(function (exports) {
                     success: function (res) {
                         console.log(res);
                         layui.layer.close(index);
-                        $.each(res.data, function(index, dev){
-                            var initData ={
-                                id: "player_"+index,
-                                container: "playerContainer_"+index,
-                                name: "sdk_viewer_"+index,
-                                dev: {
-                                    devIP: dev.ip,
-                                    devPort: dev.port,
-                                    username: dev.account,
-                                    password: dev.password
-                                }
-                            };
-                            $("#"+data.container).append(
-                                "<li class='video'>" +
-                                "<div id=playerContainer_"+index+" style='height: 1px;'>"+dev.name+"</div>" +
-                                "</li>"
-                            );
-                            SupervisionObj.init(initData);
-                        });
+                        if(res.data.length==0){
+                            layui.layer.alert("当前房间没有可用监控设备");
+                        }else{
+                            $.each(res.data, function(index, dev){
+                                var initData ={
+                                    id: "player_"+index,
+                                    container: "playerContainer_"+index,
+                                    name: "sdk_viewer_"+index,
+                                    dev: {
+                                        devIP: dev.ip,
+                                        devPort: dev.port,
+                                        username: dev.account,
+                                        password: dev.password
+                                    }
+                                };
+                                $("#"+data.container).append(
+                                    "<li class='video'>" +
+                                    "<div id=playerContainer_"+index+" style='height: 1px;'>"+dev.name+"</div>" +
+                                    "</li>"
+                                );
+                                SupervisionObj.init(initData);
+                            });
+                        }
                     },
                     error: function (xmlHttpReq, error, ex) {
                         layui.layer.close(index);
