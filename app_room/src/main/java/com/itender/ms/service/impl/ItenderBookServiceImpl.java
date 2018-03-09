@@ -109,7 +109,7 @@ public class ItenderBookServiceImpl implements ItenderBookService {
 	public PageInfo<ItenderBook> findPage(Integer pageNum, Integer pagesize) throws APIException {
 		PageHelper.startPage(pageNum,pagesize);
 		List<ItenderBook> itenderBook ;
-        Example example = new Example(ItenderBook.class);
+
         if(searchModel){
 			logger.debug("==searchModel=");
 			logger.debug("==searchRoomId="+searchRoomId);
@@ -123,6 +123,7 @@ public class ItenderBookServiceImpl implements ItenderBookService {
 			//reset
 			resetSearch();
         }else{
+			Example example = new Example(ItenderBook.class);
 			example.setOrderByClause("create_time desc");
 			itenderBook = itenderBookMapper.selectByExample(example);
 		}
@@ -161,11 +162,10 @@ public class ItenderBookServiceImpl implements ItenderBookService {
 	private  List<ItenderBook> checkBookListStatus(List<ItenderBook> itenderBookList){
 		if(itenderBookList!=null && !itenderBookList.isEmpty()){
 			int size = itenderBookList.size();
-			List<ItenderBook> newBookList = new ArrayList<>();
+
 			for (int i = 0; i < size; i++) {
-				newBookList.add(checkBookStatus(itenderBookList.get(i)));
+				checkBookStatus(itenderBookList.get(i));//不能赋值给新的list
 			}
-			return  newBookList;
 		}
 		return  itenderBookList;
 	}

@@ -62,7 +62,7 @@ public class ItenderRoomServiceImpl implements ItenderRoomService {
 
 	@Override
 	public PageInfo<ItenderRoom> findPageByFilterBookRooms(Integer pageNum, Integer pagesize , List<ItenderBook> bookList) throws APIException {
-		PageHelper.startPage(1,80);
+		PageHelper.startPage(pageNum,pagesize);
 		Set<String> roomSet=new HashSet<String>();
 		for (int i = 0; i < bookList.size(); i++) {
 			roomSet.add(bookList.get(i).getRoomId());

@@ -170,7 +170,7 @@ public class BookController {
     ) throws APIException{
 
         pageNum = pageNum == null?1:pageNum;
-        pagesize = pagesize == null?50:pagesize;//一次取完
+        pagesize = pagesize == null?10:pagesize;//一次取完
         //订房开始时间大于订单截止时间的房间才可用
         logger.debug("==获取开始时间="+beginTime);
         logger.debug("==获取结束时间="+endTime);

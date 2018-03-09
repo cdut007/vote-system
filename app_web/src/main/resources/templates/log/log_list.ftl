@@ -164,14 +164,20 @@
 
             //执行重载
             currentTable.reload({
+
                 page: {
                     curr: 1 //重新从第 1 页开始
                 },
+
                 where:{beginTime:beginTime,endTime:endTime,keyword:keyword},
                 request: {
+                    keyword:'keyword',
                     beginTime:'beginTime',
-                    endTime:'endTime'
+                    endTime:'endTime',
+                    pageName: 'pageNum', //页码的参数名称，默认：page
+                    limitName: 'pagesize' //每页数据量的参数名，默认：limit
                 }
+
 
             });
         }

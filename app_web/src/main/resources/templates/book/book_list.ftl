@@ -493,7 +493,9 @@
                 request: {
                     beginTime:'beginTime',
                     endTime:'endTime',
-                    roomId:roomId
+                    roomId:roomId,
+                    pageName: 'pageNum', //页码的参数名称，默认：page
+                    limitName: 'pagesize' //每页数据量的参数名，默认：limit
                 }
 
             });
@@ -527,7 +529,9 @@
                 where:{beginTime:beginTime,endTime:endTime},
                 request: {
                     beginTime:'beginTime',
-                    endTime:'endTime'
+                    endTime:'endTime',
+                    pageName: 'pageNum', //页码的参数名称，默认：page
+                    limitName: 'pagesize' //每页数据量的参数名，默认：limit
                 }
 
             });
