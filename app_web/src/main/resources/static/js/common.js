@@ -36,6 +36,19 @@ layui.config({
     itenderSupervision:"itender_supervision"
 })
 
+layui.use('layer', function(){
+    var layer = layui.layer;
+
+    //全局使用。即所有弹出层都默认采用，但是单个配置skin的优先级更高
+    layer.config({
+        extend: 'skin/style.css', //加载新皮肤
+        skin: 'layer-ext-skin' //一旦设定，所有弹层风格都采用此主题。
+    })
+
+});
+
+
+
 var view = {
     goto:function (url) {
         window.location.href = url;

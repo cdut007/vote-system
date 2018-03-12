@@ -119,7 +119,6 @@ layui.define(function (exports) {
                                 type: 1,
                                 title: data.title,
                                 area: data.area,
-                                skin: 'layui-layer-molv',
                                 content: res,
                                 scrollbar: true,
                                 closeBtn: data.closeBtn,
