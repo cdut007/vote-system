@@ -3,15 +3,15 @@
     <div class="layui-row">
             <form class="layui-form layui-form-pane" action="">
                 <div class="layui-form-item">
-                    <label class="layui-form-label">用户名</label>
+                    <label class="layui-form-label">用户名*</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="username" lay-verify="username" lay-verType="tips" placeholder="用户名*" autocomplete="off" class="layui-input">
+                        <input type="text" name="username" lay-verify="username" lay-verType="tips" placeholder="用户名" autocomplete="off" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">姓名</label>
+                    <label class="layui-form-label">姓名*</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="nickName" lay-verify="nickName" lay-verType="tips" placeholder="姓名*" autocomplete="off" class="layui-input">
+                        <input type="text" name="nickName" lay-verify="nickName" lay-verType="tips" placeholder="姓名" autocomplete="off" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -39,13 +39,13 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">密码</label>
+                    <label class="layui-form-label">密码*</label>
                     <div class="layui-input-inline">
                         <input type="password" id="password" name="password" lay-verify="password" lay-verType="tips" placeholder="密码" autocomplete="off" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">确认密码</label>
+                    <label class="layui-form-label">确认密码*</label>
                     <div class="layui-input-inline">
                         <input type="password" id="rePassword" name="rePassword" lay-verify="rePassword" lay-verType="tips" placeholder="再次输入密码" autocomplete="off" class="layui-input">
                     </div>
