@@ -7,9 +7,6 @@
     <facet type="web" name="Web">
       <configuration>
         <webroots />
-        <sourceRoots>
-          <root url="file://$MODULE_DIR$/src/main/java" />
-        </sourceRoots>
       </configuration>
     </facet>
   </component>
@@ -35,6 +32,7 @@
     <orderEntry type="library" name="Maven: stax:stax-api:1.0.1" level="project" />
     <orderEntry type="library" name="Maven: com.github.virtuald:curvesapi:1.04" level="project" />
     <orderEntry type="module" module-name="app_user" />
+    <orderEntry type="module" module-name="app_supervision" />
     <orderEntry type="library" name="Maven: eu.bitwalker:UserAgentUtils:1.21" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-configuration-processor:1.5.9.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: com.vaadin.external.google:android-json:0.0.20131108.vaadin1" level="project" />
