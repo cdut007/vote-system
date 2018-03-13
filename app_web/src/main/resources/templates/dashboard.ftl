@@ -64,27 +64,51 @@
 
     #field_supervision{
         background-color: #ee5540!important;
-        solid #ee5540!important;
+        solid #E1260C!important;
+    }
+    #field_supervision:active {
+
+        background-color: #E1260C!important;
     }
 
     #process_supervision{
         background-color: #b8e986!important;
-        solid #b8e986!important;
+        solid #82D330!important;
+    }
+    #process_supervision:active {
+
+        background-color: #82D330!important;
     }
 
     #statistics{
         background-color: #53bfeb!important;
-        solid #53bfeb!important;
+        solid #1AA6E0!important;
+    }
+    #statistics:active {
+
+        background-color: #1AA6E0!important;
     }
 
     #backlog{
         background-color: #fed15c!important;
-        solid #fed15c!important;
+        solid #EBAB04!important;
+    }
+    #backlog:active {
+
+        background-color: #EBAB04!important;
     }
 
     #system_management{
         background-color: #5cded4!important;
-        solid #5cded4!important;
+        solid #0EC0B2!important;
+    }
+
+    #system_management:active {
+
+        background-color: #0EC0B2!important;
+    }
+    .mui-card{
+        border-radius: 6px;
     }
 
 
