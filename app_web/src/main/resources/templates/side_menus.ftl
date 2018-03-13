@@ -4,21 +4,30 @@
         <div class="layui-side-scroll">
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+   <#--<@resource_check url="/book">-->
+                    <#--<li class="layui-nav-item">-->
+                        <#--<a class="" href="javascript:;"><img src="/css/img/icon_room_default.png" class="layui-nav-side-img">房间管理</a>-->
+                        <#--<dl class="layui-nav-child">-->
+                            <#--<dd id="book-room" data-uri="/book"><a href="/book">房间预订</a></dd>-->
+                            <#--<dd id="list-room" data-uri="/room"><a href="/room">房间维护</a></dd>-->
 
+                        <#--</dl>-->
+                    <#--</li>-->
+   <#--</@resource_check>-->
           <@resource_check url="/book">
-        <li class="layui-nav-item"><a href="/book">房间预订</a></li>
+        <li class="layui-nav-item layui-side-item"><a href="/book"><img src="/css/img/icon_room_default.png" class="layui-nav-side-img">房间预订</a></li>
           </@resource_check>
         <@resource_check url="/room">
-        <li class="layui-nav-item"><a href="/room">房间管理</a></li>
+        <li class="layui-nav-item layui-side-item"><a href="/room"><img src="/css/img/icon_limit_default.png" class="layui-nav-side-img">房间管理</a></li>
         </@resource_check>
          <@resource_check url="/device">
-        <li class="layui-nav-item"><a href="/device">设备管理</a></li>
+        <li class="layui-nav-item layui-side-item"><a href="/device"><img src="/css/img/icon_equipment_default.png" class="layui-nav-side-img">设备管理</a></li>
          </@resource_check>
          <@resource_check url="/log">
-        <li class="layui-nav-item"><a href="/log">日志管理</a></li>
+        <li class="layui-nav-item layui-side-item"><a href="/log"><img src="/css/img/icon_record_default.png" class="layui-nav-side-img">日志管理</a></li>
          </@resource_check>
                  <@resource_check url="/management/user">
-        <li class="layui-nav-item"><a href="/management/user">用户管理</a></li>
+        <li class="layui-nav-item layui-side-item"><a href="/management/user"><img src="/css/img/icon_user_default.png" class="layui-nav-side-img"> 用户管理</a></li>
                  </@resource_check>
 
 
@@ -63,19 +72,53 @@
 
 <script>
     layui.use(['element','itenderUser'], function(){
-        var $ = layui.jquery
-                ,element = layui.element //Tab的切换功能，切换事件监听等，需要依赖element模块
-                ,itenderUser = layui.itenderUser;
 
-        $('dd').on('click',function () {
-            var othis = $(this);
-            var id = othis.attr("id"); //左侧导航栏id
-            var uri = othis.data("uri"); //新标签页URI
-            var title = othis.text(); //新标签页标题
+        // layui.element.on('nav(filter)', function(elem){
+        //     console.log(elem); //得到当前点击的DOM对象
+        // });
 
-            element.tabDelete('tabBody', id);//删除旧的已存在Tap
-            itenderUser.addNewTab(id,uri,title,'tabBody');//新建新标签页
-        });
+
+        // var $ = layui.jquery
+        //         ,element = layui.element //Tab的切换功能，切换事件监听等，需要依赖element模块
+        //         ,itenderUser = layui.itenderUser;
+
+        // $('.layui-side-item').on('click',function () {
+        //     var othis = $(this);
+        //     var id = othis.attr("id"); //左侧导航栏id
+        //     var uri = othis.data("uri"); //新标签页URI
+        //     var title = othis.text(); //新标签页标题
+        //     console.log(othis);
+        //     //
+        //     // element.tabDelete('tabBody', id);//删除旧的已存在Tap
+        //     // itenderUser.addNewTab(id,uri,title,'tabBody');//新建新标签页
+        // });
 
     });
 </script>
+
+<style>
+
+    .layui-nav .layui-side-item a {
+
+        color: #464646;
+
+    }
+   /*.layui-this, .layui-nav-tree .layui-nav-child dd.layui-this a, .layui-nav-tree .layui-this, .layui-nav-tree .layui-this>a, .layui-nav-tree .layui-this>a:hover {*/
+         /*background-color: #f6f6f6;*/
+         /*color: #0069ae;*/
+    /*}*/
+
+
+    .layui-nav-side-img {
+        width: 20px;
+        height: 20px;
+        margin-right: 2px;
+        border-radius: 0%;
+    }
+    .layui-bg-black {
+        background-color: #f6f6f6!important;
+    }
+    .layui-nav {
+        background-color: #f6f6f6;
+    }
+</style>
