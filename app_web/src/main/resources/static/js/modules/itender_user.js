@@ -53,16 +53,26 @@ layui.define(function (exports) {
                 });
             }
 
-            layui.layer.confirm('您确定要退出!', {icon: 3, title: '退出确认'}, function (index) {
+            var exitFlag = confirm('您确定要退出！');
+            if(exitFlag){
                 syncServer(function (res, status) {
-                    layui.layer.close(index);
                     if(status){
                         view.goto('/');
                     }else{
                         layer.msg('系统繁忙,请稍后再试！', {icon: 5});
                     }
                 })
-            });
+            }
+            // layui.layer.confirm('您确定要退出!', {icon: 3, title: '退出确认',zIndex:9999999}, function (index) {
+            //     syncServer(function (res, status) {
+            //         layui.layer.close(index);
+            //         if(status){
+            //             view.goto('/');
+            //         }else{
+            //             layer.msg('系统繁忙,请稍后再试！', {icon: 5});
+            //         }
+            //     })
+            // });
         }
 
         ,addNewTab: function(id,uri,title,filter) {
