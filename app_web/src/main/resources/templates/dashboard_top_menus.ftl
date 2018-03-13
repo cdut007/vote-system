@@ -3,14 +3,25 @@
 <div class="layui-layout layui-layout-admin layui-header header-index">
    <#-- <span class="logo">综改区监督平台</span>-->
     <ul class="layui-nav no-border-radius layui-header">
-        <li class="layui-nav-item">您好！欢迎使用综改区公共资源交易监督系统</li>
+<#if user??>
+    <li class="layui-nav-item">您好！${user.userName},欢迎使用综改区公共资源交易监督系统</li>
+<#else>
+    <li class="layui-nav-item">您好！欢迎使用综改区公共资源交易监督系统</li>
+</#if>
 
 
     </ul>
     <ul class="layui-nav layui-layout-right layui-header">
         <li class="layui-nav-item"><a id="home" href="javascript:;"><img src="/css/img/icon_home.png" class="layui-nav-img">网站首页</a></li>
+
         <li class="layui-nav-item"><a id="userDetils" href="javascript:;"><img src="/css/img/icon_me.png" class="layui-nav-img">个人中心</a></li>
-        <li class="layui-nav-item"><a id="logout" href="javascript:;"><img src="/css/img/icon_login.png" class="layui-nav-img">登录</a></li>
+     <#if user??>
+      <li class="layui-nav-item"><a id="logout" href="javascript:;"><img src="/css/img/icon_logout.png" class="layui-nav-img">退出登录</a></li>
+
+     <#else>
+         <li class="layui-nav-item"><a id="login" href="javascript:;"><img src="/css/img/icon_login.png" class="layui-nav-img">登录</a></li>
+
+     </#if>
     </ul>
 </div>
 <script>
@@ -29,11 +40,26 @@
         var element = layui.element
                 ,itenderUser = layui.itenderUser;
         $("#logout").click(function () {
-            itenderUser.userLogout();//安全退出
+           itenderUser.userLogout();//安全退出
+        });
+        $("#login").click(function () {
+            view.goto('/login');
+
+        });
+        $("#home").click(function () {
+            view.goto('/');
+
         });
         $("#userDetils").click(function () {
+            var userName= '${(user.userName)!}';
+
+            if(!isLogin(userName)){
+                view.goto('/login');
+                return;
+            }
+
             var url = '/management/user/detilsModal';
-            var userId = '${user.id!}';
+            var userId = '${(user.id)!}';
             itenderUser.openModal({
                 title: '用户详情',//标题
                 area: 'auto',//宽高

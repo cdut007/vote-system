@@ -49,6 +49,15 @@ layui.use('layer', function(){
 
 
 
+function isLogin(userName) {
+    var isLogin =  userName;
+    if(isLogin && isLogin!=''){
+
+        return true;
+    }
+    return false;
+}
+
 var view = {
     goto:function (url) {
         window.location.href = url;
@@ -65,7 +74,6 @@ $.ajaxSetup({
                 type: 2,
                 title: '用户登录',
                 area:['70%','70%'],
-                skin:'layui-layer-molv',
                 closeBtn: 0,
                 shadeClose: false,
                 content: ['/']

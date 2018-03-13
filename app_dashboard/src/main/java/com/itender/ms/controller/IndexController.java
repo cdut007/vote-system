@@ -21,12 +21,12 @@ public class IndexController {
 
     @RequestMapping(value = "")
     public String loginView(){
-        return ViewUtil.forward("login");
+        return ViewUtil.forward("/dashboard");
     }
 
-    @RequestMapping(value = "/login",method = RequestMethod.POST)
+    @RequestMapping(value = "/login",method = RequestMethod.GET)
     public String login(HttpServletRequest req){
 
-        return ViewUtil.redirect("/dashboard");
+        return ViewUtil.forward("/login");
     }
 }

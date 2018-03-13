@@ -4,53 +4,90 @@
     <meta charset="UTF-8">
     <title>综改区监督平台 - 登录</title>
     <#include "resource.ftl">
+ <#include "dashboard_top_menus.ftl">
+    <link rel="stylesheet" href="/css/mui.min.css">
     <style>
-        .login {
-            margin-top: 15%;
+
+        #background {
+            margin-top: 1px;
+            height: 100%;
+            width: 100%;
+            background: url("/css/img/login_bg.jpg") no-repeat;
+            background-size: 100%;
+            background-size:cover;
+            background-position:center;
+
         }
+        .login-label {
+            text-align: center;
+            font-size: 16px;
+            background-color: #0069ae;
+            color: white;
+            border-top-left-radius:8px;
+            border-top-right-radius:8px;
+            padding: 12px 10px 12px 10px;
+        }
+        .mui-card{
+            border-radius: 10px;
+        }
+        .layui-input-block {
+            margin-left: 0px;
+            margin:0 auto;
+        }
+        .layui-row{
+            padding-left: 40px;
+            padding-right: 40px;
+            height: 100%;
+            padding-top: 60px;
+        }
+
+
+
     </style>
 </head>
 <body>
 
-<div class="layui-container login">
-    <div class="layui-row">
-        <div class="layui-col-md6 layui-col-md-offset3">
-            <form action="/login" method="post" class="layui-form">
-                <div class="layui-form-item">
-                    <div class="layui-input-block">
-                        <h2 style="text-align: center">登录</h2>
-                    <div class="layui-word-aux">默认用户名和密码:admin/123</div>
+<div id="background" class="layui-container login  mui-fullscreen">
+    <div align="center" class="mui-content mui-card" style="margin:0 auto;width:380px; height: 420px;background-color:#f6f6f6;z-index: 1000; margin-top: 20%;">
+        <header id="exam_label_bg" class="box-label-div">
+            <div  class="login-label">
+                山西省综改区公共资源交易监督系统
+            </div>
+        </header>
+
+        <div class="layui-row" style="">
+
+                <form action="/login" method="post" class="layui-form">
+
+                    <div class="layui-form-item">
+
+                        <div class="layui-input-block">
+                            <input type="text" class="layui-input" name="username" id="username" lay-verify="username" lay-verType="tips" placeholder="请输入用户名">
+                        </div>
                     </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label" for="username">用户名</label>
-                    <div class="layui-input-block">
-                        <input type="text" class="layui-input" name="username" id="username" lay-verify="username" lay-verType="tips" placeholder="用户名">
+                    <div class="layui-form-item">
+
+                        <div class="layui-input-block">
+                            <input type="password" class="layui-input" name="password" id="password" lay-verify="password" lay-verType="tips" placeholder="请输入密码">
+                        </div>
                     </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label" for="password">密码</label>
-                    <div class="layui-input-block">
-                        <input type="password" class="layui-input" name="password" id="password" lay-verify="password" lay-verType="tips" placeholder="密码">
+                    <div class="layui-form-item">
+                        <div class="layui-input-inline" style="width: 130px">
+                            <input type="text" class="layui-input" name="captcha" id="captcha" lay-verify="captcha" lay-verType="tips" placeholder="输入验证码">
+                        </div>
+                        <div class="layui-form-mid layui-word-aux" id="verifyImgDiv"><img id="verifyImg" src="management/user/code" style="height: 35px;margin-top: -7px;" title="验证码">(区分大小写)</div>
                     </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label" for="password">验证码</label>
-                    <div class="layui-input-inline">
-                        <input type="text" class="layui-input" name="captcha" id="captcha" lay-verify="captcha" lay-verType="tips" placeholder="验证码">
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn layui-btn-default layui-btn-block" lay-submit lay-filter="login" style="width: 100%">
+                                登录
+                            </button>
+                        </div>
                     </div>
-                    <div class="layui-form-mid layui-word-aux" id="verifyImgDiv"><img id="verifyImg" src="management/user/code" style="height: 35px;margin-top: -7px;" title="点击刷新验证码">(区分大小写)</div>
-                </div>
-                <div class="layui-form-item">
-                    <div class="layui-input-block">
-                        <button type="submit" class="layui-btn layui-btn-default layui-btn-block" lay-submit lay-filter="login" style="width: 100%">
-                            登录
-                        </button>
-                    </div>
-                </div>
-            </form>
+                </form>
         </div>
     </div>
+
 
 </div>
 </body>

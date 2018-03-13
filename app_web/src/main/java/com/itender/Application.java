@@ -84,9 +84,9 @@ public class Application{
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("招投标预发系统API接口")
-                .description("招投标预发系统API接口")
-                .contact(new Contact("邓洁芃","","djiepeng@126.com"))
+                .title("综改区交易监督API接口")
+                .description("综改区交易监督API接口")
+                .contact(new Contact("金蝉","",""))
                 .version("1.0")
                 .build();
     }

@@ -107,7 +107,7 @@ privilege-uri-init:
     - /management/user/logout
     - /management/user/register
     - /management/user/detilsModal
-    - /management/user/detils
+    - /management/user/
     - /management/user/updateMy
     - /supervision/logRecord
   #后台登录URI
