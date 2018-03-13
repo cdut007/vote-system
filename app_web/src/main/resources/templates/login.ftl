@@ -48,7 +48,7 @@
 <body>
 
 <div id="background" class="layui-container login  mui-fullscreen">
-    <div align="center" class="mui-content mui-card" style="margin:0 auto;width:380px; height: 420px;background-color:#f6f6f6;z-index: 1000; margin-top: 20%;">
+    <div align="center" class="mui-content mui-card" style="margin:0 auto;width:380px; height: 420px;background-color:#f6f6f6;z-index: 1000; margin-top: 15%;">
         <header id="exam_label_bg" class="box-label-div">
             <div  class="login-label">
                 山西省综改区公共资源交易监督系统
