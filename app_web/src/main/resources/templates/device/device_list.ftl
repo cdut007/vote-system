@@ -5,9 +5,11 @@
 <title>设备管理列表</title>
 <#include "../resource.ftl">
 </head>
-<body>
-<#include "../top_menus.ftl">
+<body class="layui-layout-body">
+<#include "../side_menus.ftl">
+<div class="layui-body" style="padding-top:60px;">
 <div class="layui-container margin-top">
+
     <div class="layui-row">
         <div class="layui-col-md-12 margin-bottom">
             <button class="layui-btn layui-btn-success" id="addDevice">添加设备</button>
@@ -21,6 +23,8 @@
         </div>
     </div>
 </div>
+</div>
+
 </body>
 
 <script type="text/html" id="indexTpl">

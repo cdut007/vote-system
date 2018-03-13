@@ -5,8 +5,10 @@
 <title>日志管理列表</title>
 <#include "../resource.ftl">
 </head>
-<body>
-<#include "../top_menus.ftl">
+<#include "../side_menus.ftl">
+<div class="layui-body" style="padding-top:60px;">
+    <div class="layui-container margin-top">
+        <div class="layui-container margin-top">
 <div class="layui-container margin-top">
 
     <div class="searchTable">
@@ -46,6 +48,7 @@
         </div>
     </div>
 </div>
+        </div>
 </body>
 
 <script type="text/html" id="indexTpl">

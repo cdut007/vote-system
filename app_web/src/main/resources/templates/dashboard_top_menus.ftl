@@ -77,7 +77,7 @@
 
 <style>
     .layui-layout-admin .layui-header {
-        background-color: #00000000;
+        background-color: #014181;
     }
     .layui-nav .layui-nav-menu {
         position: relative;

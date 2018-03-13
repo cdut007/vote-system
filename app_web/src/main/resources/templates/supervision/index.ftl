@@ -11,7 +11,7 @@
     .notStartedRoom {display: inline-block; vertical-align: middle; width: 300px; line-height: 25px; padding: 20px 0; margin-right: -1px; margin-bottom: -1px;margin-top: 5px; border: 1px solid #e2e2e2; font-size: 14px; text-align: center; background-color: #959595;color: #000; transition: all .3s; -webkit-transition: all .3s;}
 </style>
 <body>
-<#include "../top_menus.ftl">
+<#include "../dashboard_top_menus.ftl">
 
 <div class="layui-container">
     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
