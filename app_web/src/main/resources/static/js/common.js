@@ -76,7 +76,7 @@ $.ajaxSetup({
                 area:['70%','70%'],
                 closeBtn: 0,
                 shadeClose: false,
-                content: ['/']
+                content: ['/login']
             });
         }
     }});

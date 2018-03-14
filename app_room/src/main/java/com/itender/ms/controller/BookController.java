@@ -312,7 +312,7 @@ public class BookController {
         row.setHeight((short)(22.50*20));
         row.createCell(1).setCellValue("房间名");
         row.createCell(2).setCellValue("预定时间");
-        row.createCell(3).setCellValue("预定事项");
+        row.createCell(3).setCellValue("项目名称");
         row.createCell(4).setCellValue("预定单位");
         row.createCell(5).setCellValue("预定人");
         row.createCell(6).setCellValue("联系方式");

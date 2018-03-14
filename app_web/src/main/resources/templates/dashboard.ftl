@@ -238,6 +238,7 @@
 
             if(!isLogin(userName)){
                 view.goto('/login');
+                localStorage.setItem('url','/supervision');
                 return;
             }
 
@@ -306,6 +307,7 @@
 
             if(!isLogin(userName)){
                 view.goto('/login');
+                localStorage.setItem('url','/book');
                 return;
             }
             layer.close(layer.index);

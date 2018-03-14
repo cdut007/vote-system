@@ -18,7 +18,15 @@ layui.define(function (exports) {
                     if(result.status == true){
                         var indexFrame = parent.layer.getFrameIndex(window.name);//关闭登录弹出层
                         parent.layer.close(indexFrame);
-                        view.goto('/dashboard');
+                        var url = localStorage.getItem('url');
+                       // alert('url'+url);
+                        if(url && url!=''){
+                            view.goto(url);
+                            localStorage.removeItem('url');
+                        }else{
+                            view.goto('/dashboard');
+                        }
+
                     }else{
                         layui.layer.msg('登录失败，'+result.msg, {icon: 5});
                         if('验证码错误'==result.msg){
@@ -39,6 +47,7 @@ layui.define(function (exports) {
                 $.ajax({
                     url:"/management/user/logout",
                     type:"GET",
+                    cache:false,
                     success:function(result){
                         if(result.status == true){
                            callback(result,true);

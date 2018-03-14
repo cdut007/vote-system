@@ -17,9 +17,9 @@
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">预订事项</label>
+                    <label class="layui-form-label">项目名称</label>
                     <div class="layui-input-inline">
-                        <input  type="text" name="content" lay-verify="required" lay-verType="tips" placeholder="输入预订事项" autocomplete="off" class="layui-input">
+                        <input  type="text" name="content" lay-verify="required" lay-verType="tips" placeholder="输入项目名称" autocomplete="off" class="layui-input">
                     </div>
                 </div>
 
