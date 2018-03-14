@@ -298,7 +298,7 @@
                 {title: '序号',templet: '#indexTpl'},
                 {title: "房间名", field: 'room'},
                 {title: "预订单位", field: 'bookOrganization'},
-                {title: "预订事项", field: 'content'},
+                {title: "项目名称", field: 'content'},
                 {title: "预订类型", field: 'industry'},
                 {title: "预订时间", field: 'bookTime'},
                 {title: "创建时间", field: 'createTimeStr'},
