@@ -31,7 +31,7 @@ layui.define(function (exports) {
                         layui.layer.msg('登录失败，'+result.msg, {icon: 5});
                         if('验证码错误'==result.msg){
                             var time = new Date().getTime();
-                            $("#verifyImgDiv").empty().append('<img id="verifyImg" src="management/user/code?'+time+'" style="height: 35px;margin-top: -7px;" title="点击刷新验证码">(区分大小写)');
+                            $("#verifyImgDiv").empty().append('<img id="verifyImg" src="management/user/code?'+time+'" style="height: 35px;margin-top: -7px;" title="点击刷新验证码">(验证码)');
 
                         }
                     }
