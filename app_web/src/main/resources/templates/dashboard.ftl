@@ -126,7 +126,7 @@
 
     <div  class="mainmenu ">
         <div id="title" class="mui-card-content-inner">
-            山西省综改区公共资源交易监督系统
+            <img src="/css/img/system_label.png" style="width: 800px;height: 50px" />
         </div>
 
         <div class="layui-row layui-col-space30">
