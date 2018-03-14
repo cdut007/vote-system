@@ -72,10 +72,34 @@
 
 <script>
     layui.use(['element','itenderUser'], function(){
+      //  var $ = layui.jquery ;
+        var doc = $('li .layui-this');
+        doc.each(function (i) {
+           var a = $(this);
+            var img = a.children('img').eq(0);
+            var href = a.attr('href');
+            if(href == '/device'){
+                img.attr("src","/css/img/icon_equipment_selected.png");
+            }else if( href == '/log'){
+                img.attr("src","/css/img/icon_record_selected.png");
 
-        // layui.element.on('nav(filter)', function(elem){
-        //     console.log(elem); //得到当前点击的DOM对象
-        // });
+            }else if( href == '/room'){
+                img.attr("src","/css/img/icon_limit_selected.png");
+
+            }else if( href == '/book'){
+                img.attr("src","/css/img/icon_room_selected.png");
+
+            }else if (href == '/management/user'){
+                img.attr("src","/css/img/icon_user_selected.png");
+
+            }
+            a.css("color","#fff");
+
+            console.log(href); //得到当前点击的DOM对象
+
+        })
+
+
 
 
         // var $ = layui.jquery
