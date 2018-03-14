@@ -67,7 +67,8 @@ public class UserController {
 		Map<String,Object> result = new HashMap<>();
 		HttpSession session = request.getSession();
 		String captchaSession = (String)session.getAttribute("captcha");
-		if(!captcha.equals(captchaSession)){
+		logger.debug("登录验证码：["+captchaSession+"]");
+		if(!captcha.toUpperCase().equals(captchaSession.toUpperCase())){
 			result.put("status", false);
 			result.put("msg", "验证码错误");
 			logger.debug("登录验证码：["+captchaSession+"] 用户输入验证码：["+captcha+"]");

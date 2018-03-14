@@ -72,10 +72,10 @@
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <div class="layui-input-inline" style="width: 130px">
+                        <div class="layui-input-inline" style="width: 115px;font-size: 12px">
                             <input type="text" class="layui-input" name="captcha" id="captcha" lay-verify="captcha" lay-verType="tips" placeholder="输入验证码">
                         </div>
-                        <div class="layui-form-mid layui-word-aux" id="verifyImgDiv"><img id="verifyImg" src="management/user/code" style="height: 35px;margin-top: -7px;" title="验证码">(区分大小写)</div>
+                        <div class="layui-form-mid layui-word-aux" id="verifyImgDiv"><img id="verifyImg" src="management/user/code" style="height: 35px;margin-top: -7px;" title="验证码"> (验证码)</div>
                     </div>
                     <div class="layui-form-item">
                         <div class="layui-input-block">
@@ -117,7 +117,7 @@
 
         $("#verifyImgDiv").click(function () {
             var time = new Date().getTime();
-            $("#verifyImgDiv").empty().append('<img id="verifyImg" src="management/user/code?'+time+'" style="height: 35px;margin-top: -7px;" title="点击刷新验证码">(区分大小写)');
+            $("#verifyImgDiv").empty().append('<img id="verifyImg" src="management/user/code?'+time+'" style="height: 35px;margin-top: -7px;" title="点击刷新验证码"> (验证码)');
         });
 
 	  });

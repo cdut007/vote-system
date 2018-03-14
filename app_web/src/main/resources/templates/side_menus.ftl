@@ -27,7 +27,7 @@
         <li class="layui-nav-item layui-side-item"><a href="/log"><img src="/css/img/icon_record_default.png" class="layui-nav-side-img">日志管理</a></li>
          </@resource_check>
                  <@resource_check url="/management/user">
-        <li class="layui-nav-item layui-side-item"><a href="/management/user"><img src="/css/img/icon_user_default.png" class="layui-nav-side-img"> 用户管理</a></li>
+        <li class="layui-nav-item layui-side-item"><a href="/management/user"><img src="/css/img/icon_user_default.png" class="layui-nav-side-img">用户管理</a></li>
                  </@resource_check>
 
 
