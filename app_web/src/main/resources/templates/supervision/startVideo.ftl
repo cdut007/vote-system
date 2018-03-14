@@ -10,7 +10,7 @@
     .video {display: inline-block; vertical-align: middle; width: 1000px; height: 600px; line-height: 25px; padding: 20px 0; margin-right: -1px; margin-bottom: -1px;margin-top: 5px; border: 1px solid #e2e2e2; font-size: 14px; text-align: center; background-color: #0C0C0C; color: #fff; transition: all .3s; -webkit-transition: all .3s;}
 </style>
 <body>
-<#include "../top_menus.ftl">
+<#include "../dashboard_top_menus.ftl">
 
 <div class="layui-container margin-top">
     <div class="layui-row">
