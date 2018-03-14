@@ -142,7 +142,7 @@ public class BookController {
             beginTime = new Long(0L);
         }
 
-        if(endTime == null){
+        if(endTime == null || endTime == 0){
             long tenYear =  315360000000L;
             endTime = System.currentTimeMillis()+tenYear;//加10年
         }
@@ -179,7 +179,7 @@ public class BookController {
             beginTime = new Long(0L);
         }
 
-        if(endTime == null){
+        if(endTime == null|| endTime == 0){
             long tenYear =  315360000000L;
             endTime = System.currentTimeMillis()+tenYear;//加10年
         }
