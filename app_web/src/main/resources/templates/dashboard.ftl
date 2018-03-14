@@ -70,12 +70,21 @@
 
         background-color: #E1260C!important;
     }
+    #field_supervision:hover {
+
+        background-color: #E1260C!important;
+    }
 
     #process_supervision{
         background-color: #b8e986!important;
         solid #82D330!important;
     }
     #process_supervision:active {
+
+        background-color: #82D330!important;
+    }
+
+    #process_supervision:hover {
 
         background-color: #82D330!important;
     }
@@ -89,6 +98,11 @@
         background-color: #1AA6E0!important;
     }
 
+    #statistics:hover {
+
+        background-color: #1AA6E0!important;
+    }
+
     #backlog{
         background-color: #fed15c!important;
         solid #EBAB04!important;
@@ -97,7 +111,10 @@
 
         background-color: #EBAB04!important;
     }
+    #backlog:hover {
 
+        background-color: #EBAB04!important;
+    }
     #system_management{
         background-color: #5cded4!important;
         solid #0EC0B2!important;
@@ -107,6 +124,12 @@
 
         background-color: #0EC0B2!important;
     }
+
+    #system_management:hover {
+
+        background-color: #0EC0B2!important;
+    }
+
     .mui-card{
         border-radius: 6px;
     }
