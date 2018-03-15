@@ -87,7 +87,7 @@ layui.define(function (exports) {
                         roomId : data.roomId
                     },
                     success: function (res) {
-                        console.log(res);
+                        console.debug(res);
                         layui.layer.close(index);
                         if(res.data.length==0){
                             layui.layer.alert("当前房间没有可用监控设备");
@@ -96,7 +96,7 @@ layui.define(function (exports) {
                                 var initData ={
                                     id: "player_"+index,
                                     container: "playerContainer_"+index,
-                                    name: "sdk_viewer_"+index,
+                                    name: "sdk_viewer",
                                     dev: {
                                         devIP: dev.ip,
                                         devPort: dev.port,
@@ -176,10 +176,12 @@ layui.define(function (exports) {
                 try{
                     retcode = SupervisionObj.sdk_viewer.execFunction("NetSDKSetPlayWndNum" , 1);         //分屏
                 }catch (e){
-                    layui.layer.alert("实况窗口实例化失败!");
+                    console.error("视频控件未能成功加载！");
+                    layui.layer.alert("视频控件未能成功加载！");
                 }
                 if(0!=retcode){
-                    layui.layer.alert("实况窗口实例化失败!");
+                    console.error("视频控件未能成功加载！");
+                    layui.layer.alert("初始化视频控件错误！");
                 }
             };
             initPlayer(cfg);
@@ -196,8 +198,8 @@ layui.define(function (exports) {
         login: function (container,dev) {
             var SDKRet = SupervisionObj.sdk_viewer.execFunction("NETDEV_Login", dev.devIP, dev.devPort, dev.username, dev.password);
             if(-1 == SDKRet) {
+                layui.layer.msg('实况播放失败！', {icon: 5});
                 console.error("登录摄像机失败！检查IP，及登录名和密码！");
-                layer.msg('实况播放失败！', {icon: 5});
             }else{
                 var result = JSON.parse(SDKRet);
                 SupervisionObj.DeviceHandle = result.UserID;
@@ -210,12 +212,12 @@ layui.define(function (exports) {
          * 注销
          */
         logout: function () {
+            SupervisionObj.logRecord("exitVideo");//记录退出预览实况视频
             SupervisionObj.sdk_viewer.execFunction("NETDEV_Logout", SupervisionObj.DeviceHandle);
             SupervisionObj.sdk_viewer.execFunction("NETDEV_Cleanup", SupervisionObj.DeviceHandle);
             SupervisionObj.DeviceHandle = -1;
             SupervisionObj.isLogin = false;
             console.log("NETDEV Logout Sucessfull "+SupervisionObj.DeviceHandle);
-            SupervisionObj.logRecord("exitVideo");//记录退出预览实况视频
         },
         /**
          * 启流，开启视频流，开启实况视频
@@ -233,7 +235,8 @@ layui.define(function (exports) {
 
             var retcode = SupervisionObj.sdk_viewer.execFunction("NETDEV_RealPlay", parseInt(ResourceId), SupervisionObj.DeviceHandle, jsonStr);
             if (0 != retcode) {
-                layer.msg('播放实况失败！', {icon: 5});
+                console.error("开启视频流出现异常！");
+                layui.layer.msg('播放实况失败！', {icon: 5});
             } else {
 
             }
