@@ -95,9 +95,6 @@ privilege-uri-init:
     - /management/user/register
     - /swagger-*
     - /static/*
-    - /invitation/documents/view/pdf
-    - /invitation/documents/available
-    - /invitation/documents/complete
   #登录后无需检查URI
   login_uncheck_uri:
     - /
@@ -107,7 +104,6 @@ privilege-uri-init:
     - /management/user/logout
     - /management/user/register
     - /management/user/detilsModal
-    - /management/user/
     - /management/user/updateMy
     - /supervision/logRecord
   #后台登录URI
