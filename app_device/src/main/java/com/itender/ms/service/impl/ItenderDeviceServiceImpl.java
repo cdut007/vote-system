@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import tk.mybatis.mapper.entity.Example;
@@ -59,6 +60,27 @@ public class ItenderDeviceServiceImpl implements ItenderDeviceService {
 		return itenderDeviceMapper.selectByPrimaryKey(id);
 	}
 
+	private  boolean  searchModel = false;
+
+	private String searchKeyword;
+
+	@Override
+	public void setSearchInfo(String keyword) {
+		if(keyword!=null){
+			keyword = keyword.trim();
+		}
+		if(!StringUtils.isEmpty(keyword)){
+
+			searchKeyword = keyword;
+			searchModel = true;
+		}
+
+	}
+	void resetSearch(){
+		searchModel = false;
+
+		searchKeyword = null;
+	}
 
 	@Override
 	public ItenderDevice findByDeviceId(String deviceId) {
@@ -162,8 +184,21 @@ public class ItenderDeviceServiceImpl implements ItenderDeviceService {
 		PageHelper.startPage(pageNum,pagesize);
 
         Example example = new Example(ItenderDevice.class);
-		example.setOrderByClause("create_time desc");
-        List<ItenderDevice> itenderDevice = itenderDeviceMapper.selectByExample(example);
+		List<ItenderDevice> itenderDevice = null;
+		if(searchModel){
+			logger.debug("==searchModel=");
+			logger.debug("==searchKeyword="+searchKeyword);
+			if(StringUtils.isEmpty(searchKeyword)){
+				searchKeyword = null;
+			}
+
+			itenderDevice = itenderDeviceMapper.selectByFilter(searchKeyword);
+			//reset
+			resetSearch();
+		}else {
+			example.setOrderByClause("create_time desc");
+			 itenderDevice = itenderDeviceMapper.selectByExample(example);
+		}
         return new PageInfo<>(itenderDevice);
 	}
 

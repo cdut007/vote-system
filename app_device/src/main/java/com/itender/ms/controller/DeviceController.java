@@ -59,13 +59,16 @@ public class DeviceController {
     @RequestMapping(value = "/listDevice",method = RequestMethod.POST)
     public ResponseEntity<LayuiTableData> deviceAll(HttpServletRequest request,
                                                        @RequestParam(required = false) Integer pageNum,
-                                                       @RequestParam(required = false) Integer pagesize
+                                                       @RequestParam(required = false) Integer pagesize,
+                                                    @RequestParam(required = false) String keyword
     ) throws APIException{
 
         pageNum = pageNum == null?1:pageNum;
         pagesize = pagesize == null?10:pagesize;
 
-        PageInfo<ItenderDevice> page = itenderDeviceService.findPage(pageNum, pagesize);
+        PageInfo<ItenderDevice> page = null;
+        itenderDeviceService.setSearchInfo(keyword);
+        page = itenderDeviceService.findPage(pageNum, pagesize);
 
         return ResponseEntity.ok(PageDataConvert.convertToLayuiData(page,200,"success"));
     }

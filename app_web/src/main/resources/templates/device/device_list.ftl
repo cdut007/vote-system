@@ -11,9 +11,24 @@
 <div class="layui-container margin-top">
 
     <div class="layui-row">
-        <div class="layui-col-md-12 margin-bottom">
+
+
+        <div class="searchTable">
+
             <button class="layui-btn layui-btn-success" id="addDevice">添加设备</button>
+
+            <div class="layui-inline">
+                <label class="layui-form-label">搜索设备</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="keyword" placeholder="输入搜索关键字...">
+                </div>
+
+            </div>
+
+
+            <button class="layui-btn" data-type="reload" id="search_device">搜索</button>
         </div>
+
     </div>
 
     <div class="layui-row">
@@ -22,6 +37,9 @@
             </table>
         </div>
     </div>
+
+
+
 </div>
 </div>
 
@@ -63,6 +81,41 @@
     layui.use(['table', 'util', 'itenderDevice'], function () {
         var table = layui.table;
         var itenderDevice = layui.itenderDevice;
+        var keyword;
+
+        $('#keyword').bind('keypress', function (event) {
+            if (event.keyCode == "13") {//enter
+                //需要处理的事情
+                searchReload();
+            }
+        });
+
+        $('#search_device').click(function () {
+              searchReload();
+
+        });
+
+        function searchReload() {
+            keyword =  $("#keyword").val();
+
+            //执行重载
+            currentTable.reload({
+
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                },
+
+                where:{keyword:keyword},
+                request: {
+                    keyword:'keyword',
+                    pageName: 'pageNum', //页码的参数名称，默认：page
+                    limitName: 'pagesize' //每页数据量的参数名，默认：limit
+                }
+
+
+            });
+        }
+
 
         //第一个实例
         var currentTable = table.render({
@@ -81,7 +134,11 @@
                 {title: "维护电话", field: 'maintenancePhone'},
                 {fixed: 'right', align: 'center', toolbar: '#deviceTableTool'}
             ]],
+
+            where:{keyword:keyword},
+
             request: {
+                keyword:'keyword',
                 pageName: 'pageNum' //页码的参数名称，默认：page
                 , limitName: 'pagesize' //每页数据量的参数名，默认：limit
             },

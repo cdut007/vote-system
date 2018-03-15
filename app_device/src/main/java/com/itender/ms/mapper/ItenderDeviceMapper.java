@@ -2,7 +2,10 @@ package com.itender.ms.mapper;
 
 import com.itender.ms.domain.ItenderDevice;
 
+import org.apache.ibatis.annotations.Param;
 import tk.mybatis.mapper.common.Mapper;
+
+import java.util.List;
 
 /**
  * @Author james chen
@@ -19,5 +22,9 @@ public interface ItenderDeviceMapper extends Mapper<ItenderDevice> {
 	public int insertDevice(ItenderDevice itenderDevice);
 
 	public int deleteByDeviceId(String deviceId);
+
+
+	public List<ItenderDevice> selectByFilter(@Param(value="keyword")String keyword);
+
 
 }

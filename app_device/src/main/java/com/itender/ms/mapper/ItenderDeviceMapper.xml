@@ -17,6 +17,17 @@
 
     </resultMap>
 
+	<select id="selectByFilter"
+			resultMap="itenderDevice">
+		select * from itender_device device where
+		<if test="keyword != null">
+			 UPPER(CONCAT(device.name,device.model,device.account,device.room_name,device.maintenance_phone)) LIKE UPPER (CONCAT(CONCAT('%', #{keyword, jdbcType=VARCHAR}),'%')) ESCAPE '/'
+		</if>
+		ORDER BY create_time desc
+
+	</select>
+
+
 	 <select id="selectByDeviceId" parameterType="java.lang.String" resultMap="itenderDevice">
 		SELECT 
 			a.*

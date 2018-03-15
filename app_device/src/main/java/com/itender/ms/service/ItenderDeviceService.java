@@ -11,6 +11,9 @@ import java.util.List;
  */
 public interface ItenderDeviceService extends ItenderServiceBase<ItenderDevice> {
 
+	public void setSearchInfo(String keyword);
+
+
 	public ItenderDevice findByDeviceId(String deviceId);
 	/**
 	 * 按设备名查询

@@ -93,6 +93,14 @@
 
         });
 
+        $('#keyword').bind('keypress', function (event) {
+            if (event.keyCode == "13") {//enter
+                //需要处理的事情
+                reloadLogList();
+            }
+        });
+
+
         $('#search_log').click(function () {
             reloadLogList();
 
