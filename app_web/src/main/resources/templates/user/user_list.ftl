@@ -34,10 +34,10 @@
 </script>
 <script type="text/html" id="userTableTool">
     <@resource_check url="/management/user/detilsModal">
-        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-xs btn-edit" lay-event="edit">编辑</a>
     </@resource_check>
     <@resource_check url="/management/user/userRoleEditModal">
-        <a class="layui-btn layui-btn-xs" lay-event="role">角色</a>
+        <a class="layui-btn layui-btn-xs btn-edit" lay-event="role">角色</a>
     </@resource_check>
     <@resource_check url="/management/user/delUser">
         <a class="layui-btn layui-btn-danger layui-btn-xs  btn-delete" lay-event="del">删除</a>

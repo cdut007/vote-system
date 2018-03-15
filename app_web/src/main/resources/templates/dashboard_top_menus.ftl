@@ -118,7 +118,7 @@
     .btn-edit:hover{
         border: 1px solid #0069ae;
         background-color: #00000000;
-        color: #0069ae;
+        color: #0050ae;
     }
     .btn-delete{
         border: 1px solid #ff3366;
@@ -129,7 +129,7 @@
     .btn-delete:hover{
         border: 1px solid #ff3366;
         background-color: #00000000;
-        color:#ff3366;
+        color:#ff2366;
     }
 
 </style>
