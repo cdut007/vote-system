@@ -21,6 +21,23 @@
     border-radius: 2px 2px 0 0;
 }
 
+.layui-form-pane .layui-form-label {
+    width: 110px;
+    padding: 8px 15px;
+    height: 38px;
+    line-height: 20px;
+    color: #464646;
+    text-align: center;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+    background-color: #00000000;
+    border-width: 0px;
+}
+
+.layui-form-pane .layui-input {
+    border-radius: 4px 4px 4px 4px;
+
+}
 
 
 .layui-form-checked[lay-skin=primary] i {
