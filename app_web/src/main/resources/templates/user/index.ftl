@@ -24,11 +24,8 @@
         .layui-nav {
             background-color: #f6f6f6;
         }
-        .layui-nav-itemed a{
-            background-color: #014181;
-        }
-        .layui-nav-child a{
-            background-color: #d4d4d4;
+        .layui-this a{
+            color: #f6f6f6!important;
         }
     </style>
 
@@ -40,37 +37,37 @@
     <div class="layui-side layui-bg-black">
         <div class="layui-side-scroll">
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-            <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+            <ul class="layui-nav layui-nav-tree"  lay-filter="userNav">
                 <@resource_check url="/management/user/listUser">
-                    <li class="layui-nav-item layui-side-item layui-nav-itemed">
+                    <li class="layui-nav-item layui-side-item" id="list-user" data-uri="/management/user/listUser">
                         <a class="" href="javascript:;"><img src="/css/img/icon_user_default.png" class="layui-nav-side-img">用户管理</a>
-                        <dl class="layui-nav-child">
-                            <dd id="list-user" data-uri="/management/user/listUser"><a href="javascript:;" style="color: #F6F6F6">用户列表</a></dd>
-                        </dl>
+                        <#--<dl class="layui-nav-child">-->
+                            <#--<dd id="list-user" data-uri="/management/user/listUser"><a href="javascript:;" style="color: #014181">用户列表</a></dd>-->
+                        <#--</dl>-->
                     </li>
                 </@resource_check>
                 <@resource_check url="/management/role">
-                    <li class="layui-nav-item layui-side-item">
+                    <li class="layui-nav-item layui-side-item" id="list-role" data-uri="/management/role/listRole">
                         <a href="javascript:;"><img src="/css/img/icon_character_default.png" class="layui-nav-side-img">角色管理</a>
-                        <dl class="layui-nav-child">
-                            <dd id="list-role" data-uri="/management/role/listRole"><a href="javascript:;" style="color: #F6F6F6">角色列表</a></dd>
-                        </dl>
+                        <#--<dl class="layui-nav-child">-->
+                            <#--<dd id="list-role" data-uri="/management/role/listRole"><a href="javascript:;" style="color: #014181">角色列表</a></dd>-->
+                        <#--</dl>-->
                     </li>
                 </@resource_check>
                 <@resource_check url="/management/privilege">
-                    <li class="layui-nav-item layui-side-item">
+                    <li class="layui-nav-item layui-side-item" id="list-privilege" data-uri="/management/privilege/listPrivilege">
                         <a href="javascript:;"><img src="/css/img/icon_limit_default.png" class="layui-nav-side-img">权限管理</a>
-                        <dl class="layui-nav-child">
-                            <dd id="list-privilege" data-uri="/management/privilege/listPrivilege"><a href="javascript:;" style="color: #F6F6F6">权限列表</a></dd>
-                        </dl>
+                        <#--<dl class="layui-nav-child">-->
+                            <#--<dd id="list-privilege" data-uri="/management/privilege/listPrivilege"><a href="javascript:;" style="color: #014181">权限列表</a></dd>-->
+                        <#--</dl>-->
                     </li>
                 </@resource_check>
                 <@resource_check url="/industry/list">
-                    <li class="layui-nav-item layui-side-item">
+                    <li class="layui-nav-item layui-side-item" id="list-industry" data-uri="/industry/list">
                         <a href="javascript:;"><img src="/css/img/icon_record_default.png" class="layui-nav-side-img">行业管理</a>
-                        <dl class="layui-nav-child">
-                            <dd id="list-industry" data-uri="/industry/list"><a href="javascript:;" style="color: #F6F6F6">行业列表</a></dd>
-                        </dl>
+                        <#--<dl class="layui-nav-child">-->
+                            <#--<dd id="list-industry" data-uri="/industry/list"><a href="javascript:;" style="color: #014181">行业列表</a></dd>-->
+                        <#--</dl>-->
                     </li>
                 </@resource_check>
             </ul>
@@ -100,14 +97,28 @@
                 ,element = layui.element //Tab的切换功能，切换事件监听等，需要依赖element模块
                 ,itenderUser = layui.itenderUser;
 
-        $('dd').on('click',function () {
+        var oli = $(".layui-nav-tree").find("li");
+        oli.on('click',function () {
             var othis = $(this);
             var id = othis.attr("id"); //左侧导航栏id
             var uri = othis.data("uri"); //新标签页URI
             var title = othis.text(); //新标签页标题
-
             element.tabDelete('tabBody', id);//删除旧的已存在Tap
             itenderUser.addNewTab(id,uri,title,'tabBody');//新建新标签页
+        });
+
+        element.on('nav(userNav)', function(elem){
+            //替换图片
+            var imglist = $(".layui-nav-tree").find("img");
+            imglist.each(function (index,element) {
+                var imgsrc = $(this).attr("src");
+                imgsrc = imgsrc.replace("selected","default");
+                $(this).attr("src",imgsrc);
+            });
+            var oimg = elem.find("img");
+            var oimgsrc = oimg.attr("src");
+            oimgsrc = oimgsrc.replace("default","selected");
+            oimg.attr("src",oimgsrc);
         });
 
     });
