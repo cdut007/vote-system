@@ -9,45 +9,67 @@
         .layui-tab-title .layui-this:after{
             border-radius: 0px;
         }
+        .layui-nav .layui-side-item a {
+            color: #464646;
+        }
+        .layui-nav-side-img {
+            width: 20px;
+            height: 20px;
+            margin-right: 2px;
+            border-radius: 0%;
+        }
+        .layui-bg-black {
+            background-color: #f6f6f6!important;
+        }
+        .layui-nav {
+            background-color: #f6f6f6;
+        }
+        .layui-nav-itemed a{
+            background-color: #014181;
+        }
+        .layui-nav-child a{
+            background-color: #d4d4d4;
+        }
     </style>
+
 </head>
 <body class="layui-layout-body">
 
 <div class="layui-layout layui-layout-admin">
-<#include "../top_menus.ftl">
+<#include "../dashboard_top_menus.ftl">
     <div class="layui-side layui-bg-black">
         <div class="layui-side-scroll">
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree"  lay-filter="test">
                 <@resource_check url="/management/user/listUser">
-                    <li class="layui-nav-item layui-nav-itemed">
-                        <a class="" href="javascript:;">用户管理</a>
+                    <li class="layui-nav-item layui-side-item layui-nav-itemed">
+                        <a class="" href="javascript:;"><img src="/css/img/icon_user_default.png" class="layui-nav-side-img">用户管理</a>
                         <dl class="layui-nav-child">
-                            <dd id="list-user" data-uri="/management/user/listUser"><a href="javascript:;">用户列表</a></dd>
+                            <dd id="list-user" data-uri="/management/user/listUser"><a href="javascript:;" style="color: #F6F6F6">用户列表</a></dd>
                         </dl>
                     </li>
                 </@resource_check>
                 <@resource_check url="/management/role">
-                    <li class="layui-nav-item">
-                        <a href="javascript:;">角色管理</a>
+                    <li class="layui-nav-item layui-side-item">
+                        <a href="javascript:;"><img src="/css/img/icon_character_default.png" class="layui-nav-side-img">角色管理</a>
                         <dl class="layui-nav-child">
-                            <dd id="list-role" data-uri="/management/role/listRole"><a href="javascript:;">角色列表</a></dd>
+                            <dd id="list-role" data-uri="/management/role/listRole"><a href="javascript:;" style="color: #F6F6F6">角色列表</a></dd>
                         </dl>
                     </li>
                 </@resource_check>
                 <@resource_check url="/management/privilege">
-                    <li class="layui-nav-item">
-                        <a href="javascript:;">权限管理</a>
+                    <li class="layui-nav-item layui-side-item">
+                        <a href="javascript:;"><img src="/css/img/icon_limit_default.png" class="layui-nav-side-img">权限管理</a>
                         <dl class="layui-nav-child">
-                            <dd id="list-privilege" data-uri="/management/privilege/listPrivilege"><a href="javascript:;">权限列表</a></dd>
+                            <dd id="list-privilege" data-uri="/management/privilege/listPrivilege"><a href="javascript:;" style="color: #F6F6F6">权限列表</a></dd>
                         </dl>
                     </li>
                 </@resource_check>
                 <@resource_check url="/industry/list">
-                    <li class="layui-nav-item">
-                        <a href="javascript:;">行业管理</a>
+                    <li class="layui-nav-item layui-side-item">
+                        <a href="javascript:;"><img src="/css/img/icon_record_default.png" class="layui-nav-side-img">行业管理</a>
                         <dl class="layui-nav-child">
-                            <dd id="list-industry" data-uri="/industry/list"><a href="javascript:;">行业列表</a></dd>
+                            <dd id="list-industry" data-uri="/industry/list"><a href="javascript:;" style="color: #F6F6F6">行业列表</a></dd>
                         </dl>
                     </li>
                 </@resource_check>
