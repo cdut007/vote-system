@@ -41,6 +41,11 @@
 
 .layui-table th{
     color: #464646;
+    text-align: center;
+}
+
+.layui-table td{
+    text-align: center;
 }
 
 
