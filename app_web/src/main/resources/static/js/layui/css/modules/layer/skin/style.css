@@ -39,7 +39,9 @@
 
 }
 
-
+.layui-table th{
+    color: #464646;
+}
 
 
 .layui-form-checked[lay-skin=primary] i {

@@ -59,7 +59,8 @@
 
         //第一个实例
         var currentTable = table.render({
-            elem: "#userTable",
+            elem: "#userTable", skin: 'nob',
+            even: true,
             page: true,
             url: "/management/user/listUser",
             method: "POST",

@@ -110,7 +110,8 @@
 
         //第一个实例
         var currentTable = table.render({
-            elem: "#logTable",
+            elem: "#logTable", skin: 'nob',
+            even: true,
             page: true,
             url: "/log/listLog",
             method: "POST",

@@ -35,7 +35,8 @@
 
         //第一个实例
         var currentTable = table.render({
-            elem: "#roleTable",
+            elem: "#roleTable", skin: 'nob',
+            even: true,
             page: true,
             url: "/management/role/listRole",
             method: "POST",

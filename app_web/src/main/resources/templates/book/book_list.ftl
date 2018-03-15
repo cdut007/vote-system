@@ -291,7 +291,9 @@
         //第一个实例
         var recordTable = table.render({
             elem: "#bookRecordTable",
-            page: true,
+            skin: 'nob',
+            even: true,
+        page: true,
             url: "/book/listBookRecord",
             method: "POST",
             cols: [[
@@ -358,6 +360,8 @@
         //第一个实例
         var currentTable = table.render({
             elem: "#bookTable",
+            skin: 'nob',
+            even: true,
             page: true,
             url: "/book/listBook",
             method: "POST",

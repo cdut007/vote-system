@@ -40,7 +40,8 @@
 
         //第一个实例
         var currentTable = table.render({
-            elem: "#roomTable",
+            elem: "#roomTable", skin: 'nob',
+            even: true,
             page: true,
             url: "/room/listRoom",
             method: "POST",

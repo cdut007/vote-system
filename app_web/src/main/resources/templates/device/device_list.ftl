@@ -119,7 +119,8 @@
 
         //第一个实例
         var currentTable = table.render({
-            elem: "#deviceTable",
+            elem: "#deviceTable", skin: 'nob',
+            even: true,
             page: true,
             url: "/device/listDevice",
             method: "POST",

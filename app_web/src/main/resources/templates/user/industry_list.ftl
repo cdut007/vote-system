@@ -27,7 +27,8 @@
         var itenderUser = layui.itenderUser;
 
         var currentTable = table.render({
-            elem: "#industryTable",
+            elem: "#industryTable", skin: 'nob',
+            even: true,
             page: true,
             url: "/industry/list",
             method: "POST",
