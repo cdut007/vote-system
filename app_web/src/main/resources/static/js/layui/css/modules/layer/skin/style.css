@@ -7,3 +7,27 @@
     background-color:#fff;
     
 }
+
+.layui-layer-title {
+    padding: 0 20px 0 20px;
+    height: 42px;
+    line-height: 42px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    /*color: #fff;*/
+    overflow: hidden;
+    /*background-color: #0069ae;*/
+    text-align: center;
+    border-radius: 2px 2px 0 0;
+}
+
+
+
+.layui-form-checked[lay-skin=primary] i {
+    border-color: #0069ae;
+    background-color: #0069ae;
+    color: #fff;
+}
+.layui-laydate-footer span[lay-type=date] {
+    color: #0069ae;
+}
