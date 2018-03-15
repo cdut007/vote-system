@@ -16,8 +16,8 @@
     {{d.LAY_TABLE_INDEX+1}}
 </script>
 <script type="text/html" id="industryTableTableTool">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    <a class="layui-btn layui-btn-xs  btn-edit" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs  btn-delete" lay-event="del">删除</a>
 </script>
 
 <script type="text/javascript">

@@ -40,7 +40,7 @@
         <a class="layui-btn layui-btn-xs" lay-event="role">角色</a>
     </@resource_check>
     <@resource_check url="/management/user/delUser">
-        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs  btn-delete" lay-event="del">删除</a>
     </@resource_check>
 </script>
 <script type="text/html" id="registerTime">
