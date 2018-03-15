@@ -2,7 +2,7 @@
 
 <div class="layui-layout layui-layout-admin layui-header header-index">
    <#-- <span class="logo">综改区监督平台</span>-->
-    <ul class="layui-nav no-border-radius layui-header">
+    <ul class="layui-nav no-border-radius layui-header" style="padding-left: 8%">
 <#if user??>
     <li class="layui-nav-item">您好！${user.userName},欢迎使用综改区公共资源交易监督系统</li>
 <#else>
@@ -11,7 +11,7 @@
 
 
     </ul>
-    <ul class="layui-nav layui-layout-right layui-header">
+    <ul class="layui-nav layui-layout-right layui-header" style="padding-right: 8%">
         <li class="layui-nav-item"><a id="home" href="javascript:;"><img src="/css/img/icon_home.png" class="layui-nav-img">网站首页</a></li>
 
         <li class="layui-nav-item"><a id="userDetils" href="javascript:;"><img src="/css/img/icon_me.png" class="layui-nav-img">个人中心</a></li>
@@ -101,4 +101,14 @@
         margin-right: 2px;
         border-radius: 0%;
     }
+
+
+    .date{
+        background-image:url('/css/img/icon_calendar.png');
+        background-position:left;
+        background-position: 4px;
+        padding-left: 32px;
+        background-repeat:no-repeat;
+    }
+
 </style>

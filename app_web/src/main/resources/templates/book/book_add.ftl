@@ -37,14 +37,14 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">开始时间</label>
                     <div class="layui-input-inline">
-                        <input lay-verify="required"  type="text" class="layui-input" id="start_date" placeholder="">
+                        <input lay-verify="required"  type="text" class="layui-input date " id="start_date" placeholder="">
                     </div>
                 </div>
 
                 <div class="layui-form-item">
                     <label class="layui-form-label">结束时间</label>
                     <div class="layui-input-inline">
-                        <input lay-verify="required" type="text" class="layui-input" id="end_date" placeholder="">
+                        <input lay-verify="required" type="text" class="layui-input date" id="end_date" placeholder="">
                     </div>
                 </div>
 

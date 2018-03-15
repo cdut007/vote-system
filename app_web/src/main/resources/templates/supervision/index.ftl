@@ -22,10 +22,10 @@
             <div class="layui-inline">
                 <label class="layui-form-label">时间范围</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" id="record_begin_time" placeholder="">
+                    <input type="text" class="layui-input date" id="record_begin_time" placeholder="">
                 </div>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" id="record_end_time" placeholder="">
+                    <input type="text" class="layui-input date" id="record_end_time" placeholder="">
                 </div>
             </div>
             <div class="layui-inline">

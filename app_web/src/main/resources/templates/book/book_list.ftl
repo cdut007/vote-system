@@ -42,7 +42,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">开始时间</label>
                     <div class="layui-input-inline">
-                        <input type="text" class="layui-input" id="record_begin_time" placeholder="">
+                        <input type="text" class="layui-input date" id="record_begin_time" placeholder="">
                     </div>
 
                 </div>
@@ -50,7 +50,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">结束时间</label>
                     <div class="layui-input-inline">
-                        <input type="text" class="layui-input" id="record_end_time" placeholder="">
+                        <input type="text" class="layui-input date" id="record_end_time" placeholder="">
                     </div>
                 </div>
                 <button class="layui-btn" data-type="reload" id="search_book_record">查询记录</button>
@@ -73,7 +73,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">开始时间</label>
                     <div class="layui-input-inline">
-                        <input type="text" class="layui-input" id="begin_time" placeholder="">
+                        <input type="text" class="layui-input  date" id="begin_time" placeholder="">
                     </div>
 
                 </div>
@@ -81,7 +81,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">结束时间</label>
                     <div class="layui-input-inline">
-                        <input type="text" class="layui-input" id="end_time" placeholder="">
+                        <input type="text" class="layui-input  date" id="end_time" placeholder="">
                     </div>
                 </div>
 
@@ -558,4 +558,5 @@
     });
 
 </script>
+
 </html>
