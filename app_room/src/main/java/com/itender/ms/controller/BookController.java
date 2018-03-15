@@ -271,6 +271,8 @@ public class BookController {
             roomId = roomId.trim();
             if(StringUtils.isEmpty(roomId)){
                 roomId = null;
+            }else if ( roomId .equals("null")){
+                roomId = null;
             }
         }
 
