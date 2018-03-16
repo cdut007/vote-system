@@ -15,40 +15,49 @@
                     </div>
                 </div>
 
-                <div class="layui-form-item">
-                    <label class="layui-form-label">设备地址</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="ip" lay-verify="required" value="${itenderDevice.ip!}" lay-verType="tips" placeholder="设备地址" autocomplete="off" class="layui-input">
-                    </div>
-
-                </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">设备端口</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="port" lay-verify="required" value="${itenderDevice.port!}" lay-verType="tips" placeholder="设备端口" autocomplete="off" class="layui-input">
+
+                    <div class="layui-inline">
+
+                        <label class="layui-form-label">设备地址</label>
+                        <div class="layui-input-inline">
+                            <input style="width: 180px" value="${itenderDevice.ip!}" type="text" name="ip" lay-verify="required" lay-verType="tips" placeholder="ip" autocomplete="off" class="layui-input">
+                        </div>
+
+                        <label class="layui-form-label">设备端口</label>
+                        <div class="layui-input-inline">
+                            <input style="width: 180px" value="${itenderDevice.port!}" type="text" name="port" lay-verify="required" lay-verType="tips" placeholder="端口" autocomplete="off" class="layui-input">
+                        </div>
+
                     </div>
-                </div>
 
-
-
-
-                <div class="layui-form-item">
-                    <label class="layui-form-label">设备账号</label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="account" lay-verify="required" value="${itenderDevice.account!}" lay-verType="tips" placeholder="设备账号" autocomplete="off" class="layui-input">
-                    </div>
 
 
                 </div>
 
+
+
                 <div class="layui-form-item">
-                    <label class="layui-form-label">设备密码</label>
 
+                    <div class="layui-inline">
 
-                    <div class="layui-input-inline">
-                        <input type="text" id="password" name="password" lay-verify="required" value="${itenderDevice.password!}" lay-verType="tips" placeholder="设备密码" autocomplete="off" class="layui-input">
+                        <label class="layui-form-label">设备账号</label>
+                        <div class="layui-input-inline">
+                            <input style="width: 180px" value="${itenderDevice.account!}" type="text" name="account" lay-verify="required" lay-verType="tips" placeholder="账号" autocomplete="off" class="layui-input">
+                        </div>
+
+                        <label class="layui-form-label">设备密码</label>
+
+                        <div class="layui-input-inline">
+                            <input style="width: 180px"  value="${itenderDevice.password!}" type="text" id="password" name="password" lay-verify="required" lay-verType="tips" placeholder="密码" autocomplete="off" class="layui-input">
+                        </div>
+
                     </div>
+
+
+
+
                 </div>
 
                 <div class="layui-form-item">

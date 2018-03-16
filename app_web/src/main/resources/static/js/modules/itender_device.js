@@ -127,6 +127,7 @@ layui.define(function (exports) {
                             title: data.title,
                             area: data.area,
                             content: res,
+                            resize:false,
                             scrollbar: true,
                             closeBtn: data.closeBtn,
                             shadeClose: data.shadeClose,

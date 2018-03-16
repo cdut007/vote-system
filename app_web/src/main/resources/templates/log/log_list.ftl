@@ -22,18 +22,21 @@
         </div>
 
 
-        <div class="layui-inline">
-            <label class="layui-form-label">开始时间</label>
+        <div class="layui-inline" style="margin-left: 20px">
             <div class="layui-input-inline">
-                <input type="text" class="layui-input date" id="begin_time" placeholder="">
+                <input type="text" class="layui-input date" id="begin_time" placeholder="开始">
             </div>
 
         </div>
 
-        <div class="layui-inline">
-            <label class="layui-form-label">结束时间</label>
+        <div class="layui-inline" style="margin: 8px">
+            <div>至</div>
+        </div>
+
+
+        <div class="layui-inline" style="margin-right: 20px">
             <div class="layui-input-inline">
-                <input type="text" class="layui-input date" id="end_time" placeholder="">
+                <input type="text" class="layui-input date" id="end_time" placeholder="结束">
             </div>
         </div>
 

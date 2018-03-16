@@ -39,18 +39,22 @@
 
                 </div>
 
-                <div class="layui-inline">
-                    <label class="layui-form-label">开始时间</label>
+                <div class="layui-inline" style="margin-left: 20px">
+
                     <div class="layui-input-inline">
-                        <input type="text" class="layui-input date" id="record_begin_time" placeholder="">
+                        <input type="text" class="layui-input date" id="record_begin_time" placeholder="开始">
                     </div>
 
                 </div>
 
-                <div class="layui-inline">
-                    <label class="layui-form-label">结束时间</label>
+                <div class="layui-inline" style="margin: 8px">
+                    <div>至</div>
+                </div>
+
+
+                <div class="layui-inline" style="margin-right: 20px">
                     <div class="layui-input-inline">
-                        <input type="text" class="layui-input date" id="record_end_time" placeholder="">
+                        <input type="text" class="layui-input date" id="record_end_time" placeholder="结束">
                     </div>
                 </div>
                 <button class="layui-btn" data-type="reload" id="search_book_record">查询记录</button>
@@ -71,17 +75,20 @@
             <div class="searchTable">
 
                 <div class="layui-inline">
-                    <label class="layui-form-label">开始时间</label>
-                    <div class="layui-input-inline">
-                        <input type="text" class="layui-input  date" id="begin_time" placeholder="">
+                    <div class="layui-inline" style="margin-left: 20px">
+                        <input type="text" class="layui-input  date" id="begin_time" placeholder="开始">
                     </div>
 
                 </div>
+                <div class="layui-inline" style="margin: 8px">
+                    <div>至</div>
+                </div>
+
 
                 <div class="layui-inline">
-                    <label class="layui-form-label">结束时间</label>
-                    <div class="layui-input-inline">
-                        <input type="text" class="layui-input  date" id="end_time" placeholder="">
+
+                    <div class="layui-inline" style="margin-right: 20px">
+                        <input type="text" class="layui-input  date" id="end_time" placeholder="结束">
                     </div>
                 </div>
 
@@ -410,11 +417,12 @@
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
 
             var bookId = data.id;
+            var room = data.name;
             if (layEvent === 'book') { //预订
 
 
                 var data = {
-                    title: '房间预订',//标题
+                    title: room,//标题
                     area: 'auto',//宽高
                     closeBtn: 1,//关闭按钮
                     shadeClose: true,//是否点击遮罩关闭

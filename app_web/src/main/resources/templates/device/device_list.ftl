@@ -171,7 +171,7 @@
             if (layEvent === 'edit') { //编辑
                 var data = {
                     title: '设备编辑',//标题
-                    area: 'auto',//宽高
+                    area: '660px',//宽高
                     closeBtn: 1,//关闭按钮
                     shadeClose: true,//是否点击遮罩关闭
                     queryId: deviceId,
@@ -194,7 +194,7 @@
         $('#addDevice').click(function () {
             var data = {
                 title: '添加设备',//标题
-                area: 'auto',//宽高
+                area: '660px',//宽高
                 closeBtn: 1,//关闭按钮
                 shadeClose: true,//是否点击遮罩关闭
                 queryUrl: '/device/add_page'
@@ -206,4 +206,16 @@
     });
 
 </script>
+
+<style>
+    .layui-form-pane .layui-input {
+        border-radius: 4px 4px 4px 4px;
+        width: 490px;
+    }
+    .layui-form-pane .layui-input-block {
+        margin-left: 0px;
+        text-align: center;
+    }
+
+</style>
 </html>

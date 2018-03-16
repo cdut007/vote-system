@@ -2,12 +2,6 @@
 <div class="margin-top layui-fluid">
     <div class="layui-row">
             <form class="layui-form layui-form-pane" action="">
-                <div class="layui-form-item">
-                    <label class="layui-form-label">房间名</label>
-                    <div class="layui-input-inline">
-                        <input readonly="true" type="text" name="room" value="${itenderRoom.name!}" lay-verify="required" lay-verType="tips" placeholder="房间名" autocomplete="off" class="layui-input">
-                    </div>
-                </div>
 
                 <div class="layui-form-item">
                     <label class="layui-form-label">预订单位</label>
@@ -68,10 +62,8 @@
 
                 <div class="layui-form-item">
                     <div class="layui-input-block">
-                        <button type="submit" class="layui-btn" lay-submit lay-filter="addBook">提交</button>
+                        <button type="submit" class="layui-btn" lay-submit lay-filter="addBook">确认预订</button>
 
-
-                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
                     </div>
                 </div>
             </form>
