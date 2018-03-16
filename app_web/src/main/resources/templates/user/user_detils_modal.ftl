@@ -39,14 +39,12 @@
                         <input type="text" name="email" lay-verify="" lay-verType="tips" placeholder="邮箱地址" autocomplete="off" class="layui-input" value="${currentUser.email!}">
                     </div>
                 </div>
-
                 <div class="layui-form-item">
                     <label class="layui-form-label">密码</label>
                     <div class="layui-input-inline">
                         <input type="password" id="password" name="password" lay-verify="password" lay-verType="tips" placeholder="密码" autocomplete="off" class="layui-input" value="${currentUser.password!}">
                     </div>
                 </div>
-
                 <div class="layui-form-item">
                     <div class="layui-input-block">
                         <#if currentUser.id==user.id>

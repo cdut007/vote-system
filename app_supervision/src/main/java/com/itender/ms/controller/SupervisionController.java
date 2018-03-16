@@ -74,10 +74,12 @@ public class SupervisionController {
     }
 
     @RequestMapping(value = "/startVideo",method = RequestMethod.GET)
-    public String startSupervise(HttpServletRequest request) throws APIException{
-        String roomId = request.getParameter("room");
-        request.setAttribute("roomId",roomId);
-        //
+    public String startSupervise(HttpServletRequest request,@RequestParam(name = "roomId") String roomId) throws APIException{
+        ItenderUser user = (ItenderUser)request.getSession().getAttribute("user");
+        logger.debug("[ "+user.getNickName()+" ] 进入房间"+roomId+"监控实况预览！");
+        if(CommonUtility.isNonEmpty(roomId)){
+            request.setAttribute("roomId",roomId);
+        }
         return "/supervision/startVideo";
     }
 
@@ -138,16 +140,13 @@ public class SupervisionController {
      * @param
      * @return
      */
-    @RequestMapping(value = "/logRecord",method = RequestMethod.GET)
-    public ResponseEntity<Map<String,Object>> logRecord(HttpServletRequest request,@RequestParam(name = "option") String option){
+    @RequestMapping(value = "/leaveRoom",method = RequestMethod.POST)
+    public ResponseEntity<Map<String,Object>> leaveRoom(HttpServletRequest request,@RequestParam(name = "roomId") String roomId){
         Map<String,Object> result = new HashMap<>();
         ItenderUser user = (ItenderUser)request.getSession().getAttribute("user");
 
-        if(option.equals("startVideo")){
-            logger.debug("[ "+user.getNickName()+" ] 进入监控实况预览！");
-        }else if(option.equals("exitVideo")){
-            logger.debug("[ "+user.getNickName()+" ] 离开监控实况预览！");
-        }
+        logger.debug("[ "+user.getNickName()+" ] 离开房间"+roomId+"监控实况预览！");
+
         result.put("status",true);
         return ResponseEntity.ok(result);
     }

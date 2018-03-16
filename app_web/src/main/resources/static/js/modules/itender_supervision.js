@@ -98,6 +98,7 @@ layui.define(function (exports) {
                                     container: "playerContainer_"+index,
                                     name: "sdk_viewer",
                                     dev: {
+                                        devName:dev.name,
                                         devIP: dev.ip,
                                         devPort: dev.port,
                                         username: dev.account,
@@ -205,16 +206,19 @@ layui.define(function (exports) {
                 SupervisionObj.DeviceHandle = result.UserID;
                 $("#"+container).css("height", "600px");
                 SupervisionObj.isLogin = true;
-                SupervisionObj.logRecord("startVideo");//记录开始预览实况视频
             }
         },
         /**
          * 注销
          */
-        logout: function () {
-            SupervisionObj.logRecord("exitVideo");//记录退出预览实况视频
+        logout: function (roomId) {
+            var data = {
+                roomId:roomId,
+            };
+            SupervisionObj.logRecord(data);//记录退出预览实况视频
             SupervisionObj.sdk_viewer.execFunction("NETDEV_Logout", SupervisionObj.DeviceHandle);
             SupervisionObj.sdk_viewer.execFunction("NETDEV_Cleanup", SupervisionObj.DeviceHandle);
+            SupervisionObj.closeSound();
             SupervisionObj.DeviceHandle = -1;
             SupervisionObj.isLogin = false;
             console.log("NETDEV Logout Sucessfull "+SupervisionObj.DeviceHandle);
@@ -238,7 +242,7 @@ layui.define(function (exports) {
                 console.error("开启视频流出现异常！");
                 layui.layer.msg('播放实况失败！', {icon: 5});
             } else {
-
+                SupervisionObj.openSound();
             }
         },
         /**
@@ -246,11 +250,32 @@ layui.define(function (exports) {
          */
         stopVideo: function() {
             var ResourceId = SupervisionObj.sdk_viewer.execFunction("NetSDKGetFocusWnd");
-            var retcode = SupervisionObj.sdk_viewer.execFunction("NETDEV_StopRealPlay", parseInt(ResourceId));  //关闭视频流
+            var retcode = SupervisionObj.sdk_viewer.execFunction("NETDEV_StopRealPlay", parseInt(ResourceId));
             if (0 != retcode) {
-                layer.msg('停流失败！', {icon: 5});
+                layui.layer.msg('停流失败！', {icon: 5});
             }
             else {
+            }
+        },
+        /**
+         * 播放音频
+         */
+        openSound: function(){
+            var ResourceId = SupervisionObj.sdk_viewer.execFunction("NetSDKGetFocusWnd");
+            var retcode = SupervisionObj.sdk_viewer.execFunction("NETDEV_OpenSound",parseInt(ResourceId));
+            if(0!=retcode){
+                console.error("音频加载异常！");
+                layui.layer.msg('音频加载失败！');
+            }
+        },
+        /**
+         * 停止播放音频
+         */
+        closeSound: function(){
+            var ResourceId = SupervisionObj.sdk_viewer.execFunction("NetSDKGetFocusWnd");
+            var retcode = SupervisionObj.sdk_viewer.execFunction("NETDEV_CloseSound",parseInt(ResourceId));
+            if(0!=retcode){
+                console.error("关闭音频异常！");
             }
         },
         /**
@@ -264,9 +289,21 @@ layui.define(function (exports) {
          * 记录操作日志
          */
         logRecord: function (option) {
-            $.get("/supervision/logRecord?option="+option,function (data) {
-                console.log("Record success : "+data.status);
+            $.ajax({
+                url: '/supervision/leaveRoom',
+                type: "POST",
+                dataType: "json",
+                data: option,
+                success: function (res) {
+                    console.log("Record success : "+res.status);
+                },
+                error: function () {
+                    console.log("Record failed!");
+                }
             });
+            // $.get("/supervision/logRecord?option="+option,function (data) {
+            //     console.log("Record success : "+data.status);
+            // });
         },
 
         searchRoom: function (data,container,callback) {
@@ -305,8 +342,7 @@ layui.define(function (exports) {
                                     $("#"+container).append(
                                         "<li class="+liCss+" "+onclinck+">\n" +
                                         "<div style=\"margin-bottom:20px\">"+room.bookTime+"</div>\n" +
-                                        "<div><i class=\"layui-icon\" style=\"font-size: 30px; color: #666;\">&#xe68e;</i></div>\n" +
-                                        "<div style=\"margin-top:20px\">房间【"+room.room+"】</div>\n" +
+                                        "<div style=\"margin-top:54px\">房间【"+room.room+"】</div>\n" +
                                         "<div>\n" +
                                         "<marquee direction=\"left\"><span class=\"layui-badge "+spanCss+"\">"+status+"</span>"+room.content+"</marquee>\n" +
                                         "</div>\n" +
@@ -363,8 +399,8 @@ layui.define(function (exports) {
         /**
          * 注销
          */
-        logout: function () {
-            SupervisionObj.logout();
+        logout: function (roomId) {
+            SupervisionObj.logout(roomId);
         },
 
         searchRoom: function (data,container,callback) {
