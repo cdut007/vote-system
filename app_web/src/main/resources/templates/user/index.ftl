@@ -42,7 +42,7 @@
                     <li class="layui-nav-item layui-side-item" id="list-user" data-uri="/management/user/listUser">
                         <a class="" href="javascript:;"><img src="/css/img/icon_user_default.png" class="layui-nav-side-img">用户管理</a>
                         <#--<dl class="layui-nav-child">-->
-                            <#--<dd id="list-user" data-uri="/management/user/listUser"><a href="javascript:;" style="color: #014181">用户列表</a></dd>-->
+                            <#--<dd id="list-user" data-uri="/management/user/listUser"><a href="javascript:;" style="color: #016EC5">用户列表</a></dd>-->
                         <#--</dl>-->
                     </li>
                 </@resource_check>
@@ -50,7 +50,7 @@
                     <li class="layui-nav-item layui-side-item" id="list-role" data-uri="/management/role/listRole">
                         <a href="javascript:;"><img src="/css/img/icon_character_default.png" class="layui-nav-side-img">角色管理</a>
                         <#--<dl class="layui-nav-child">-->
-                            <#--<dd id="list-role" data-uri="/management/role/listRole"><a href="javascript:;" style="color: #014181">角色列表</a></dd>-->
+                            <#--<dd id="list-role" data-uri="/management/role/listRole"><a href="javascript:;" style="color: #016EC5">角色列表</a></dd>-->
                         <#--</dl>-->
                     </li>
                 </@resource_check>
@@ -58,7 +58,7 @@
                     <li class="layui-nav-item layui-side-item" id="list-privilege" data-uri="/management/privilege/listPrivilege">
                         <a href="javascript:;"><img src="/css/img/icon_limit_default.png" class="layui-nav-side-img">权限管理</a>
                         <#--<dl class="layui-nav-child">-->
-                            <#--<dd id="list-privilege" data-uri="/management/privilege/listPrivilege"><a href="javascript:;" style="color: #014181">权限列表</a></dd>-->
+                            <#--<dd id="list-privilege" data-uri="/management/privilege/listPrivilege"><a href="javascript:;" style="color: #016EC5">权限列表</a></dd>-->
                         <#--</dl>-->
                     </li>
                 </@resource_check>
@@ -66,7 +66,7 @@
                     <li class="layui-nav-item layui-side-item" id="list-industry" data-uri="/industry/list">
                         <a href="javascript:;"><img src="/css/img/icon_record_default.png" class="layui-nav-side-img">行业管理</a>
                         <#--<dl class="layui-nav-child">-->
-                            <#--<dd id="list-industry" data-uri="/industry/list"><a href="javascript:;" style="color: #014181">行业列表</a></dd>-->
+                            <#--<dd id="list-industry" data-uri="/industry/list"><a href="javascript:;" style="color: #016EC5">行业列表</a></dd>-->
                         <#--</dl>-->
                     </li>
                 </@resource_check>

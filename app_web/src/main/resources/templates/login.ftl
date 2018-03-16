@@ -21,7 +21,7 @@
         .login-label {
             text-align: center;
             font-size: 16px;
-            background-color: #0069ae;
+            background-color: #0154AD;
             color: white;
             border-top-left-radius:8px;
             border-top-right-radius:8px;

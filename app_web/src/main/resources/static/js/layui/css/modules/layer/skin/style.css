@@ -1,7 +1,7 @@
 
 
 .layui-layout-admin .layui-header {
-    background-color: #014181;
+    background-color: #016EC5;
 }
 .layui-nav .layui-this:after, .layui-nav-bar, .layui-nav-tree .layui-nav-itemed:after{
     background-color:#fff;
@@ -14,9 +14,9 @@
     line-height: 42px;
     border-bottom: 1px solid #eee;
     font-size: 14px;
-    /*color: #fff;*/
+    color: #fff;
     overflow: hidden;
-    /*background-color: #0069ae;*/
+    background-color: #0154AD;
     text-align: center;
     border-radius: 2px 2px 0 0;
 }
@@ -42,18 +42,25 @@
 .layui-table th{
     color: #464646;
     text-align: center;
+    font-weight:bold;
 }
 
 .layui-table td{
     text-align: center;
 }
 
+.layui-layer-btn .layui-layer-btn0 {
+    border-color: #0154AD;
+    background-color: #0154AD;
+    color: #fff;
+}
+
 
 .layui-form-checked[lay-skin=primary] i {
-    border-color: #0069ae;
-    background-color: #0069ae;
+    border-color: #0154AD;
+    background-color: #0154AD;
     color: #fff;
 }
 .layui-laydate-footer span[lay-type=date] {
-    color: #0069ae;
+    color: #0154AD;
 }

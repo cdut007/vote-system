@@ -77,7 +77,7 @@
 
 <style>
     .layui-layout-admin .layui-header {
-        background-color: #014181;
+        background-color: #016EC5;
     }
     .layui-nav .layui-nav-menu {
         position: relative;
@@ -111,12 +111,12 @@
         background-repeat:no-repeat;
     }
     .btn-edit{
-        border: 1px solid #0069ae;
+        border: 1px solid #0154AD;
         background-color: #00000000;
-        color: #0069ae;
+        color: #0154AD;
     }
     .btn-edit:hover{
-        border: 1px solid #0069ae;
+        border: 1px solid #0154AD;
         background-color: #00000000;
         color: #0050ae;
     }
