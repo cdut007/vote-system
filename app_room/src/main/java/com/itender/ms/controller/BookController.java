@@ -152,9 +152,15 @@ public class BookController {
 
         PageInfo<ItenderBook> page = itenderBookService.findPage(pageNum, pagesize);
 
+        int statusCode = 200;
+        String msg = "success";
+        if(page.getTotal() <= 0){
+            statusCode = 0;
+            msg = "无预订记录";
 
+        }
 
-        return ResponseEntity.ok(PageDataConvert.convertToLayuiData(page,200,"success"));
+        return ResponseEntity.ok(PageDataConvert.convertToLayuiData(page,statusCode,msg));
     }
 
 
@@ -196,9 +202,16 @@ public class BookController {
              page = itenderRoomService.findPage(pageNum, pagesize);
         }
 
+        int statusCode = 200;
+        String msg = "success";
+        if(page.getTotal() <= 0){
+            statusCode = 0;
+            msg = "该时间段内无可用房间，请重新选择";
+
+        }
 
 
-        return ResponseEntity.ok(PageDataConvert.convertToLayuiData(page,200,"success"));
+        return ResponseEntity.ok(PageDataConvert.convertToLayuiData(page,statusCode,msg));
     }
 
 

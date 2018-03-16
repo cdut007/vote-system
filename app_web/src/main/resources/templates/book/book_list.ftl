@@ -175,6 +175,7 @@
 
     var beginDate = new Date();
     var endDate = new Date(beginDate.getTime() + 8 * 3600 *1000);
+    var today =  beginDate.getTime();
     var beginTime = beginDate.getTime(),endTime = endDate.getTime();
 
     layui.use(['form','element','table', 'util', 'itenderBook','laydate'], function () {
@@ -244,6 +245,7 @@
             elem: '#begin_time'
             ,type: 'datetime'
             ,value:beginDate
+            ,min: today
             ,done: function(value, date){
                 if(!value){
                     beginTime = 0;
@@ -263,6 +265,7 @@
             elem: '#end_time'
             ,type: 'datetime'
             ,value: endDate
+            ,min: today
             ,done: function(value, date){
                 if(!value){
                     endTime = 0;
