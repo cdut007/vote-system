@@ -145,4 +145,7 @@
     .layui-nav {
         background-color: #f6f6f6;
     }
+    .layui-this a{
+        color: #f6f6f6!important;
+    }
 </style>

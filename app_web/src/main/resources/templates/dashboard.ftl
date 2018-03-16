@@ -133,7 +133,9 @@
     .mui-card{
         border-radius: 6px;
     }
-
+    .layui-this a{
+        color: #f6f6f6!important;
+    }
 
 </style>
 </head>
