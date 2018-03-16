@@ -73,31 +73,45 @@
 <script>
     layui.use(['element','itenderUser'], function(){
       //  var $ = layui.jquery ;
-        var doc = $('li .layui-this');
-        doc.each(function (i) {
-           var a = $(this);
-            var img = a.children('img').eq(0);
-            var href = a.attr('href');
-            if(href == '/device'){
-                img.attr("src","/css/img/icon_equipment_selected.png");
-            }else if( href == '/log'){
-                img.attr("src","/css/img/icon_record_selected.png");
 
-            }else if( href == '/room'){
-                img.attr("src","/css/img/icon_limit_selected.png");
+        setTimeout(function(){
+            var doc = $('li .layui-this');
+            doc.each(function (i) {
+                var a = $(this);
+                var img = a.children('img').eq(0);
+                var href = a.attr('href');
+                if(href == '/device'){
+                    img.attr("src","/css/img/icon_equipment_selected.png");
+                }else if( href == '/log'){
+                    img.attr("src","/css/img/icon_record_selected.png");
 
-            }else if( href == '/book'){
-                img.attr("src","/css/img/icon_room_selected.png");
+                }else if( href == '/room'){
+                    img.attr("src","/css/img/icon_limit_selected.png");
 
-            }else if (href == '/management/user'){
-                img.attr("src","/css/img/icon_user_selected.png");
+                }else if( href == '/book'){
+                    img.attr("src","/css/img/icon_room_selected.png");
 
-            }
-            a.css("color","#fff");
+                }else if (href == '/management/user'){
+                    img.attr("src","/css/img/icon_user_selected.png");
 
-            console.log(href); //得到当前点击的DOM对象
+                }
+                a.css("color","#fff");
 
-        })
+                // img.hover(
+                //         function () {
+                //             var imgsrc = img.attr("src");
+                //             imgsrc = imgsrc.replace("default","selected");
+                //             img.attr("src",imgsrc);
+                //         },
+                //         function () {
+                //
+                //         }
+                // );
+
+                console.log(href); //得到当前点击的DOM对象
+
+            })
+        },50);
 
 
 
@@ -127,6 +141,8 @@
         color: #464646;
 
     }
+
+
    /*.layui-this, .layui-nav-tree .layui-nav-child dd.layui-this a, .layui-nav-tree .layui-this, .layui-nav-tree .layui-this>a, .layui-nav-tree .layui-this>a:hover {*/
          /*background-color: #f6f6f6;*/
          /*color: #0154AD;*/
