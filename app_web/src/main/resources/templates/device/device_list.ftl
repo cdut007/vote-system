@@ -60,7 +60,7 @@
     {{#  } else { }}
 
       {{# if(d.roomId){ }}
-            <span style="color: #00F7DE;">{{ '使用中' }}</span>
+            <span style="color: #F37715;">{{ '使用中' }}</span>
         {{#  } else { }}
         {{ d.statusLabel }}
        {{#  } }}

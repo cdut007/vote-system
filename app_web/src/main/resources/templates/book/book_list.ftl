@@ -125,17 +125,17 @@
 <script type="text/html" id="bookRecordTableTool">
 
     {{#  if(d.status === 'cancel'){ }}
-    <span style="color: #F581B1;">{{ '已取消' }}</span>
+    <span style="color: #C31B19;">{{ '已取消' }}</span>
 
     {{#  } }}
 
     {{#  if(d.status === 'occupy'){ }}
-    <span style="color: #00F7DE;">{{ '使用中' }}</span>
+    <span style="color: #F37715;">{{ '使用中' }}</span>
 
     {{#  } }}
 
     {{#  if(d.status === 'expired'){ }}
-    <span style="color: #e8e8e8;">{{ '已完成' }}</span>
+    <span style="color: #016EC5;">{{ '已完成' }}</span>
 
     {{#  } }}
 
