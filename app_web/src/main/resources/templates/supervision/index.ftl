@@ -7,7 +7,7 @@
 </head>
 <style>
     .startedRoom {display: inline-block;background-image: url("/css/img/img_room_viewable.jpg"); border-radius: 6px; vertical-align: middle; width: 300px; line-height: 25px; padding: 20px 0; margin-right: -1px; margin-bottom: -1px;margin-top: 5px; border: 1px solid #e2e2e2; font-size: 14px; text-align: center; color: #fff; transition: all .3s; -webkit-transition: all .3s;}
-    .startedRoom:hover {display: inline-block;background-image: url("/css/img/img_room_hover.jpg");border-radius: 8px; vertical-align: middle; width: 300px; line-height: 25px; padding: 20px 0; margin-right: -1px; margin-bottom: -1px;margin-top: 5px; border: 1px solid #e2e2e2; font-size: 14px; text-align: center; color: #000; transition: all .3s; -webkit-transition: all .3s;}
+    .startedRoom:hover {display: inline-block;background-image: url("/css/img/img_room_hover.jpg");border-radius: 8px; vertical-align: middle; width: 300px; line-height: 25px; padding: 20px 0; margin-right: -1px; margin-bottom: -1px;margin-top: 5px; border: 1px solid #e2e2e2; font-size: 14px; text-align: center; color: #fff; transition: all .3s; -webkit-transition: all .3s;}
     .notStartedRoom {display: inline-block;background-image: url("/css/img/img_room_unviewable.jpg");border-radius: 6px; vertical-align: middle; width: 300px; line-height: 25px; padding: 20px 0; margin-right: -1px; margin-bottom: -1px;margin-top: 5px; border: 1px solid #e2e2e2; font-size: 14px; text-align: center; color: #000; transition: all .3s; -webkit-transition: all .3s;}
 </style>
 <body>
