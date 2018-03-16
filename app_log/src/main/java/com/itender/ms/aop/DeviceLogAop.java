@@ -7,6 +7,7 @@ import com.itender.ms.domain.ItenderLog;
 import com.itender.ms.domain.ItenderRoom;
 import com.itender.ms.exception.APIException;
 import com.itender.ms.service.ItenderLogService;
+import com.itender.ms.service.ItenderRoomService;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -31,6 +33,8 @@ public class DeviceLogAop {
 
     @Autowired
     private ItenderLogService itenderLogService;
+    @Autowired
+    private ItenderRoomService itenderRoomService;
 
     @Pointcut("execution(public * com.itender.ms.controller.DeviceController.addDevice(..))")
     public void addCut() {
@@ -246,25 +250,34 @@ public class DeviceLogAop {
 /**
  * 进入房间 ，离开房间 ，打开视频
  * */
-    @Pointcut("execution(public * com.itender.ms.controller.SupervisionController.logRecord(..))")
-    public void logRecord() {
+    @Pointcut("execution(public * com.itender.ms.controller.SupervisionController.leaveRoom(..))")
+    public void leaveRoom() {
     }
 
-    @After("logRecord()")
-    public void afterlogRecord(JoinPoint joinPoint) throws APIException {
-
+    @After("leaveRoom()")
+    public void afterleaveRoom(JoinPoint joinPoint) throws APIException {
         Object[] args = joinPoint.getArgs();
+        String roomId = null;
         for (Object arg : args) {
-
+            if(arg instanceof String){
+                roomId = (String)arg;
+            }
         }
 
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 
         ItenderLog itenderLog = AopUtil.initInfo(requestAttributes.getRequest());
+        if(!StringUtils.isEmpty(roomId)){
+            ItenderRoom room = itenderRoomService.findById(roomId);
+            if(room != null){
+                itenderLog.setContent("离开现场监控房间：[ "+room.getName()+" ]");
+            }else{
+                itenderLog.setContent("离开现场监控房间：未找到房间 "+roomId);
+            }
+        }
 
 
-
-       // itenderLogService.add(itenderLog);
+        itenderLogService.add(itenderLog);
     }
 
     @Pointcut("execution(public * com.itender.ms.controller.SupervisionController.startSupervise(..))")
@@ -279,11 +292,21 @@ public class DeviceLogAop {
         ItenderLog itenderLog = AopUtil.initInfo(requestAttributes.getRequest());
 
         Object[] args = joinPoint.getArgs();
+        String roomId = null;
         for (Object arg : args) {
-
+            if(arg instanceof String){
+                roomId = (String)arg;
+            }
+        }
+        if(!StringUtils.isEmpty(roomId)){
+            ItenderRoom room = itenderRoomService.findById(roomId);
+            if(room != null){
+                itenderLog.setContent("进入现场监控房间：[ "+room.getName()+" ]");
+            }else{
+                itenderLog.setContent("进入现场监控房间：未找到房间 "+roomId);
+            }
         }
 
-        itenderLog.setContent("打开视频:打开监控视频!");
 
         itenderLogService.add(itenderLog);
     }

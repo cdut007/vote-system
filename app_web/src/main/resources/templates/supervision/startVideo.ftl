@@ -49,7 +49,7 @@
 
         window.onbeforeunload = onclose;
         function onclose() {
-            itenderSupervision.logout();
+            itenderSupervision.logout(roomId);
         }
     });
 
