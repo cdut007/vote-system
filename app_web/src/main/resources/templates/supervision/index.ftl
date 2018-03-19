@@ -52,12 +52,12 @@
                 <ul id="roomList">
                     <#if visibleRoomList??>
                     <#list visibleRoomList as openRoom>
-                        <li class="startedRoom" onclick="javascript:view.goto('/supervision/startVideo?roomId=${openRoom.roomId}')">
+                        <li class="startedRoom" onclick="javascript:view.goto('/supervision/startVideo?roomId=${openRoom.roomId!}')">
                             <div class="" style="margin-bottom: 20px">${openRoom.beginTime?string('yyyy-MM-dd HH:mm:ss')}~${openRoom.endTime?string('yyyy-MM-dd HH:mm:ss')}</div>
                             <#--<div><i class="layui-icon" style="font-size: 30px; color: #666;">&#xe68e;</i></div>-->
-                            <div class="" style="margin-top: 78px">房间【${openRoom.room}】</div>
+                            <div class="" style="margin-top: 78px">房间【${openRoom.room!}】</div>
                             <div>
-                                <marquee direction="left"><span class="layui-badge layui-bg-green">正在进行</span>${openRoom.content}</marquee>
+                                <marquee direction="left"><span class="layui-badge layui-bg-green">正在进行</span>${openRoom.content!}</marquee>
                             </div>
                         </li>
                     </#list>
@@ -67,9 +67,9 @@
                         <li class="notStartedRoom">
                             <div class="" style="margin-bottom: 20px">${closedRoom.beginTime?string('yyyy-MM-dd HH:mm:ss')}~${closedRoom.endTime?string('yyyy-MM-dd HH:mm:ss')}</div>
                             <#--<div><i class="layui-icon" style="font-size: 30px; color: #666;">&#xe68e;</i></div>-->
-                            <div class="" style="margin-top: 78px">房间【${closedRoom.room}】</div>
+                            <div class="" style="margin-top: 78px">房间【${closedRoom.room!}】</div>
                             <div>
-                                <marquee direction="left"><span class="layui-badge layui-bg-black">暂未开始</span>${closedRoom.content}</marquee>
+                                <marquee direction="left"><span class="layui-badge layui-bg-black">暂未开始</span>${closedRoom.content!}</marquee>
                             </div>
                         </li>
                         </#list>
