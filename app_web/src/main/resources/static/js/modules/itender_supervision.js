@@ -363,8 +363,8 @@ layui.define(function (exports) {
                                 if(hasRoom){
                                     $("#"+container).append(
                                         "<li class="+liCss+" "+onclinck+">\n" +
-                                        "<div style=\"margin-bottom:20px\">"+room.bookTime+"</div>\n" +
-                                        "<div style=\"margin-top:54px\">房间【"+room.room+"】</div>\n" +
+                                        "<div style=\"margin-bottom:20px\">"+SupervisionObj.fmtDate(room.beginTime)+"~"+SupervisionObj.fmtDate(room.endTime)+"</div>\n" +
+                                        "<div style=\"margin-top:78px\">房间【"+room.room+"】</div>\n" +
                                         "<div>\n" +
                                         "<marquee direction=\"left\"><span class=\"layui-badge "+spanCss+"\">"+status+"</span>"+room.content+"</marquee>\n" +
                                         "</div>\n" +
@@ -451,6 +451,21 @@ layui.define(function (exports) {
             } catch(e) {
             }
             return false;
+        },
+        fmtDate: function(inputTime){
+            var date = new Date(inputTime);
+            var y = date.getFullYear();
+            var m = date.getMonth() + 1;
+            m = m < 10 ? ('0' + m) : m;
+            var d = date.getDate();
+            d = d < 10 ? ('0' + d) : d;
+            var h = date.getHours();
+            h = h < 10 ? ('0' + h) : h;
+            var minute = date.getMinutes();
+            var second = date.getSeconds();
+            minute = minute < 10 ? ('0' + minute) : minute;
+            second = second < 10 ? ('0' + second) : second;
+            return y + '-' + m + '-' + d+' '+h+':'+minute+':'+second;
         }
     };
     /**
