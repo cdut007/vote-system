@@ -84,7 +84,8 @@ layui.define(function (exports) {
                     dataType: "json",
                     contentType: "application/json",
                     data: {
-                        roomId : data.roomId
+                        roomId : data.roomId,
+                        devId : data.devId
                     },
                     success: function (res) {
                         console.debug(res);
@@ -94,8 +95,8 @@ layui.define(function (exports) {
                         }else{
                             $.each(res.data, function(index, dev){
                                 var initData ={
-                                    id: "player_"+index,
-                                    container: "playerContainer_"+index,
+                                    id: "player",
+                                    container: "playerContainer",
                                     name: "sdk_viewer",
                                     dev: {
                                         devName:dev.name,
@@ -105,13 +106,24 @@ layui.define(function (exports) {
                                         password: dev.password
                                     }
                                 };
-                                $("#"+data.container).append(
-                                    "<li class='video'>" +
-                                    "<div id=playerContainer_"+index+" style='height: 1px;'>"+dev.name+"</div>" +
-                                    "</li>"
-                                );
-                                SupervisionObj.init(initData);
+
+                                if(0===index){
+                                    $("#devPane").append('<input type="radio" name="devId" value="'+dev.id+'" title="'+dev.name+'" checked>');
+                                    $("#"+data.container).append(
+                                        "<li class='video'>" +
+                                        "<div id='playerContainer' style='height: 1px;'>"+dev.name+"</div>" +
+                                        "</li>"
+                                    );
+                                    try{
+                                        SupervisionObj.init(initData);
+                                    }catch(e){
+                                    }
+                                }else{
+                                    $("#devPaneForm").show();
+                                    $("#devPane").append('<input type="radio" name="devId" value="'+dev.id+'" title="'+dev.name+'">');
+                                }
                             });
+                            layui.form.render();
                         }
                     },
                     error: function (xmlHttpReq, error, ex) {
@@ -172,9 +184,9 @@ layui.define(function (exports) {
                     };
                 })();
                 cfg["events"] = Main.EventMap;
-                SupervisionObj.sdk_viewer = new Utils.Player(cfg);                                       //初始化控件
                 var retcode ;
                 try{
+                    SupervisionObj.sdk_viewer = new Utils.Player(cfg);                                   //初始化控件
                     retcode = SupervisionObj.sdk_viewer.execFunction("NetSDKSetPlayWndNum" , 1);         //分屏
                 }catch (e){
                     console.error("视频控件未能成功加载！");
@@ -199,6 +211,7 @@ layui.define(function (exports) {
         login: function (container,dev) {
             var SDKRet = SupervisionObj.sdk_viewer.execFunction("NETDEV_Login", dev.devIP, dev.devPort, dev.username, dev.password);
             if(-1 == SDKRet) {
+                alert('实况播放失败,请检查设备信息');
                 layui.layer.msg('实况播放失败！', {icon: 5});
                 console.error("登录摄像机失败！检查IP，及登录名和密码！");
             }else{
@@ -216,8 +229,12 @@ layui.define(function (exports) {
                 roomId:roomId,
             };
             SupervisionObj.logRecord(data);//记录退出预览实况视频
-            SupervisionObj.sdk_viewer.execFunction("NETDEV_Logout", SupervisionObj.DeviceHandle);
-            SupervisionObj.sdk_viewer.execFunction("NETDEV_Cleanup", SupervisionObj.DeviceHandle);
+            try{
+                SupervisionObj.sdk_viewer.execFunction("NETDEV_Logout", SupervisionObj.DeviceHandle);
+                SupervisionObj.sdk_viewer.execFunction("NETDEV_Cleanup", SupervisionObj.DeviceHandle);
+            }catch (e){
+                console.error("NETDEV Logout Exception");
+            }
             SupervisionObj.closeSound();
             SupervisionObj.DeviceHandle = -1;
             SupervisionObj.isLogin = false;
@@ -282,7 +299,12 @@ layui.define(function (exports) {
          * 释放资源
          */
         cleanUp: function () {
-            SupervisionObj.sdk_viewer.execFunction("NETDEV_Cleanup", SupervisionObj.DeviceHandle);
+            if(SupervisionObj.isLogin){
+                SupervisionObj.isLogin = false;
+                SupervisionObj.closeSound();
+                SupervisionObj.sdk_viewer.execFunction("NETDEV_Logout", SupervisionObj.DeviceHandle);
+                SupervisionObj.sdk_viewer.execFunction("NETDEV_Cleanup", SupervisionObj.DeviceHandle);
+            }
         },
 
         /**
@@ -336,7 +358,7 @@ layui.define(function (exports) {
                                     liCss = "startedRoom";
                                     spanCss ="layui-bg-green";
                                     status = "正在进行";
-                                    onclinck ="onclick=\"javascript:view.goto('/supervision/startVideo?room="+room.roomId+"')\"";
+                                    onclinck ="onclick=\"javascript:view.goto('/supervision/startVideo?roomId="+room.roomId+"')\"";
                                 }
                                 if(hasRoom){
                                     $("#"+container).append(
@@ -362,6 +384,63 @@ layui.define(function (exports) {
             syncServer(data,container,function (res) {
                 callback(res);
             })
+        },
+
+        /**
+         * 切换摄像机
+         * @param data
+         */
+        changeCamera: function (data) {
+            var syncServer = function (data) {
+                var index = layui.layer.load(2);
+                $.ajax({
+                    url: "/supervision/roomDevList",
+                    type: "GET",
+                    cache:false,
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: {
+                        roomId : data.roomId,
+                        devId : data.devId
+                    },
+                    success: function (res) {
+                        layui.layer.close(index);
+                        if(res.data.length==0){
+                            layui.layer.alert("未查询到相关监控设备！");
+                        }else{
+                            $.each(res.data, function(index, dev){
+                                var initData ={
+                                    id: "player",
+                                    container: "playerContainer",
+                                    name: "sdk_viewer",
+                                    dev: {
+                                        devName:dev.name,
+                                        devIP: dev.ip,
+                                        devPort: dev.port,
+                                        username: dev.account,
+                                        password: dev.password
+                                    }
+                                };
+
+                                if(0===index){
+                                    try{
+                                        SupervisionObj.init(initData);
+                                    }catch(e){
+                                    }
+                                }
+                            });
+                        }
+                    },
+                    error: function (xmlHttpReq, error, ex) {
+                        layui.layer.close(index);
+                    }
+                });
+            };
+            try{
+                SupervisionObj.cleanUp();
+            }catch (e){
+            }
+            syncServer(data);
         },
 
         isJsonString: function(str) {
@@ -406,6 +485,10 @@ layui.define(function (exports) {
         searchRoom: function (data,container,callback) {
             console.log(data);
             SupervisionObj.searchRoom(data,container,callback);
+        },
+
+        changeCamera:function (data) {
+            SupervisionObj.changeCamera(data);
         }
 
     });
