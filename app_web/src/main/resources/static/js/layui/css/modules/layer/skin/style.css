@@ -48,6 +48,11 @@
 .layui-table td{
     text-align: center;
 }
+.layui-table tbody tr:hover,.layui-table-hover{
+    /*color: #fff;*/
+    background-color: #B9DDF9!important;;
+
+}
 
 .layui-layer-btn .layui-layer-btn0 {
     border-color: #0154AD;
