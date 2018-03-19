@@ -128,6 +128,7 @@
             formData.beginTime = beginTime;
             formData.endTime = endTime;
             formData.roomId = "${itenderRoom.id!}";
+            formData.room = "${itenderRoom.name!}";
 
 
             itenderBookModule.addBook(formData,function (res,status) {
