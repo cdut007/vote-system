@@ -85,11 +85,15 @@ public class SupervisionController {
 
 
     @RequestMapping(value = "/roomDevList",method = RequestMethod.GET)
-    public ResponseEntity<Map<String,Object>> devList(HttpServletRequest request,@RequestParam(name = "roomId") String roomId) throws APIException{
+    public ResponseEntity<Map<String,Object>> devList(HttpServletRequest request,@RequestParam(name = "roomId") String roomId,
+                                                      @RequestParam(name = "devId") String devId) throws APIException{
         Map<String,Object> result = new HashMap<>();
         List<ItenderDevice> devices = new ArrayList<>();
         if(CommonUtility.isNonEmpty(roomId)){
             devices = itenderDeviceService.getRoomDeviceListByRoomId(roomId);
+        }
+        if(CommonUtility.isNonEmpty(devId)){
+            devices = devices.stream().filter(device -> device.getId().equals(devId)).collect(Collectors.toList());
         }
         result.put("data",devices);
         return ResponseEntity.ok(result);

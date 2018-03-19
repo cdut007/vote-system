@@ -14,9 +14,21 @@
 
 <div class="layui-container margin-top">
     <div class="layui-row">
-        <div class="layui-col-md12 margin-bottom">
+        <div class="layui-inline layui-col-md12 margin-bottom">
             <input type="hidden" id="roomId" value="${roomId!}">
             <button class="layui-btn layui-btn-success" id="gotoRoom">返回房间列表</button>
+        </div>
+
+        <div class="layui-inline layui-layout-right">
+            <form class="layui-form" id="devPaneForm" style="display: none">
+                <div class="layui-input-inline">
+                    <div class="layui-input-block" id="devPane">
+                    </div>
+                </div>
+                <div class="layui-input-inline">
+                    <button class="layui-btn layui-btn-success" lay-submit lay-filter="changeCamera" id="changeCamera">切换摄像机</button>
+                </div>
+            </form>
         </div>
     </div>
     <div class="layui-row">
@@ -29,13 +41,16 @@
 
 </body>
 <script>
-    layui.use(['layer','itenderSupervision'], function() {
+    layui.use(['layer','itenderSupervision','form'], function() {
         var layer = layui.layer;
         var itenderSupervision = layui.itenderSupervision;
+        var form = layui.form;
 
         var roomId = $("#roomId").val();
+        var devId = '';
         var data = {
             roomId : roomId,
+            devId: devId,
             container: "playerSuperContainer"
         };
 
@@ -45,6 +60,15 @@
 
         $("#gotoRoom").click(function () {
             view.goto("/supervision");
+        });
+        form.on('submit(changeCamera)',function (data) {
+            devId = data.field.devId;
+            var devData = {
+                roomId : roomId,
+                devId : devId
+            }
+            itenderSupervision.changeCamera(devData);
+            return false;
         });
 
         window.onbeforeunload = onclose;
