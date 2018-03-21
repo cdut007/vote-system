@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import com.itender.ms.config.SystemConfig;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,6 +25,11 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter{
 
 	@Autowired
 	private PropertiesConfig propertiesConfig;
+
+
+	@Autowired
+	private SystemConfig systemConfig;
+
 
 	/**
 	 * 检查访问权限
@@ -179,6 +186,10 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter{
 				url.length() - request.getRequestURI().length(), url.length())
 				.toString();
 		request.setAttribute("host", tempContextUrl);
+		String version = systemConfig.getVersion();
+		version = CommonUtility.MD5Digest(version);
+		request.setAttribute("version",version);
+
 		super.postHandle(request, response, handler, modelAndView);
 	}
 

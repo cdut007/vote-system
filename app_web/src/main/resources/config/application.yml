@@ -114,3 +114,6 @@ privilege-uri-init:
   backend_check_prefix: /
   #前台需要检查的URI前缀
   frontend_check_prefix: /home
+
+sys:
+  version: @project.version@
