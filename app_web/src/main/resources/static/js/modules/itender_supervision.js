@@ -231,7 +231,7 @@ layui.define(function (exports) {
             SupervisionObj.logRecord(data);//记录退出预览实况视频
             try{
                 SupervisionObj.sdk_viewer.execFunction("NETDEV_Logout", SupervisionObj.DeviceHandle);
-                SupervisionObj.sdk_viewer.execFunction("NETDEV_Cleanup", SupervisionObj.DeviceHandle);
+                SupervisionObj.sdk_viewer.execFunction("NETDEV_Cleanup");
             }catch (e){
                 console.error("NETDEV Logout Exception");
             }
@@ -303,7 +303,7 @@ layui.define(function (exports) {
                 SupervisionObj.isLogin = false;
                 SupervisionObj.closeSound();
                 SupervisionObj.sdk_viewer.execFunction("NETDEV_Logout", SupervisionObj.DeviceHandle);
-                SupervisionObj.sdk_viewer.execFunction("NETDEV_Cleanup", SupervisionObj.DeviceHandle);
+                SupervisionObj.sdk_viewer.execFunction("NETDEV_Cleanup");
             }
         },
 
