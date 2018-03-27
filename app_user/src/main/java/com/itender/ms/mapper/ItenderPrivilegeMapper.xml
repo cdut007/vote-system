@@ -15,7 +15,7 @@
 
 	 <select id="selectByUserId" parameterType="java.lang.String" resultMap="itenderPrivilege">
         SELECT
-            a.id,a.privilege_name,a.privilege_uri,a.privilege_method,a.privilege_alias,a.privilege_icon,a.privilege_seq,a.privilege_level,a.privilege_ref,count(*)
+            a.id,a.privilege_name,a.privilege_uri,a.privilege_method,a.privilege_alias,a.privilege_icon,a.privilege_seq,a.privilege_level,a.privilege_ref
         FROM
             itender_privilege a
         JOIN
@@ -32,8 +32,6 @@
 	        a.id IS NOT NULL
         GROUP BY
             a.id,a.privilege_name,a.privilege_uri,a.privilege_method,a.privilege_alias,a.privilege_icon,a.privilege_seq,a.privilege_level,a.privilege_ref
-        HAVING
-            count(*)=1
     </select>
     
     <update id="updatePrivilege" parameterType="com.itender.ms.domain.ItenderPrivilege">
