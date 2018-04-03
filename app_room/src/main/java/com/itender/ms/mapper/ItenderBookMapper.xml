@@ -22,7 +22,7 @@
         select * from itender_book where
         NOT ((end_time <![CDATA[ < ]]> #{startTime})
                     OR (begin_time <![CDATA[ > ]]> #{endTime})
-        ) AND status != 'cancel'
+        ) AND status != 'cancel' ORDER BY create_time desc
     </select>
 
 

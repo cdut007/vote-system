@@ -94,6 +94,7 @@ privilege-uri-init:
     - /management/user/logout
     - /management/user/register
     - /swagger-*
+    - /book/bookRecord
     - /static/*
   #登录后无需检查URI
   login_uncheck_uri:
@@ -101,6 +102,7 @@ privilege-uri-init:
     - /dashboard*
     - /index
     - /login
+    - /book/bookRecord
     - /management/user/logout
     - /management/user/register
     - /management/user/detilsModal

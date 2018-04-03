@@ -24,6 +24,7 @@ public interface ItenderBookService extends ItenderServiceBase<ItenderBook> {
     public List<ItenderBook> findByBeginTime(long startTime,long endTime) throws APIException;
 
 
+
     public void setSearchInfo(long startTime,long endTime,String roomId);
 
     /**
