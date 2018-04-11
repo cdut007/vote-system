@@ -1,0 +1,83 @@
+[
+    {
+        "id":"",
+        "privilegeName":"审批管理",
+        "alias":"审批管理",
+        "privilegeUri":"/review",
+        "privilegeMethod":"GET",
+        "icon":"",
+        "seq":0,
+        "level":1,
+        "ref":""
+    },{
+    "id":"",
+    "privilegeName":"审批列表",
+    "alias":"审批列表",
+    "privilegeUri":"/review/listReview",
+    "privilegeMethod":"POST",
+    "icon":"",
+    "seq":0,
+    "level":2,
+    "ref":"审批管理"
+},{
+    "id":"",
+    "privilegeName":"审批列表页面",
+    "alias":"审批列表页面",
+    "privilegeUri":"/review/listReview",
+    "privilegeMethod":"GET",
+    "icon":"",
+    "seq":0,
+    "level":2,
+    "ref":"审批管理"
+},{
+    "id":"",
+    "privilegeName":"添加审批页面",
+    "alias":"添加审批页面",
+    "privilegeUri":"/review/add_page",
+    "privilegeMethod":"GET",
+    "icon":"",
+    "seq":0,
+    "level":2,
+    "ref":"审批管理"
+},{
+    "id":"",
+    "privilegeName":"更新审批页面",
+    "alias":"更新审批页面",
+    "privilegeUri":"/review/edit_page",
+    "privilegeMethod":"GET",
+    "icon":"",
+    "seq":0,
+    "level":2,
+    "ref":"审批管理"
+},{
+    "id":"",
+    "privilegeName":"添加审批",
+    "alias":"添加审批",
+    "privilegeUri":"/review/addReview",
+    "privilegeMethod":"POST",
+    "icon":"",
+    "seq":0,
+    "level":2,
+    "ref":"审批管理"
+},{
+    "id":"",
+    "privilegeName":"删除审批",
+    "alias":"删除审批",
+    "privilegeUri":"/review/delReview",
+    "privilegeMethod":"POST",
+    "icon":"",
+    "seq":0,
+    "level":2,
+    "ref":"审批管理"
+},{
+    "id":"",
+    "privilegeName":"更新审批",
+    "alias":"更新审批",
+    "privilegeUri":"/review/updateReview",
+    "privilegeMethod":"POST",
+    "icon":"",
+    "seq":0,
+    "level":2,
+    "ref":"审批管理"
+}
+]

@@ -28,6 +28,7 @@ layui.config({
     itenderBook:"itender_book",
     itenderDevice:"itender_device",
     itenderRole:"itender_role",
+    itenderReview:"itender_review",
     itenderPrivilege:"itender_privilege",
     multipleSelect:"multipleSelect",
     documentTree:"document_tree",
