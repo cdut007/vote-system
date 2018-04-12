@@ -8,6 +8,13 @@ spring:
     ## 多环境配置
     profiles:
         active: staging
+ #设置文件上大小
+    http:
+        multipart:
+          max-file-size: 1024MB
+          max-request-size: 1024MB
+          enabled: true
+          resolve-lazily: true
 
     #数据库配置
     datasource:
@@ -96,6 +103,7 @@ privilege-uri-init:
     - /swagger-*
     - /book/bookRecord
     - /static/*
+    - /review*
   #登录后无需检查URI
   login_uncheck_uri:
     - /

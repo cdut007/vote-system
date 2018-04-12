@@ -3,6 +3,7 @@ package com.itender.ms.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.persistence.*;
 import java.util.Date;

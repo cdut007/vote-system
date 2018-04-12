@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -22,10 +23,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,6 +72,14 @@ public class ReviewController {
     }
 
 
+    @ApiIgnore
+    @RequestMapping(value = "/review_detail",method = RequestMethod.GET)
+    public String reviewDetailPage(HttpServletRequest request, HttpServletResponse response){
+        return ViewUtil.forward("/review/review_detail");
+    }
+
+
+
 
     @ApiOperation(value = "审批列表接口",notes = "用于查询所有审批信息")
     @RequestMapping(value = "/listReview",method = RequestMethod.POST)
@@ -106,11 +118,56 @@ public class ReviewController {
         return ViewUtil.forward("review/review_edit");
     }
 
+
+    public static boolean isLinux(String OS){
+        return OS.indexOf("linux")>=0;
+    }
+
+    public static boolean isMacOS(String OS){
+        return OS.indexOf("mac")>=0&&OS.indexOf("os")>0&&OS.indexOf("x")<0;
+    }
+
+    public static boolean isMacOSX(String OS){
+        return OS.indexOf("mac")>=0&&OS.indexOf("os")>0&&OS.indexOf("x")>0;
+    }
+
+    public static boolean isWindows(String OS){
+        return OS.indexOf("windows")>=0;
+    }
+
+
     @ApiOperation(value = "添加审批接口",notes = "用于新增审批信息")
     @RequestMapping(value = "/addReview",method = RequestMethod.POST)
     public ResponseEntity<Map<String,Object>> addReview(HttpServletRequest request,
-                                                           @ApiParam(name = "name",value = "审批",required = true) @RequestBody ItenderReview review) throws APIException{
+                                                           @ApiParam(name = "name",value = "审批",required = true)ItenderReview review,@RequestParam("file") MultipartFile file) throws APIException{
         Map<String,Object> result = new HashMap<>();
+
+        // 文件上传后的路径
+        String root = "C:\\\\";
+        String os = System.getProperty("os.name").toLowerCase();
+        if(isMacOS(os) || isMacOSX(os)){
+            root = "/Users/mac/Downloads";
+        }else if (isLinux(os)){
+            root = "";
+        }
+
+        String filePath = root + File.separator+"data"+File.separator+"review_files"+File.separator;
+        // 解决中文问题，liunx下中文路径，图片显示问题
+        // fileName = UUID.randomUUID() + suffixName;
+        File dest = new File(filePath + file.getOriginalFilename());
+        // 检测是否存在目录
+        if (!dest.getParentFile().exists()) {
+           boolean success =  dest.getParentFile().mkdirs();
+        }
+        try {
+            file.transferTo(dest);
+
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
       //  review.setStatus(ReviewStatus.normal.name());
         review = itenderReviewService.add(review);
         if(!CommonUtility.isNonEmpty(review.getId())){

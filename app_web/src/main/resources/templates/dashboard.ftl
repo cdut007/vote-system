@@ -312,6 +312,25 @@
 
             var userName= '${(user.userName)!}';
 
+            if(userName != 'test'){
+                //示范一个公告层
+                layer.open({
+                    type: 1
+                    ,title: false //不显示标题栏
+                    ,closeBtn: false
+                    ,area: '300px;'
+                    ,shade: 0.8
+                    ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                    ,btn: ['知道了']
+                    ,btnAlign: 'c'
+                    ,moveType: 1 //拖拽模式，0或者1
+                    ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">开发中...</div>'
+
+                });
+                return;
+            }
+
+
             if(!isLogin(userName)){
                 view.goto('/login');
                 localStorage.setItem('url','/review');

@@ -25,7 +25,7 @@
     <div class="layui-body">
         <!-- 内容主体区域 -->
         <div class="layui-tab" lay-filter="tabBody" lay-allowclose="true" style="margin-top: 0;">
-            <ul class="layui-tab-title" style="visibility:hidden">
+            <ul class="layui-tab-title" style="visibility:hidden;height: 0px">
             </ul>
             <div class="layui-tab-content layui-col-md-12" id="content" lay-filter="tabTable">
             </div>

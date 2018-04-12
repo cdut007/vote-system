@@ -143,10 +143,29 @@
         table.on('tool(reviewTable)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
-            var deviceId = data.id;
+            var reviewId = data.id;
 
             if (layEvent === 'review') { //点击办理
+                $.ajax({
+                    url: '/review/review_detail',
+                    type:"GET",
+                    cache:false,
+                    success: function (res) {
+                        //console.log(res);
+                        // $('#content').html(res);
+                        layui.element.tabDelete('tabBody', 'list-review');
+                        layui.element.tabAdd('tabBody', {//添加新Tap
+                            title:'审批管理',
+                            content: res
+                            ,id: 'list-review'
+                        });
+                        layui.element.tabChange('tabBody', 'list-review');
 
+                    },
+                    error: function (xmlHttpReq, error, ex) {
+
+                    }
+                })
             }
         });
 
