@@ -1,7 +1,6 @@
 package com.itender.ms.enums;
 
 public enum ReviewType {
-    bid,
     tender,
     notice_delay,
     notice_update,
