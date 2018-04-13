@@ -17,6 +17,11 @@
             <artifactId>app_base</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-spring-boot-starter-basic</artifactId>
+            <version>5.19.0</version>
+        </dependency>
 
     </dependencies>
     <build>
@@ -28,6 +33,7 @@
                 <targetPath>com/itender/ms/mapper</targetPath>
                 <includes>
                     <include>*.xml</include>
+
                 </includes>
             </resource>
         </resources>

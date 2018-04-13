@@ -22,17 +22,16 @@ public class ItenderConfirm {
 
 
 
-    //审批地址信息
-    @Column(name="type")
-    private String type;//审批类型
+    @Column(name="count")
+    private String count;//份数
 
 
     @Column(name="name")
-    private String name;//审批名称
+    private String name;//文档标题
 
 
     @Column(name="review_id")
-    private String reviewId;//审批描述
+    private String reviewId;//
 
     public String getId() {
         return id;
@@ -50,13 +49,7 @@ public class ItenderConfirm {
         this.path = path;
     }
 
-    public String getType() {
-        return type;
-    }
 
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public String getName() {
         return name;
