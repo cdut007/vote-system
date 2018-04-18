@@ -6,10 +6,7 @@ import com.itender.ms.domain.*;
 import com.itender.ms.enums.ReviewRole;
 import com.itender.ms.enums.ReviewStatus;
 import com.itender.ms.exception.APIException;
-import com.itender.ms.mapper.ItenderAttachMapper;
-import com.itender.ms.mapper.ItenderConfirmMapper;
-import com.itender.ms.mapper.ItenderReviewMapper;
-import com.itender.ms.mapper.ItenderTaskMapper;
+import com.itender.ms.mapper.*;
 import com.itender.ms.service.ItenderReviewService;
 import com.itender.ms.util.CommonUtility;
 import org.slf4j.Logger;
@@ -45,6 +42,9 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
     @Autowired
     private ItenderTaskMapper itenderTaskMapper;
 
+	@Autowired
+	private ItenderSignMapper itenderSignMapper;
+
 
 
 
@@ -74,13 +74,41 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 		return itenderReview;
 	}
 
+    @Override
+    public List<ItenderConfirm> findConfirmsByReviewId(String reviewId) throws APIException {
+        ItenderReview itenderReview = findById(reviewId);
+        if(itenderReview!=null){
+            return  itenderReview.getConfirms();
+        }
+        return null;
+    }
+
+
 	private void findAttachsAndConfirms(ItenderReview itenderReview){
 		Example example = new Example(ItenderAttach.class);
 		example.createCriteria().andEqualTo("reviewId",itenderReview.getId());
 		itenderReview.setAttaches(itenderAttachMapper.selectByExample(example));
 		Example example2 = new Example(ItenderConfirm.class);
 		example2.createCriteria().andEqualTo("reviewId",itenderReview.getId());
-		itenderReview.setConfirms(itenderConfirmMapper.selectByExample(example2));
+		List<ItenderConfirm> confirms = itenderConfirmMapper.selectByExample(example2);
+		if(confirms!=null && !confirms.isEmpty()){
+			for (int i = 0; i < confirms.size(); i++) {
+				ItenderConfirm itenderConfirm = confirms.get(i);
+				Example example3 = new Example(ItenderSign.class);
+				String userId = null;
+				if(user!=null){
+					userId = user.getId();
+					user = null;
+				}
+				example3.createCriteria().andEqualTo("confirmId",itenderConfirm.getId()).andEqualTo("signId",userId);
+				List<ItenderSign> itenderSigns = itenderSignMapper.selectByExample(example3);
+				if(itenderSigns!=null && !itenderSigns.isEmpty()) {
+					ItenderSign itenderSign = itenderSigns.get(0);
+					itenderConfirm.setStatus(itenderSign.getResult());
+				}
+			}
+		}
+		itenderReview.setConfirms(confirms);
 	}
 
     private void checkTask(ItenderReview itenderReview){
@@ -137,6 +165,85 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 		return rows == 0?null:review;
 	}
 
+
+
+	private  String   getPrevOperator(String operator) {
+
+		String[] operators = new String []{ReviewRole.operator.name(),ReviewRole.department_leader.name(),ReviewRole.branch_leader.name(),ReviewRole.approver.name()};
+		for(int i = 0 ; i<operators.length;i++){
+			if(operators[i].equals(operator)){
+				if(i-1>=0){
+					return operators[i-1];
+				}else{
+
+					return null;
+				}
+
+			}
+		}
+
+		return null;
+	}
+
+	@Override
+	public int rollbackReviewStatus(String id, String userId) throws APIException {
+
+		ItenderReview rollbackItenderReview = findById(id);
+
+		if(rollbackItenderReview == null){
+			return  -1;
+		}
+
+		Example example = new Example(ItenderTask.class);
+		example.createCriteria().andEqualTo("reviewId",id);
+		List<ItenderTask> itenderTasks = itenderTaskMapper.selectByExample(example);
+		//reset
+		if(itenderTasks!=null&& !itenderTasks.isEmpty()){
+			String rollbackRole = null;
+			for (int i = 0; i < itenderTasks.size(); i++) {
+				ItenderTask rollbackTask = itenderTasks.get(i);
+				if(rollbackTask.getUserId()!=null && rollbackTask.getUserId().equals(userId) && rollbackTask.getCurrentTask()){
+					logger.info("find the task exsit.");
+					rollbackRole = rollbackTask.getRole();
+					itenderTaskMapper.delete(rollbackTask);
+					List<ItenderConfirm> confirms = rollbackItenderReview.getConfirms();
+					if(confirms!=null && !confirms.isEmpty()){
+						for (int j = 0; j < confirms.size(); j++) {
+							Example example2 = new Example(ItenderSign.class);
+							example2.createCriteria().andEqualTo("signId",userId).andEqualTo("confirmId",confirms.get(j).getId());
+							itenderSignMapper.deleteByExample(example2);
+						}
+					}
+
+					break;
+				}
+			}
+
+
+			for (int i = 0; i < itenderTasks.size(); i++) {
+				ItenderTask itenderTask = itenderTasks.get(i);
+				String role = getPrevOperator(rollbackRole);
+				if(itenderTask.getUserId()!=null && itenderTask.getRole()!=null && itenderTask.getRole().equals(role)){
+					itenderTask.setCurrentTask(true);
+					itenderTask.setCreateTime(new Date());
+					itenderTask.setStatus(ReviewStatus.verify.name());
+					itenderTaskMapper.updateByPrimaryKeySelective(itenderTask);
+					ItenderReview itenderReview = new ItenderReview();
+					itenderReview.setId(itenderTask.getReviewId());
+					itenderReview.setAssigneeId(itenderTask.getUserId());
+					itenderReviewMapper.updateByPrimaryKeySelective(itenderReview);
+					return 0;
+					}
+
+
+				}
+			}
+
+
+		return -2;
+	}
+
+
 	@Override
 	public ItenderReview updateReviewStatus(String id,String assigneeId,String role,String status) throws APIException {
 		Example example = new Example(ItenderTask.class);
@@ -178,8 +285,25 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 	}
 
 	@Override
-	public ItenderReview updateSignStatus(ItenderReview review) throws APIException {
-		return null;
+	public ItenderSign updateSignResult(String confirmId,String signId,String signResult,String description) throws APIException {
+		Example example = new Example(ItenderSign.class);
+		example.createCriteria().andEqualTo("confirmId",confirmId).andEqualTo("signId",signId);
+		List<ItenderSign> itenderSigns = itenderSignMapper.selectByExample(example);
+		ItenderSign itenderSign;
+		if(itenderSigns!=null && !itenderSigns.isEmpty()){
+			 itenderSign = itenderSigns.get(0);
+			itenderSign.setResult(signResult);
+			itenderSignMapper.updateByPrimaryKeySelective(itenderSign);
+		}else{
+			 itenderSign = new ItenderSign();
+			itenderSign.setConfirmId(confirmId);
+			itenderSign.setResult(signResult);
+			itenderSign.setCreateTime(new Date());
+			itenderSign.setDescription(description);
+			itenderSign.setSignId(signId);
+			itenderSignMapper.insertSelective(itenderSign);
+		}
+		return itenderSign;
 	}
 
 
@@ -196,13 +320,13 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 			}
 
 		}
-        ItenderTask itenderTask = new ItenderTask();
-        itenderTask.setRole(ReviewRole.operator.name());
-        itenderTask.setStatus(ReviewStatus.verify.name());
-        itenderTask.setCreateTime(review.getCreateTime());
-        itenderTask.setReviewId(review.getId());
-        itenderTask.setCurrentTask(true);
-        itenderTaskMapper.insertSelective(itenderTask);
+//        ItenderTask itenderTask = new ItenderTask();
+//        itenderTask.setRole(ReviewRole.operator.name());
+//        itenderTask.setStatus(ReviewStatus.verify.name());
+//        itenderTask.setCreateTime(review.getCreateTime());
+//        itenderTask.setReviewId(review.getId());
+//        itenderTask.setCurrentTask(true);
+//        itenderTaskMapper.insertSelective(itenderTask);
 
 		if(review.getConfirms()!=null){
 
@@ -250,15 +374,11 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 		}else {
 			if(user!=null){
 
-					if(!ReviewRole.operator.name().equals(user.getOperator())){
-
-					 example.createCriteria().andEqualTo("assigneeId",user.getId());
-				   }else{
-
-						example.createCriteria().andEqualTo("assigneeId","Assignee");
-					}
+				example.createCriteria().andEqualTo("assigneeId",user.getId());
 
 				user = null;
+			}else{
+				example.createCriteria().andIsNull("assigneeId").orEqualTo("assigneeId","");
 			}
 
 			example.setOrderByClause("create_time desc");

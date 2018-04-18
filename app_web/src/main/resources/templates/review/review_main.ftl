@@ -17,6 +17,12 @@
         <li class="layui-nav-item layui-side-item"><a id="review" href="javascript:;"><img src="/css/img/icon_room_default.png" class="layui-nav-side-img">待办任务</a></li>
           <#--</@resource_check>-->
 
+                    <#if user??>
+                        <#if user.operator=='operator'>
+                        <li class="layui-nav-item layui-side-item"><a id="reviewAll" href="javascript:;"><img src="/css/img/icon_limit_default.png" class="layui-nav-side-img">所有任务</a></li>
+                        </#if>
+                    </#if>
+
             </ul>
         </div>
     </div>
@@ -98,6 +104,37 @@
 
                 }
         );
+
+
+
+        $("#reviewAll").click(function () {
+
+
+                    $.ajax({
+                        url: '/review/review_all_list',
+                        type:"GET",
+                        cache:false,
+                        success: function (res) {
+                            //console.log(res);
+                            // $('#content').html(res);
+                            layui.element.tabDelete('tabBody', 'list-review');
+                            layui.element.tabAdd('tabBody', {//添加新Tap
+                                title:'审批管理',
+                                content: res
+                                ,id: 'list-review'
+                            });
+                            layui.element.tabChange('tabBody', 'list-review');
+
+                        },
+                        error: function (xmlHttpReq, error, ex) {
+
+                        }
+                    })
+
+
+                }
+        );
+
 
         $("#review").click();
 

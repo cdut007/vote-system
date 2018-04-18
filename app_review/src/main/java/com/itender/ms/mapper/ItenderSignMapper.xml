@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itender.ms.mapper.ItenderSignMapper">
+    <resultMap id="itenderSign" type="com.itender.ms.domain.ItenderSign">
+    	<id column="id" javaType="String" property="id"></id>
+        <result column="result" javaType="STRING" property="result"></result>
+        <result column="name" javaType="STRING" property="name"></result>
+		<result column="description" javaType="STRING" property="description"></result>
+		<result column="sign_id" javaType="STRING" property="signId"></result>
+		<result column="confirm_id" javaType="STRING" property="confirmId"></result>
+        <result column="type" javaType="STRING" property="type"></result>
+		<result column="create_time" javaType="DATE" property="createTime"></result>
+
+    </resultMap>
+
+	<select id="selectByFilter"
+			resultMap="itenderSign">
+		select * from itender_review review where
+		<if test="keyword != null">
+			 UPPER(CONCAT(review.name,review.type)) LIKE UPPER (CONCAT(CONCAT('%', #{keyword, jdbcType=VARCHAR}),'%')) ESCAPE '/'
+		</if>
+		ORDER BY create_time desc
+
+	</select>
+
+
+	 <select id="selectBySignId" parameterType="java.lang.String" resultMap="itenderSign">
+		SELECT 
+			a.*
+		FROM
+		 itender_review a
+		WHERE
+			a.id= #{reviewId,jdbcType=VARCHAR}
+    </select>
+
+	<select id="selectBySignName" parameterType="java.lang.String" resultMap="itenderSign">
+		SELECT
+		a.*
+		FROM
+		itender_review a
+		WHERE
+		a.id= #{reviewName,jdbcType=VARCHAR}
+	</select>
+
+    
+    <update id="updateSign" parameterType="com.itender.ms.domain.ItenderSign">
+    	UPDATE itender_review
+    	<trim prefix="SET" suffixOverrides=",">
+		  <if test="type != null">type=#{type},</if>
+		  <if test="name != null">name=#{name},</if>
+		  <if test="result != null">result=#{result},</if>
+		</trim>
+        WHERE id = #{id}
+    </update>
+</mapper>

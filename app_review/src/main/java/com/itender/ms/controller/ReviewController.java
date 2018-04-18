@@ -3,10 +3,7 @@ package com.itender.ms.controller;
 import com.github.pagehelper.PageInfo;
 import com.itender.ms.convert.LayuiTableData;
 import com.itender.ms.convert.PageDataConvert;
-import com.itender.ms.domain.ItenderConfirm;
-import com.itender.ms.domain.ItenderReview;
-import com.itender.ms.domain.ItenderRole;
-import com.itender.ms.domain.ItenderUser;
+import com.itender.ms.domain.*;
 import com.itender.ms.enums.ReviewRole;
 import com.itender.ms.enums.ReviewStatus;
 import com.itender.ms.exception.APIException;
@@ -78,11 +75,32 @@ public class ReviewController {
 
 
     @ApiIgnore
+    @RequestMapping(value = "/review_all_list",method = RequestMethod.GET)
+    public String reviewAllListPage(HttpServletRequest request, HttpServletResponse response){
+        return ViewUtil.forward("/review/review_all_list");
+    }
+
+
+    @ApiIgnore
     @RequestMapping(value = "/review_list",method = RequestMethod.GET)
     public String reviewListPage(HttpServletRequest request, HttpServletResponse response){
         return ViewUtil.forward("/review/review_list");
     }
 
+
+    @ApiIgnore
+    @RequestMapping(value = "/review_all_detail",method = RequestMethod.GET)
+    public String reviewAllDetailPage(HttpServletRequest request, HttpServletResponse response){
+        String reviewId = request.getParameter("id");
+        ItenderReview review = null;
+        if(CommonUtility.isNonEmpty(reviewId)){
+            review = itenderReviewService.findById(reviewId);
+        }
+
+        request.setAttribute("itenderReview",review);
+
+        return ViewUtil.forward("/review/review_all_detail");
+    }
 
     @ApiIgnore
     @RequestMapping(value = "/review_detail",method = RequestMethod.GET)
@@ -104,9 +122,17 @@ public class ReviewController {
     public ResponseEntity<Map<String,Object>> confirms(HttpServletRequest request,
                                                     @RequestParam(required = false) String id
     ) throws APIException{
-
-        ItenderReview review = itenderReviewService.findById(id);
         Map<String,Object> result = new HashMap<>();
+        ItenderUser user = (ItenderUser)request.getSession().getAttribute("user");
+
+        if(user == null){
+            result.put("status", false);
+            result.put("msg", "用户不存在，查询审批失败！");
+            return ResponseEntity.ok(result);
+        }
+        itenderReviewService.setCurrentUser(user);
+        ItenderReview review = itenderReviewService.findById(id);
+
         if(!CommonUtility.isNonEmpty(review.getId())){
             result.put("status", false);
             result.put("msg", "添加审批失败！");
@@ -146,14 +172,18 @@ public class ReviewController {
     public ResponseEntity<LayuiTableData> reviewAll(HttpServletRequest request,
                                                        @RequestParam(required = false) Integer pageNum,
                                                        @RequestParam(required = false) Integer pagesize,
-                                                    @RequestParam(required = false) String keyword
+                                                    @RequestParam(required = false) String keyword,
+                                                    @RequestParam(required = false) boolean all
     ) throws APIException{
+        ItenderUser user=null ;
+        if(!all){
+             user = (ItenderUser)request.getSession().getAttribute("user");
 
-        ItenderUser user = (ItenderUser)request.getSession().getAttribute("user");
-
-        if(user == null){
-            return ResponseEntity.ok(PageDataConvert.convertToLayuiData(new PageInfo(),200,"success"));
+            if(user == null){
+                return ResponseEntity.ok(PageDataConvert.convertToLayuiData(new PageInfo(),200,"success"));
+            }
         }
+
 
         pageNum = pageNum == null?1:pageNum;
         pagesize = pagesize == null?10:pagesize;
@@ -267,9 +297,6 @@ public class ReviewController {
                                                         @RequestBody ItenderReview review) throws APIException{
         Map<String,Object> result = new HashMap<>();
         review.setCreateTime(new Date());
-        review.setRole(ReviewRole.operator.name());
-        review.setStatus(ReviewStatus.verify.name());
-        review.setAssigneeId("Assignee");//add flag
         review = itenderReviewService.add(review);
         if(!CommonUtility.isNonEmpty(review.getId())){
             result.put("status", false);
@@ -302,37 +329,24 @@ public class ReviewController {
 
 
     @ApiOperation(value = "更新签章接口",notes = "用于更新审批信息")
-    @RequestMapping(value = "/updateSignStatus",method = RequestMethod.POST)
-    public ResponseEntity<Map<String,Object>> updateSignStatus(HttpServletRequest request,
-                                                               @ApiParam(name = "reviewId",value = "审批ID",required = true) @RequestParam(required = true) String reviewId,
+    @RequestMapping(value = "/updateSignResult",method = RequestMethod.POST)
+    public ResponseEntity<Map<String,Object>> updateSignResult(HttpServletRequest request,
+                                                               @ApiParam(name = "signId",value = "signId",required = true) @RequestParam(required = true) String signId,
+                                                               @ApiParam(name = "description",value = "description",required = false) @RequestParam(required = false) String description,
                                                                @ApiParam(name = "confirmId",value = "confirmId",required = true) @RequestParam(required = true) String confirmId,
-                                                               @ApiParam(name = "signStatus",value = "sign",required = true) @RequestParam(required = true) String signStatus
+                                                               @ApiParam(name = "signResult",value = "signResult",required = true) @RequestParam(required = true) String signResult
     ) throws APIException{
 
         Map<String,Object> result = new HashMap<>();
-        ItenderReview reviewExsit = itenderReviewService.findById(reviewId);
-        if(reviewExsit == null){
-            result.put("status", false);
-            result.put("msg", "未找到相关审批信息！");
-            return ResponseEntity.ok(result);
-        }
-        List<ItenderConfirm> confirms = reviewExsit.getConfirms();
-        for (int i = 0; i < confirms.size(); i++) {
-            if(confirms.get(i).getId().equals(confirmId)){
-                confirms.get(i).setStatus(signStatus);
-                break;
-            }
-        }
-        reviewExsit.setConfirms(confirms);
 
-        reviewExsit = itenderReviewService.updateSignStatus(reviewExsit);
-        if(reviewExsit == null){
+        ItenderSign itenderSign = itenderReviewService.updateSignResult(confirmId,signId,signResult,description);
+        if(itenderSign == null){
             result.put("status", false);
             result.put("msg", "跟新审批失败！");
         }else{
             result.put("status", true);
         }
-        result.put("data", reviewExsit);
+        result.put("data", itenderSign);
         return ResponseEntity.ok(result);
     }
 
@@ -377,6 +391,33 @@ public class ReviewController {
             result.put("status", true);
         }
         result.put("data", reviewExsit);
+        return ResponseEntity.ok(result);
+    }
+
+
+    @ApiOperation(value = "退回审批接口",notes = "用于更新审批信息")
+    @RequestMapping(value = "/rollbackReviewStatus",method = RequestMethod.POST)
+    public ResponseEntity<Map<String,Object>> rollbackReviewStatus(HttpServletRequest request, @ApiParam(name = "id",value = "审批ID",required = true) @RequestParam(required = true) String id
+    ) throws APIException{
+
+        Map<String,Object> result = new HashMap<>();
+        ItenderReview reviewExsit = null;
+
+        ItenderUser user = (ItenderUser)request.getSession().getAttribute("user");
+
+        if(user == null){
+            result.put("status", false);
+            return ResponseEntity.ok(result);
+        }
+
+
+       int resultCode = itenderReviewService.rollbackReviewStatus(id,user.getId());
+        if(resultCode != 0 ){
+            result.put("status", false);
+            result.put("msg", "回退审批失败！");
+        }else{
+            result.put("status", true);
+        }
         return ResponseEntity.ok(result);
     }
 

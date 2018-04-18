@@ -1,6 +1,6 @@
 package com.itender.ms.enums;
 
-public enum SignStatus {
+public enum SignResult {
     approved,
     verify,
     forbidden,

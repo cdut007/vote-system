@@ -1,6 +1,8 @@
 package com.itender.ms.service;
 
+import com.itender.ms.domain.ItenderConfirm;
 import com.itender.ms.domain.ItenderReview;
+import com.itender.ms.domain.ItenderSign;
 import com.itender.ms.domain.ItenderUser;
 import com.itender.ms.exception.APIException;
 
@@ -32,11 +34,13 @@ public interface ItenderReviewService extends ItenderServiceBase<ItenderReview> 
 	 */
 	public ItenderReview updateReview(ItenderReview review) throws APIException;
 
+	public List<ItenderConfirm> findConfirmsByReviewId(String reviewId) throws APIException;
 
+	public int rollbackReviewStatus(String id,String userId) throws APIException;
 	public ItenderReview updateReviewStatus(String id,String assigneeId,String role,String status) throws APIException;
 
 
-	public ItenderReview updateSignStatus(ItenderReview review) throws APIException;
+	public ItenderSign updateSignResult(String confirmId,String signId,String signResult,String description) throws APIException;
 
 
 
