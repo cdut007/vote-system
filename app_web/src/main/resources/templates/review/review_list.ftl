@@ -44,7 +44,7 @@
 </script>
 
 <script type="text/html" id="typeLabel">
-    {{'招标登记' }}
+    {{getReviewTypeName(d.type) }}
 </script>
 
 

@@ -3,6 +3,7 @@ package com.itender.ms.domain;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * 审批
@@ -17,13 +18,13 @@ public class ItenderConfirm {
     @ApiModelProperty(value="id",hidden=true)
     private String id;
 
-    @Column(name="path")
-    private String path;
+    @Column(name="type")
+    private String type;
 
 
 
-    @Column(name="count")
-    private String count;//份数
+    @Column(name="status")
+    private String status;//签章状态
 
 
     @Column(name="name")
@@ -33,6 +34,17 @@ public class ItenderConfirm {
     @Column(name="review_id")
     private String reviewId;//
 
+    @Column(name="create_time")
+    private Date createTime;//审批任务创建时间
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
     public String getId() {
         return id;
     }
@@ -41,15 +53,13 @@ public class ItenderConfirm {
         this.id = id;
     }
 
-    public String getPath() {
-        return path;
+    public String getStatus() {
+        return status;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setStatus(String status) {
+        this.status = status;
     }
-
-
 
     public String getName() {
         return name;

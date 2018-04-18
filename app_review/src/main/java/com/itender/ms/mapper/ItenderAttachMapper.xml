@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itender.ms.mapper.ItenderAttachMapper">
+    <resultMap id="itenderAttach" type="com.itender.ms.domain.ItenderAttach">
+    	<id column="id" javaType="String" property="id"></id>
+        <result column="path" javaType="STRING" property="path"></result>
+        <result column="name" javaType="STRING" property="name"></result>
+        <result column="review_id" javaType="STRING" property="reviewId"></result>
+        <result column="type" javaType="STRING" property="type"></result>
+		<result column="create_time" javaType="DATE" property="createTime"></result>
+
+    </resultMap>
+
+	<select id="selectByFilter"
+			resultMap="itenderAttach">
+		select * from itender_attach attach where
+		<if test="keyword != null">
+			 UPPER(CONCAT(review.name,review.type)) LIKE UPPER (CONCAT(CONCAT('%', #{keyword, jdbcType=VARCHAR}),'%')) ESCAPE '/'
+		</if>
+		ORDER BY create_time desc
+
+	</select>
+
+
+	 <select id="selectByReviewId" parameterType="java.lang.String" resultMap="itenderAttach">
+		SELECT 
+			a.*
+		FROM
+		 itender_attach a
+		WHERE
+			a.id= #{reviewId,jdbcType=VARCHAR}
+    </select>
+
+	<select id="selectByReviewName" parameterType="java.lang.String" resultMap="itenderAttach">
+		SELECT
+		a.*
+		FROM
+		itender_attach a
+		WHERE
+		a.id= #{reviewName,jdbcType=VARCHAR}
+	</select>
+
+    
+    <update id="updateAttach" parameterType="com.itender.ms.domain.ItenderAttach">
+    	UPDATE itender_attach
+    	<trim prefix="SET" suffixOverrides=",">
+		  <if test="type != null">type=#{type},</if>
+		  <if test="name != null">name=#{name},</if>
+		  <if test="path != null">path=#{path},</if>
+		</trim>
+        WHERE id = #{id}
+    </update>
+</mapper>

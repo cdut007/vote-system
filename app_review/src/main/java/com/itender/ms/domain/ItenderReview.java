@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 审批
@@ -24,14 +23,16 @@ public class ItenderReview {
     @ApiModelProperty(value="id",hidden=true)
     private String id;
 
-    @Column(name="role")
+
 
     @ApiModelProperty(value="审批角色",name="role",example="operator,department_leader,branch_leader,approver",required=false,hidden=true)
+    @Transient
     private String role;//审批角色
 
 
-    @Column(name="status")
+    private String assigneeId;
 
+    @Transient
     private String status;//审批状态
 
 
@@ -121,13 +122,21 @@ public class ItenderReview {
 
 
     @Transient
-    public List<ItenderAttach> attachs;
+    public List<ItenderAttach> attaches;
 
 
 
     @Transient
-    public List<ItenderAttach> confirms;
+    public List<ItenderConfirm> confirms;
 
+
+    public void setAssigneeId(String assigneeId) {
+        this.assigneeId = assigneeId;
+    }
+
+    public String getAssigneeId() {
+        return assigneeId;
+    }
 
     public String getId() {
         return id;
@@ -289,19 +298,19 @@ public class ItenderReview {
         this.tenderCondition = tenderCondition;
     }
 
-    public List<ItenderAttach> getAttachs() {
-        return attachs;
+    public List<ItenderAttach> getAttaches() {
+        return attaches;
     }
 
-    public void setAttachs(List<ItenderAttach> attachs) {
-        this.attachs = attachs;
+    public void setAttaches(List<ItenderAttach> attaches) {
+        this.attaches = attaches;
     }
 
-    public List<ItenderAttach> getConfirms() {
+    public List<ItenderConfirm> getConfirms() {
         return confirms;
     }
 
-    public void setConfirms(List<ItenderAttach> confirms) {
+    public void setConfirms(List<ItenderConfirm> confirms) {
         this.confirms = confirms;
     }
 }

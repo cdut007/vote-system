@@ -2,7 +2,6 @@
 #Log4j2配置
 logging:
   config: classpath:config/log4j2.xml
-
 #Spring配置
 spring:
     ## 多环境配置
@@ -15,7 +14,6 @@ spring:
           max-request-size: 1024MB
           enabled: true
           resolve-lazily: true
-
     #数据库配置
     datasource:
         name: itender
@@ -61,7 +59,14 @@ spring:
       prefix: # Prefix that gets prepended to view names when building a URL.
       request-context-attribute: # Name of the RequestContext attribute for all views.
       suffix: .ftl # Suffix that gets appended to view names when building a URL.
-      template-loader-path: classpath:/templates/ # Comma-separated list of templates paths.
+      template-loader-path: classpath:/templates/
+    jpa:
+      database: MYSQL
+      hibernate:
+        ddl-auto: update
+
+
+
 
 #Mybatis配置
 mybatis:
@@ -128,3 +133,6 @@ privilege-uri-init:
 
 sys:
   version: @project.version@
+
+debug: false
+

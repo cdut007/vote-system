@@ -1,6 +1,7 @@
 package com.itender.ms.service;
 
 import com.itender.ms.domain.ItenderReview;
+import com.itender.ms.domain.ItenderUser;
 import com.itender.ms.exception.APIException;
 
 import java.util.List;
@@ -12,6 +13,8 @@ import java.util.List;
 public interface ItenderReviewService extends ItenderServiceBase<ItenderReview> {
 
 	public void setSearchInfo(String keyword);
+
+	public void setCurrentUser(ItenderUser currentUser);
 
 
 	public ItenderReview findByReviewId(String reviewId);
@@ -28,6 +31,13 @@ public interface ItenderReviewService extends ItenderServiceBase<ItenderReview> 
 	 * @return
 	 */
 	public ItenderReview updateReview(ItenderReview review) throws APIException;
+
+
+	public ItenderReview updateReviewStatus(String id,String assigneeId,String role,String status) throws APIException;
+
+
+	public ItenderReview updateSignStatus(ItenderReview review) throws APIException;
+
 
 
 

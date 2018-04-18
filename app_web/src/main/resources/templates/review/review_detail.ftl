@@ -2,7 +2,7 @@
 <span class="layui-breadcrumb">
           <a id="review_nav" href="javascript:;">待办任务</a>
           <span lay-separator="">/</span>
-          <a><cite>用印登记</cite></a>
+          <a><cite id="title">用印登记</cite></a>
         </span>
 
 <div class="layui-container margin-top">
@@ -10,9 +10,11 @@
 
     <div class="layui-row layui-col-space15" style="padding: 30px">
 
-    <#include "tender_info.ftl">
+       <#include "review_tender_verify.ftl">
 
     <#include "review_attachment_list.ftl">
+
+    <#include "tender_info.ftl">
 
     </div>
 
@@ -45,8 +47,8 @@
 
 
     layui.use( ['table','util', 'itenderReview','element'], function () {
-
-
+        var type = "${(itenderReview.type)!}";
+        $("#title").html(getReviewTypeName(type));
 
         $("#review_nav").click(function () {
             $.ajax({

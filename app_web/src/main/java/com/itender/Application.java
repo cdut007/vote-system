@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -39,6 +40,11 @@ import javax.sql.DataSource;
 @EnableSwagger2
 @ServletComponentScan
 public class Application{
+
+
+
+
+
     public static void main(String[] args) {
         SpringApplication.run(Application.class,args);
     }

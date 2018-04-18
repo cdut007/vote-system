@@ -35,6 +35,18 @@ public class ItenderAttach {
     @Column(name="review_id")
     private String reviewId;//审批描述
 
+    @Column(name="create_time")
+    private Date createTime;//审批任务创建时间
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+
     public String getId() {
         return id;
     }

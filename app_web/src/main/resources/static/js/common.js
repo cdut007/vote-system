@@ -50,6 +50,7 @@ layui.use('layer', function(){
 
 
 
+
 function isLogin(userName) {
     var isLogin =  userName;
     if(isLogin && isLogin!=''){

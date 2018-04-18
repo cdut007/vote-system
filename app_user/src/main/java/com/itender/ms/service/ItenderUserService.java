@@ -3,6 +3,8 @@ package com.itender.ms.service;
 import com.itender.ms.domain.ItenderUser;
 import com.itender.ms.exception.APIException;
 
+import java.util.List;
+
 /**
  * @Author Mao.Zeng@MG
  * @Date 2018/1/15 16:49
@@ -10,6 +12,9 @@ import com.itender.ms.exception.APIException;
 public interface ItenderUserService extends ItenderServiceBase<ItenderUser> {
 
 	public ItenderUser findByUserId(String userId);
+
+
+	public List<ItenderUser> findByUserOperator(String operator);
 	/**
 	 * 按用户名和密码查询用户
 	 * @param username

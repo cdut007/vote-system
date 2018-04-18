@@ -58,6 +58,7 @@ public class ItenderUser extends ItenderAttrBase {
     @Column(name="is_default_admin")
     private Boolean isDefaultAdmin;
 
+
     @Transient
     private List<ItenderRole> roles;
     
@@ -87,6 +88,7 @@ public class ItenderUser extends ItenderAttrBase {
     public void setNickName(String nickName) {
         this.nickName = nickName;
     }
+
 
     public String getPhone() {
         return phone;

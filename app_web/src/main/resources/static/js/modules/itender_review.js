@@ -184,7 +184,7 @@ layui.define(function (exports) {
             ReviewObj.deleteReview(reviewId, callback);
         }
         /**
-         * 更新设备
+         *
          * @param data
          * @param callback
          */

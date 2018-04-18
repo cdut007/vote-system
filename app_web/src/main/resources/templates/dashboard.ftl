@@ -312,7 +312,7 @@
 
             var userName= '${(user.userName)!}';
 
-            if(userName != 'test'){
+            if(userName != 'test' && userName != 'test1'&& userName != 'test2'&& userName != 'test3'){
                 //示范一个公告层
                 layer.open({
                     type: 1

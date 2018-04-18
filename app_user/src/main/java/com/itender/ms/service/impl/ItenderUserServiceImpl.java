@@ -84,6 +84,13 @@ public class ItenderUserServiceImpl implements ItenderUserService {
     }
 
     @Override
+    public List<ItenderUser> findByUserOperator(String operator) {
+        Example example = new Example(ItenderUser.class);
+        example.createCriteria().andEqualTo("operator",operator);
+        return itenderUserMapper.selectByExample(example);
+    }
+
+    @Override
     public ItenderUser findByNameAndPassword(String username, String password) throws APIException {
         ItenderUser user = new ItenderUser();
         user.setUserName(username);
