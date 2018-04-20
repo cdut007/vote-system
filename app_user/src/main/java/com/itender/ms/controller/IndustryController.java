@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.nio.channels.AcceptPendingException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,6 +48,18 @@ public class IndustryController {
     public String toInsdustry(HttpServletRequest request, HttpServletResponse response){
         return ViewUtil.forward("/user/industry_list");
     }
+
+
+    @ApiOperation(value = "行业列表接口",notes = "用于查询行业列表信息")
+    @RequestMapping(value = "/listAll",method = RequestMethod.POST)
+    public ResponseEntity<List<ItenderIndustry>> industryList(HttpServletRequest request)
+            throws APIException{
+
+        List<ItenderIndustry> industryList = itenderIndustryService.findAll();
+
+        return ResponseEntity.ok(industryList);
+    }
+
 
     @ApiOperation(value = "行业列表接口",notes = "用于查询行业列表信息")
     @RequestMapping(value = "/list",method = RequestMethod.POST)

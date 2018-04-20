@@ -171,7 +171,7 @@ layui.define(function (exports) {
          * @param callback
          */
         ,openModal: function (data,callback) {
-            console.log(data);
+          //  console.log(data);
             ReviewObj.openModal(data,callback);
         }
 

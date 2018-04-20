@@ -87,6 +87,12 @@ public class ReviewController {
         return ViewUtil.forward("/review/review_list");
     }
 
+    @ApiIgnore
+    @RequestMapping(value = "/review_sign",method = RequestMethod.GET)
+    public String reviewSignPage(HttpServletRequest request, HttpServletResponse response){
+        return ViewUtil.forward("/review/review_sign");
+    }
+
 
     @ApiIgnore
     @RequestMapping(value = "/review_all_detail",method = RequestMethod.GET)

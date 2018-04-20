@@ -123,8 +123,9 @@ public class BookController {
     @ApiOperation(value = "统计今日或明日预订房间接口",notes = "用于查询所有预订房间信息")
     @RequestMapping(value = "/bookRecord",method = RequestMethod.POST)
     public ResponseEntity<List<ItenderBook>> findBookRecordList(HttpServletRequest request,
+                                                                @ApiParam(name = "type",value = "类别",required = false) @RequestParam(required = false) String  type,
                                                              @ApiParam(name = "count",value = "获取数量",required = true) @RequestParam(required = true) Integer count,
-                                                             @ApiParam(name = "date",value = "日期，今日或明日 today,tomorrow",required = true)@RequestParam(required = true) String  date
+                                                             @ApiParam(name = "date",value = "日期，今日或明日 today,tomorrow",required = false)@RequestParam(required = false) String  date
     ) throws APIException{
 
         logger.debug("==count="+count);
@@ -133,7 +134,7 @@ public class BookController {
 
         long startTime = 0L;
         long endTime = 0L;
-        if(date.equals("today")){
+        if("today".equals(date)){
             Date mDate=new Date();//取时间
             startTime = mDate.getTime();
             Calendar calendar = new GregorianCalendar();
@@ -144,7 +145,7 @@ public class BookController {
             calendar.add(calendar.DATE,1);//把日期往后增加一天.整数往后推,负数往前移动
             mDate=calendar.getTime(); //这个时间就是日期往后推一天的结果
             endTime = mDate.getTime();
-        }else if(date.equals("tomorrow")){
+        }else if("tomorrow".equals(date)){
             Date mDate=new Date();//取时间
 
             Calendar calendar = new GregorianCalendar();
@@ -165,8 +166,12 @@ public class BookController {
             endTime = mDate.getTime();
 
         }else{
+            startTime = System.currentTimeMillis();
 
-            return ResponseEntity.ok(new ArrayList<ItenderBook>());
+            long tenYear =  315360000000L;
+            endTime = System.currentTimeMillis()+tenYear;//加10年
+
+           // return ResponseEntity.ok(new ArrayList<ItenderBook>());
         }
 
 
@@ -175,6 +180,18 @@ public class BookController {
         if(itenderBookList == null){
             itenderBookList = new ArrayList<>();
         }
+
+        if(type!=null){
+            List<ItenderBook> filterByTypes = new ArrayList<>();
+            for (int i = 0; i < itenderBookList.size(); i++) {
+                ItenderBook itenderBook = itenderBookList.get(i);
+                if(type.equals(itenderBook.getIndustry())){
+                    filterByTypes.add(itenderBook);
+                }
+            }
+            itenderBookList = filterByTypes;
+        }
+
         if(itenderBookList.size() > count){
             itenderBookList = itenderBookList.subList(0,count);
 

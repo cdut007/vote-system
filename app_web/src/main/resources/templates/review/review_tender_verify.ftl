@@ -231,29 +231,16 @@
             var confirmId = data.id;
 
             if (layEvent === 'sign') { //
-                $.ajax({
-                    url: "/review/updateSignResult",
-                    type: "POST",
-                    dataType: "json",
-                    data: {signId:signId,description:description,confirmId:confirmId,signResult:signResult},
-                    success: function (res) {
-                        if(res!=null){
-                            if(res.status){
-                                layer.closeAll('page'); //执行关闭
-                                layer.msg("提交成功!");
-                                getConfirmData();
-
-                            }else{
-                                layer.msg("提交失败!");
-                            }
-                        }else{
-                            layer.msg("提交失败!");
-                        }
-                    },
-                    error: function (xmlHttpReq, error, ex) {
-                        layer.msg("提交失败!");
-                    }
-                })
+                var data = {
+                    title: "文件签章",//标题
+                    area: 'auto',//宽高
+                    closeBtn: 1,//关闭按钮
+                    shadeClose: true,//是否点击遮罩关闭
+                    queryUrl: '/review/review_sign?confirmId'+confirmId
+                }
+                itenderReview.openModal(data,function (layerDom,index) {
+                    getConfirmData();
+                });
             }
 
 
