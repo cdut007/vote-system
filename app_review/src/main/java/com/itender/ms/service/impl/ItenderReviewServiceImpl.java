@@ -83,6 +83,16 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
         return null;
     }
 
+	@Override
+	public ItenderConfirm findConfirmsByConfirmId(String confimId) throws APIException {
+
+		if(confimId == null){
+			return  null;
+		}
+
+		return itenderConfirmMapper.selectByPrimaryKey(confimId);
+	}
+
 
 	private void findAttachsAndConfirms(ItenderReview itenderReview){
 		Example example = new Example(ItenderAttach.class);

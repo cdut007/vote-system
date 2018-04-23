@@ -21,6 +21,8 @@ public class ItenderConfirm {
     @Column(name="type")
     private String type;
 
+    @Column(name="count")
+    private String count;
 
 
     @Column(name="status")
@@ -75,5 +77,13 @@ public class ItenderConfirm {
 
     public void setReviewId(String reviewId) {
         this.reviewId = reviewId;
+    }
+
+    public void setCount(String count) {
+        this.count = count;
+    }
+
+    public String getCount() {
+        return count;
     }
 }

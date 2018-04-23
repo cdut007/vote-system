@@ -106,7 +106,13 @@
             var userId = data.userId;
 
             if (layEvent === 'view') { //查看
-                view.goto('/bid/print?userId='+userId+"&landId="+landId);
+                var attachmentUrl = 'http://raw.githubusercontent.com/pauldmps/Android-pdf.js/master/assets/compressed.tracemonkey-pldi-09.pdf';
+                var curWwwPath=window.document.location.href;
+                var pathName=window.document.location.pathname;
+                var pos=curWwwPath.indexOf(pathName);
+                var localhostPath=curWwwPath.substring(0,pos);
+                window.open(localhostPath+"/pdf/web/viewer.html?file="+attachmentUrl);
+            //    view.goto('/pdf/print?userId='+userId+"&landId="+landId);
             }else if (layEvent === 'download') { //下载
                 //
             }

@@ -132,7 +132,7 @@ layui.define(function (exports) {
                             closeBtn: data.closeBtn,
                             shadeClose: data.shadeClose,
                             success: function (layerDom,index) {
-                                layui.form.render();
+
                                 callback(layerDom, index);
                             },
                             end: function () {

@@ -44,6 +44,27 @@
     </script>
 
 
+    <script type="text/html" id="countTool">
+
+        <#if user??>
+            <#if user.operator=='operator'>
+
+                      <div class="layui-row">
+
+                          <div class="layui-input-block">
+                              <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入份数" class="layui-input">
+                          </div>
+                          <a class="layui-btn layui-btn-xs  btn-edit" lay-event="commit_count">确认</a>
+                    </div>
+
+            </#if>
+        <#else>
+            {{d.count}}
+        </#if>
+
+    </script>
+
+
 
 
 <script type="text/javascript">
@@ -216,6 +237,7 @@
             cols: [[
                 {title: '序号',templet: '#indexTpl'},
                 {title: "文档标题", field: 'name'},
+                {title: "份数", field:'count', event: 'setCount', style:'cursor: pointer;'},
                 {title: "审核",fixed: 'right', align: 'center', toolbar: '#signTableTool'}
             ]],
             data:confirms
@@ -231,15 +253,64 @@
             var confirmId = data.id;
 
             if (layEvent === 'sign') { //
-                var data = {
-                    title: "文件签章",//标题
-                    area: 'auto',//宽高
-                    closeBtn: 1,//关闭按钮
-                    shadeClose: true,//是否点击遮罩关闭
-                    queryUrl: '/review/review_sign?confirmId'+confirmId
+                // var data = {
+                //     title: "文件签章",//标题
+                //     area: 'auto',//宽高
+                //     closeBtn: 1,//关闭按钮
+                //     shadeClose: true,//是否点击遮罩关闭
+                //     queryUrl: '/review/review_sign?confirmId'+confirmId
+                // }
+                // itenderReview.openModal(data,function (layerDom,index) {
+                //     getConfirmData();
+                // });
+
+
+
+                view.goto('/review/review_sign?confirmId='+confirmId);
+
+
+                // $.ajax({
+                //     url: '/review/review_sign?confirmId='+confirmId,
+                //     type:"GET",
+                //     cache:false,
+                //     success: function (res) {
+                //         //console.log(res);
+                //         // $('#content').html(res);
+                //         layui.element.tabDelete('tabBody', 'list-review');
+                //         layui.element.tabAdd('tabBody', {//添加新Tap
+                //             title:'审批管理',
+                //             content: res
+                //             ,id: 'list-review'
+                //         });
+                //         layui.element.tabChange('tabBody', 'list-review');
+                //
+                //     },
+                //     error: function (xmlHttpReq, error, ex) {
+                //
+                //     }
+                // })
+
+            } else  if(obj.event === 'setCount') {
+
+                if(operator != 'operator'){
+                    return;
                 }
-                itenderReview.openModal(data,function (layerDom,index) {
-                    getConfirmData();
+
+
+                layer.prompt({
+                    formType: 2
+                    , title: '修改份数'
+                    , value: data.count
+                }, function (value, index) {
+                    layer.close(index);
+
+                    //这里一般是发送修改的Ajax请求
+
+                    //同步更新表格和缓存对应的值
+                    obj.update({
+                                count: value
+                            }
+                    );
                 });
             }
 

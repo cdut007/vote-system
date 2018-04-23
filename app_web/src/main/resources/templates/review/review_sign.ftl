@@ -1,101 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>电子签章</title>
+    <#include "../resource.ftl">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+<#include "../dashboard_top_menus.ftl">
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree"  lay-filter="test">
 
-<div class="margin-top layui-fluid">
-    <fieldset class="layui-elem-field layui-field-title">
-        <legend>电子签章</legend>
-    </fieldset>
+            <#--<@resource_check url="/review">-->
+                <li class="layui-nav-item layui-side-item"><a id="review" href="javascript:;"><img src="/css/img/icon_room_default.png" class="layui-nav-side-img">待办任务</a></li>
+            <#--</@resource_check>-->
 
-    <div class="usBox main" style="padding: 3px;height:660px;" id="assignBox">
-        <!-- -----------------------------== 装载AIP控件 ==--------------------------------- -->
-        <script type="text/javascript" src="/aip/LoadAip.js"></script>
-        <!--该事件在AIP引擎初始化完毕之后触发-->
-        <SCRIPT LANGUAGE=javascript FOR=HWPostil1 EVENT=NotifyCtrlReady>
-            HWPostil1_NotifyCtrlReady();
-        </SCRIPT>
-        <!-- --------------------------------== 结束装载控件 ==----------------------------------- -->
-    </div>
+                    <#if user??>
+                        <#if user.operator=='operator'>
+                        <li class="layui-nav-item layui-side-item"><a id="reviewAll" href="javascript:;"><img src="/css/img/icon_limit_default.png" class="layui-nav-side-img">所有任务</a></li>
+                        </#if>
+                    </#if>
 
-    <div class="layui-main" style="margin-bottom: 20px;">
-        <div class="layui-btn-group">
-            <input type="button" class="layui-btn layui-btn-danger" value="电子印章" id="sign"/>
-        <#--<input type="button" class="layui-btn layui-btn-danger" value="提 交" id="pass"/>-->
+            </ul>
         </div>
     </div>
 
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div class="layui-tab" lay-filter="tabBody" lay-allowclose="true" style="margin-top: 0;">
+            <ul class="layui-tab-title" style="visibility:hidden;height: 0px">
+            </ul>
+            <div class="layui-tab-content layui-col-md-12" id="content" lay-filter="tabTable">
+                <div class="layui-container">
+                    <fieldset class="layui-elem-field layui-field-title">
+                        <legend>电子签章</legend>
+                    </fieldset>
+
+                    <div class="layui-main" style="margin-bottom: 20px;">
+                        <div class="layui-btn-group">
+                            <input type="button" class="layui-btn layui-btn-danger" value="电子印章" id="sign"/>
+                            <#--<input type="button" class="layui-btn layui-btn-danger" value="通过" id="pass"/>-->
+                            <#--<input type="button" class="layui-btn layui-btn-danger" value="不通过" id="fail"/>-->
+                        </div>
+                    </div>
+
+                    <div class="usBox main" style="padding: 3px;height:560px;" id="assignBox">
+                        <script type="text/javascript" src="/aip/LoadAip.js"></script>
+
+
+                        <!--该事件在AIP引擎初始化完毕之后触发-->
+                        <SCRIPT LANGUAGE=javascript FOR=HWPostil1 EVENT=NotifyCtrlReady>
+                            HWPostil1_NotifyCtrlReady();
+                        </SCRIPT>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 </div>
+</body>
 
 <script type="text/javascript" src="/aip/AipMain.js"></script>
+<script>
+    var h = $(window).innerHeight();
+    $("#assignBox").height(h - 200);
 
-	<script>
+    function HWPostil1_NotifyCtrlReady() {
 
-        layui.use(['form'], function () {
+        document.all.HWPostil1.HideMenuItem(30);
+        var confirmId = "${confirmId!}";
+        OpenFile("/getSignFile?confirmId="+confirmId);
 
+    }
 
+    function strToJson(str) {
+        var json = eval('(' + str + ')');
+        return json;
+    }
+
+    $(function () {
+        var sealNum = 0;
+        var expertApplyId = "";
+
+        //签章
+        $("#sign").click(function () {
+            SearchText("经办人", 0, 0);
+            if (AutoSeal(0, 1, "经办人") == "-200") {
+                ShowMessage("请插入有效的USBKey！");
+            } else {
+                sealNum = sealNum + 1;
+            }
+            ;
         });
 
-        var h = $(window).innerHeight();
-        $("#assignBox").height(h - 200);
 
-        function HWPostil1_NotifyCtrlReady() {
-            document.all.HWPostil1.HideMenuItem(30);
-            OpenFile("/aip/compressed.tracemonkey-pldi-09.pdf");
+        <#--$("#pass").click(function () {-->
 
-        }
+        <#--if (GetCurrUserID()==""||sealNum==0) {-->
 
-        $(function(){
+        <#--ShowMessage("请先盖章！");-->
+        <#--return ;-->
+        <#--}-->
+
+        <#--var paramsArray = {"taskId":"${taskId}", "id":"${expertPromise.id}","DocumentID":"${expertPromise.id}","projectInstanceId":"${expertApply.projectInstanceId}","projectInstanceName":"${projectInstance}","userType":"1","expertApplyId":"${expertApplyId}"};-->
+        <#--var returnValue = SaveDocArray(paramsArray,"${pageScope.basePath}/expertPromise/expertPromiseSave");-->
+        <#--if ("OK" == returnValue) {-->
+        <#--ShowMessage("文件上传成功！");-->
+
+        <#--window.location.href="${pageScope.basePath}/expertPromise/expertPromiseAvoid?expertApplyId="+"${expertApplyId}"+"&taskId="+"${taskId}";-->
+        <#--} else {-->
+        <#--ShowMessage("操作失败！");-->
+        <#--}-->
+
+        <#--});-->
 
 
-            var sealNum=0;
 
-            $("#sign").click(function(){
-                SearchText("申请单位名称",0,0);
-                if(AutoSeal(0,1,"申请单位名称")=="-200"){
-                    ShowMessage("请插入有效的USBKey！");
-                }else{
-                    sealNum=sealNum+1;
-                };
-            });
 
-            $("#pass").click(function() {
+    });
+</script>
 
-                if (GetCurrUserID()==""||sealNum==0) {
-                    alert("请先盖章！");
-                    return false;
+<script>
+    layui.use(['element','itenderUser'], function(){
+        //  var $ = layui.jquery ;
+
+        setTimeout(function(){
+            var doc = $('li .layui-this');
+            doc.each(function (i) {
+                var a = $(this);
+                var img = a.children('img').eq(0);
+                var href = a.attr('href');
+                if(href == '/review'){
+                    img.attr("src","/css/img/icon_equipment_selected.png");
+                }else if( href == '/log'){
+                    img.attr("src","/css/img/icon_record_selected.png");
+
                 }
+                a.css("color","#fff");
 
-                var paramsArray = {"tenderId":"111"};
-                var returnValue = SaveDocArray(paramsArray,"http://raw.githubusercontent.com/pauldmps/Android-pdf.js/master/assets/compressed.tracemonkey-pldi-09.pdf");
-                if ("OK" == returnValue) {
-                    ShowMessage("报名成功！");
-                    window.location.href="/home";
-                } else {
-                    ShowMessage("报名失败！");
+                // img.hover(
+                //         function () {
+                //             var imgsrc = img.attr("src");
+                //             imgsrc = imgsrc.replace("default","selected");
+                //             img.attr("src",imgsrc);
+                //         },
+                //         function () {
+                //
+                //         }
+                // );
+
+                console.log(href); //得到当前点击的DOM对象
+
+            })
+        },50);
+
+
+
+        $("#review").click(function () {
+
+                    view.goto('/review');
+
+
                 }
+        );
 
 
-                $.ajax({
-                    url: "/review/updateSignResult",
-                    type: "POST",
-                    dataType: "json",
-                    data: {signId:signId,description:description,confirmId:confirmId,signResult:signResult},
-                    success: function (res) {
-                        if(res!=null){
-                            if(res.status){
-                                layer.closeAll('page'); //执行关闭
-                                layer.msg("提交成功!");
-                                getConfirmData();
 
-                            }else{
-                                layer.msg("提交失败!");
-                            }
-                        }else{
-                            layer.msg("提交失败!");
-                        }
-                    },
-                    error: function (xmlHttpReq, error, ex) {
-                        layer.msg("提交失败!");
-                    }
-                })
+        $("#reviewAll").click(function () {
 
-            });
-        });
-    </script>
+            view.goto('/review');
+
+
+                }
+        );
+
+
+        //  $("#review").click();
+
+
+
+        // var $ = layui.jquery
+        //         ,element = layui.element //Tab的切换功能，切换事件监听等，需要依赖element模块
+        //         ,itenderUser = layui.itenderUser;
+
+        // $('.layui-side-item').on('click',function () {
+        //     var othis = $(this);
+        //     var id = othis.attr("id"); //左侧导航栏id
+        //     var uri = othis.data("uri"); //新标签页URI
+        //     var title = othis.text(); //新标签页标题
+        //     console.log(othis);
+        //     //
+        //     // element.tabDelete('tabBody', id);//删除旧的已存在Tap
+        //     // itenderUser.addNewTab(id,uri,title,'tabBody');//新建新标签页
+        // });
+
+    });
+</script>
+
+<style>
+
+    .layui-nav .layui-side-item a {
+        color: #464646;
+    }
+
+
+    /*.layui-this, .layui-nav-tree .layui-nav-child dd.layui-this a, .layui-nav-tree .layui-this, .layui-nav-tree .layui-this>a, .layui-nav-tree .layui-this>a:hover {*/
+    /*background-color: #f6f6f6;*/
+    /*color: #0154AD;*/
+    /*}*/
+
+
+    .layui-nav-side-img {
+        width: 20px;
+        height: 20px;
+        margin-right: 2px;
+        border-radius: 0%;
+    }
+    .layui-bg-black {
+        background-color: #f6f6f6!important;
+    }
+    .layui-nav {
+        background-color: #f6f6f6;
+    }
+    .layui-this a{
+        color: #f6f6f6!important;
+    }
+</style>
+</html>
+
+
+<#--<!DOCTYPE html>-->
+<#--<html lang="en">-->
+<#--<head>-->
+<#--<meta charset="UTF-8">-->
+<#--<title>电子签章</title>-->
+<#--<#include "../resource.ftl">-->
+<#--</head>-->
+<#--<body>-->
+
+<#--<div class="layui-container">-->
+<#--<fieldset class="layui-elem-field layui-field-title">-->
+<#--<legend>电子签章</legend>-->
+<#--</fieldset>-->
+
+<#--<div class="layui-main" style="margin-bottom: 20px;">-->
+<#--<div class="layui-btn-group">-->
+<#--<input type="button" class="layui-btn layui-btn-danger" value="电子印章" id="sign"/>-->
+<#--&lt;#&ndash;<input type="button" class="layui-btn layui-btn-danger" value="提 交" id="pass"/>&ndash;&gt;-->
+<#--</div>-->
+<#--</div>-->
+
+<#--<div class="usBox main" style="padding: 3px;height:560px;" id="assignBox">-->
+<#--<script type="text/javascript" src="/aip/LoadAip.js"></script>-->
+
+
+<#--<!--该事件在AIP引擎初始化完毕之后触发&ndash;&gt;-->
+<#--<SCRIPT LANGUAGE=javascript FOR=HWPostil1 EVENT=NotifyCtrlReady>-->
+<#--HWPostil1_NotifyCtrlReady();-->
+<#--</SCRIPT>-->
+
+<#--</div>-->
+
+
+<#--</div>-->
+<#--<script type="text/javascript" src="/aip/AipMain.js"></script>-->
+<#--<script>-->
+<#--var h = $(window).innerHeight();-->
+<#--$("#assignBox").height(h - 200);-->
+
+<#--function HWPostil1_NotifyCtrlReady() {-->
+
+<#--document.all.HWPostil1.HideMenuItem(30);-->
+<#--var confirmId = "${confirmId!}";-->
+<#--OpenFile("/getSignFile?confirmId="+confirmId);-->
+
+<#--}-->
+
+<#--function strToJson(str) {-->
+<#--var json = eval('(' + str + ')');-->
+<#--return json;-->
+<#--}-->
+
+<#--$(function () {-->
+<#--var sealNum = 0;-->
+<#--var expertApplyId = "";-->
+
+<#--//签章-->
+<#--$("#sign").click(function () {-->
+<#--SearchText("签章", 0, 0);-->
+<#--if (AutoSeal(0, 1, "签章") == "-200") {-->
+<#--ShowMessage("请插入有效的USBKey！");-->
+<#--} else {-->
+<#--sealNum = sealNum + 1;-->
+<#--}-->
+<#--;-->
+<#--});-->
+
+<#--//保存-->
+<#--&lt;#&ndash;$("#pass").click(function() {&ndash;&gt;-->
+
+<#--&lt;#&ndash;if (GetCurrUserID()==""||sealNum==0) {&ndash;&gt;-->
+<#--&lt;#&ndash;alert("请先盖章！");&ndash;&gt;-->
+<#--&lt;#&ndash;return false;&ndash;&gt;-->
+<#--&lt;#&ndash;}&ndash;&gt;-->
+
+<#--&lt;#&ndash;var paramsArray = {"taskId":"${taskId}", "id":"${expertPromise.id}","DocumentID":"${expertPromise.id}","projectInstanceId":"${expertApply.projectInstanceId}","projectInstanceName":"${projectInstance}","userType":"1","expertApplyId":"${expertApplyId}"};&ndash;&gt;-->
+<#--&lt;#&ndash;var returnValue = SaveDocArray(paramsArray,"${pageScope.basePath}/expertPromise/expertPromiseSave");&ndash;&gt;-->
+<#--&lt;#&ndash;if ("OK" == returnValue) {&ndash;&gt;-->
+<#--&lt;#&ndash;ShowMessage("文件上传成功！");&ndash;&gt;-->
+
+<#--&lt;#&ndash;/************************************************&ndash;&gt;-->
+<#--&lt;#&ndash;* 如果是业主代表，跳过回避承诺书&ndash;&gt;-->
+<#--&lt;#&ndash;*/&ndash;&gt;-->
+<#--&lt;#&ndash;if("${flag}" == "true"){&ndash;&gt;-->
+<#--&lt;#&ndash;ShowMessage("签到成功！");&ndash;&gt;-->
+<#--&lt;#&ndash;}&ndash;&gt;-->
+<#--&lt;#&ndash;window.location.href="${pageScope.basePath}/expertPromise/expertPromiseAvoid?expertApplyId="+"${expertApplyId}"+"&taskId="+"${taskId}";&ndash;&gt;-->
+<#--&lt;#&ndash;} else {&ndash;&gt;-->
+<#--&lt;#&ndash;ShowMessage("操作失败！");&ndash;&gt;-->
+<#--&lt;#&ndash;}&ndash;&gt;-->
+<#--&lt;#&ndash;});&ndash;&gt;-->
+
+
+<#--});-->
+<#--</script>-->
+
+<#--</body>-->
+
+<#--</html>-->
+

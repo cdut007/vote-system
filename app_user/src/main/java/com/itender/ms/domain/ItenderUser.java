@@ -111,7 +111,17 @@ public class ItenderUser extends ItenderAttrBase {
     }
 
     public void setPosition(String position) {
+
         this.position = position;
+        if("经办人".equals(position)){
+            setOperator("operator");
+        }else if("科室负责人".equals(position)){
+            setOperator("department_leader");
+        }else if("分管负责人".equals(position)){
+            setOperator("branch_leader");
+        }else if("审批人".equals(position)){
+            setOperator("approver");
+        }
     }
 
     public String getEmail() {

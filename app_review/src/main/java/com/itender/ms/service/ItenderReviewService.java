@@ -36,6 +36,10 @@ public interface ItenderReviewService extends ItenderServiceBase<ItenderReview> 
 
 	public List<ItenderConfirm> findConfirmsByReviewId(String reviewId) throws APIException;
 
+
+	public ItenderConfirm findConfirmsByConfirmId(String confimId) throws APIException;
+
+
 	public int rollbackReviewStatus(String id,String userId) throws APIException;
 	public ItenderReview updateReviewStatus(String id,String assigneeId,String role,String status) throws APIException;
 

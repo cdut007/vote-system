@@ -109,6 +109,7 @@ privilege-uri-init:
     - /book/bookRecord
     - /static/*
     - /review*
+    - /industry/listAll
   #登录后无需检查URI
   login_uncheck_uri:
     - /
@@ -122,6 +123,7 @@ privilege-uri-init:
     - /management/user/updateMy
     - /supervision/leaveRoom
     - /review*
+    - /industry/listAll
   #后台登录URI
   backend_login_uri: /
   #前台登录URI

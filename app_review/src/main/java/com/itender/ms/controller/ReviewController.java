@@ -4,23 +4,27 @@ import com.github.pagehelper.PageInfo;
 import com.itender.ms.convert.LayuiTableData;
 import com.itender.ms.convert.PageDataConvert;
 import com.itender.ms.domain.*;
-import com.itender.ms.enums.ReviewRole;
-import com.itender.ms.enums.ReviewStatus;
 import com.itender.ms.exception.APIException;
 import com.itender.ms.service.ItenderReviewService;
 import com.itender.ms.service.ItenderUserService;
 import com.itender.ms.util.CommonUtility;
 import com.itender.ms.util.ViewUtil;
+import com.itextpdf.text.pdf.BaseFont;
+import fr.opensagres.xdocreport.itext.extension.font.IFontProvider;
+import fr.opensagres.xdocreport.itext.extension.font.ITextFontRegistry;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.poi.xwpf.converter.pdf.PdfConverter;
+import org.apache.poi.xwpf.converter.pdf.PdfOptions;
+import org.apache.poi.xwpf.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.ResourceUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,12 +35,11 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
+import java.awt.*;
+import java.io.*;
+import java.net.URL;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 @Api(description = "审批管理模块接口")
 @Validated
@@ -90,6 +93,8 @@ public class ReviewController {
     @ApiIgnore
     @RequestMapping(value = "/review_sign",method = RequestMethod.GET)
     public String reviewSignPage(HttpServletRequest request, HttpServletResponse response){
+        String confirmId = request.getParameter("confirmId");
+        request.setAttribute("confirmId",confirmId);
         return ViewUtil.forward("/review/review_sign");
     }
 
@@ -251,6 +256,225 @@ public class ReviewController {
         return OS.indexOf("windows")>=0;
     }
 
+    @RequestMapping(value = "/getSignFile", method = RequestMethod.GET)
+    public void getSignFile(HttpServletRequest request,HttpServletResponse res) throws Exception{
+
+
+        File file = ResourceUtils.getFile("classpath:static/aip/用印登记表.docx");
+        Map<String, String> datas = new HashMap<String, String>();
+
+        String confirmId = request.getParameter("confirmId");
+
+        ItenderConfirm itenderConfirm = itenderReviewService.findConfirmsByConfirmId(confirmId);
+
+        if(itenderConfirm == null){
+            throw new Exception("confirm file not find");
+        }
+
+        datas.put("${projectName}", itenderConfirm.getName());
+        datas.put("${count}",itenderConfirm.getCount());
+        String exportFile = getFileDirByName("review_files")+itenderConfirm.getName()+".docx";
+       boolean result = readwriteWord(file,datas,exportFile);
+        if(result){
+            XWPFDocument document = new XWPFDocument(new FileInputStream(new File(exportFile)));
+
+            PdfOptions options = PdfOptions.create();
+
+            //中文字体处理
+            options.fontProvider(new IFontProvider() {
+                public com.lowagie.text.Font getFont(String familyName, String encoding, float size, int style, Color color) {
+                    try {
+                        String path = getFileDirByName("review_files")+File.separator+ "fonts"+File.separator+"wei_yah.ttf";
+
+                        com.lowagie.text.pdf.BaseFont bfChinese =
+                                com.lowagie.text.pdf.BaseFont.createFont(path, BaseFont.IDENTITY_H, BaseFont.EMBEDDED );
+                        com.lowagie.text.Font fontChinese = new com.lowagie.text.Font(bfChinese);
+                        if (familyName != null)
+                            fontChinese.setFamily(familyName);
+                        return fontChinese;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                }
+            });
+            //为输出文件创建目录
+            //更改word内容并修改为pdf
+            String fileName = itenderConfirm.getName()+".pdf";
+            File outFile = new File(getFileDirByName("review_files")+fileName);
+            outFile.getParentFile().mkdirs();
+            PdfConverter.getInstance().convert(document, new FileOutputStream(outFile), options);
+
+
+            document.close();
+
+
+            //covert pdf.
+
+
+            res.setHeader("content-type", "application/octet-stream");
+            res.setContentType("application/octet-stream");
+            res.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+            byte[] buff = new byte[1024];
+            BufferedInputStream bis = null;
+            OutputStream os = null;
+            try {
+                os = res.getOutputStream();
+                bis = new BufferedInputStream(new FileInputStream(outFile));
+                int i = bis.read(buff);
+                while (i != -1) {
+                    os.write(buff, 0, buff.length);
+                    os.flush();
+                    i = bis.read(buff);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (bis != null) {
+                    try {
+                        bis.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+
+}
+
+
+    /**
+     * 实现对word读取和修改操作
+     * @param sourceFile    word模板路径和名称
+     * @param map        待填充的数据，从数据库读取
+     */
+    public static boolean readwriteWord(File sourceFile, Map<String,String> map, String exportFile){
+        //读取word模板
+//        String fileDir = new File(base.getFile(),"http://www.cnblogs.com/http://www.cnblogs.com/../doc/").getCanonicalPath();
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream(sourceFile);
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+            return  false;
+        }
+        XWPFDocument document = null;
+        try {
+            document = new XWPFDocument(in);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+            return  false;
+        }
+
+        // 替换段落中的指定文字
+        Iterator<XWPFParagraph> itPara = document.getParagraphsIterator();
+        while (itPara.hasNext()) {
+            XWPFParagraph paragraph = (XWPFParagraph) itPara.next();
+            //String s = paragraph.getParagraphText();
+            Set<String> set = map.keySet();
+            Iterator<String> iterator = set.iterator();
+            while (iterator.hasNext()) {
+                String key = iterator.next();
+                List<XWPFRun> run=paragraph.getRuns();
+                for(int i=0;i<run.size();i++)
+                {
+                    int pos = run.get(i).getTextPosition();
+                    String text = run.get(i).getText(pos);
+                    if(text!=null && text.equals(key))
+                    {
+                        /**参数0表示生成的文字是要从哪一个地方开始放置,设置文字从位置0开始
+                         * 就可以把原来的文字全部替换掉了
+                         * */
+                        run.get(i).setText(map.get(key),0);
+                    }
+                }
+            }
+        }
+
+        // 替换表格中的指定文字
+        Iterator<XWPFTable> itTable = document.getTablesIterator();
+        while (itTable.hasNext()) {
+            XWPFTable table = (XWPFTable) itTable.next();
+            int rcount = table.getNumberOfRows();
+            for (int i = 0; i < rcount; i++) {
+                XWPFTableRow row = table.getRow(i);
+                List<XWPFTableCell> cells = row.getTableCells();
+                for (XWPFTableCell cell : cells) {
+                    for (Map.Entry<String, String> e : map.entrySet()) {
+                        if (cell.getText().equals(e.getKey())) {
+                            cell.removeParagraph(0);
+                           // cell.setText(e.getValue());
+                            /**内容居中显示**/
+                            XWPFParagraph newPara = new XWPFParagraph(cell.getCTTc().addNewP(), cell);
+                            XWPFRun run=newPara.createRun();
+
+                            /**内容居中显示**/
+                            newPara.setAlignment(ParagraphAlignment.CENTER);
+
+                            // run.getCTR().addNewRPr().addNewColor().setVal("FF0000");/**FF0000红色*/
+                           // run.setUnderline(UnderlinePatterns.THICK);
+                            run.setText(e.getValue());
+
+                        }
+                    }
+                }
+            }
+        }
+
+
+        //读取word文本内容
+
+        ByteArrayOutputStream ostream = new ByteArrayOutputStream();
+
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(exportFile,true);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return  false;
+        }
+        try {
+            document.write(ostream);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return  false;
+        }
+        //输出字节流
+        try {
+            out.write(ostream.toByteArray());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return  false;
+        }
+        try {
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return  false;
+        }
+        try {
+            ostream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return  false;
+        }
+
+        return  true;
+    }
+
+    String getFileDirByName(String name){
+                String root = "C:\\\\";
+                String os = System.getProperty("os.name").toLowerCase();
+                if(isMacOS(os) || isMacOSX(os)){
+                    root = "/Users/mac/Downloads";
+                }else if (isLinux(os)){
+                    root = "";
+                }
+
+                String filePath = root + File.separator+"data"+File.separator+name+File.separator;
+                return  filePath;
+            }
 
     @ApiOperation(value = "添加审批附件接口",notes = "用于新增审批信息")
     @RequestMapping(value = "/addReviewAttach",method = RequestMethod.POST)
@@ -266,7 +490,7 @@ public class ReviewController {
             root = "";
         }
 
-        String filePath = root + File.separator+"data"+File.separator+"review_files"+File.separator;
+        String filePath = getFileDirByName("review_files");
         // 解决中文问题，liunx下中文路径，图片显示问题
         // fileName = UUID.randomUUID() + suffixName;
         File dest = new File(filePath + file.getOriginalFilename());
