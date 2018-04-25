@@ -124,7 +124,7 @@
             }else if(operator == 'branch_leader'){
                 return '选择分管负责人';
             }else if(operator == 'approver'){
-                return '选择审批负责人';
+                return '选择审批人';
             }
 
             return null;
