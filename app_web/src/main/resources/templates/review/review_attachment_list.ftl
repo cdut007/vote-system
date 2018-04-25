@@ -94,7 +94,6 @@
             cols: [[
                 {title: '序号',templet: '#indexTpl'},
                 {title: "文档标题", field: 'name'},
-                {title: "文档性质", field: 'unitPrice'},
                 {title: "文档操作",fixed: 'right', align: 'center', toolbar: '#attachTableTool'}
             ]]
         });

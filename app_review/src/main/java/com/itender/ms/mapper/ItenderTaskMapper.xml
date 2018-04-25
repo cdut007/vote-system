@@ -5,6 +5,7 @@
     	<id column="id" javaType="String" property="id"></id>
         <result column="status" javaType="STRING" property="status"></result>
         <result column="user_id" javaType="STRING" property="userId"></result>
+		<result column="remark" javaType="STRING" property="remark"></result>
 		<result column="role" javaType="STRING" property="role"></result>
 		<result column="review_id" javaType="STRING" property="reviewId"></result>
 		<result column="is_current_task" javaType="Boolean" property="isCurrentTask"></result>
@@ -47,6 +48,7 @@
     	<trim prefix="SET" suffixOverrides=",">
 		  <if test="status != null">status=#{status},</if>
 		  <if test="role != null">role=#{role},</if>
+			<if test="remark != null">remark=#{remark},</if>
 		  <if test="reviewId != null">review_id=#{reviewId},</if>
 			<if test="userId != null">user_id=#{userId},</if>
 		  <if test="isCurrentTask != null">is_current_task=#{isCurrentTask},</if>

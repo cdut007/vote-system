@@ -24,6 +24,10 @@ public class ItenderTask {
 
     private String userId;//审批id
 
+    @Column(name="remark")
+
+    private String remark;//审批备注
+
 
     @Column(name="role")
 
@@ -95,6 +99,14 @@ public class ItenderTask {
 
     public void setCurrentTask(Boolean currentTask) {
         isCurrentTask = currentTask;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     public Date getCreateTime() {

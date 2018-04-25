@@ -208,10 +208,7 @@
 </script>
 
 <style>
-    .layui-form-pane .layui-input {
-        border-radius: 4px 4px 4px 4px;
-        width: 490px;
-    }
+
     .layui-form-pane .layui-input-block {
         margin-left: 0px;
         text-align: center;

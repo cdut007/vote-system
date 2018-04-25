@@ -93,6 +93,13 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 		return itenderConfirmMapper.selectByPrimaryKey(confimId);
 	}
 
+	@Override
+	public ItenderConfirm updateConfrirm(ItenderConfirm confirm) throws APIException {
+		int  code =itenderConfirmMapper.updateByPrimaryKeySelective(confirm);
+
+		return  findConfirmsByConfirmId(confirm.getId());
+	}
+
 
 	private void findAttachsAndConfirms(ItenderReview itenderReview){
 		Example example = new Example(ItenderAttach.class);
@@ -180,7 +187,7 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 	private  String   getPrevOperator(String operator) {
 
 		String[] operators = new String []{ReviewRole.operator.name(),ReviewRole.department_leader.name(),ReviewRole.branch_leader.name(),ReviewRole.approver.name()};
-		for(int i = 0 ; i<operators.length;i++){
+		for(int i = operators.length -1 ; i >= 0;i--){
 			if(operators[i].equals(operator)){
 				if(i-1>=0){
 					return operators[i-1];
@@ -208,6 +215,7 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 		example.createCriteria().andEqualTo("reviewId",id);
 		List<ItenderTask> itenderTasks = itenderTaskMapper.selectByExample(example);
 		//reset
+        boolean isOperatorSign = false;
 		if(itenderTasks!=null&& !itenderTasks.isEmpty()){
 			String rollbackRole = null;
 			for (int i = 0; i < itenderTasks.size(); i++) {
@@ -221,6 +229,16 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 						for (int j = 0; j < confirms.size(); j++) {
 							Example example2 = new Example(ItenderSign.class);
 							example2.createCriteria().andEqualTo("signId",userId).andEqualTo("confirmId",confirms.get(j).getId());
+                            if(ReviewRole.operator.name().equals(rollbackRole)){
+                                List<ItenderSign> signList = itenderSignMapper.selectByExample(example2);
+                                if(signList!=null && !signList.isEmpty()){
+                                    isOperatorSign = true;
+                                }else{
+
+                                    confirms.get(j).setCount("0");
+                                    itenderConfirmMapper.updateByPrimaryKeySelective(confirms.get(j));
+                                }
+                            }
 							itenderSignMapper.deleteByExample(example2);
 						}
 					}
@@ -229,6 +247,12 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 				}
 			}
 
+			//
+			if(ReviewRole.operator.name().equals(rollbackRole) && !isOperatorSign){
+                rollbackItenderReview.setAssigneeId("");
+                itenderReviewMapper.updateByPrimaryKeySelective(rollbackItenderReview);
+			    return 0;
+            }
 
 			for (int i = 0; i < itenderTasks.size(); i++) {
 				ItenderTask itenderTask = itenderTasks.get(i);
@@ -255,7 +279,7 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 
 
 	@Override
-	public ItenderReview updateReviewStatus(String id,String assigneeId,String role,String status) throws APIException {
+	public ItenderReview updateReviewStatus(String id,String assigneeId,String role,String status,String remark) throws APIException {
 		Example example = new Example(ItenderTask.class);
 		example.createCriteria().andEqualTo("reviewId",id).andEqualTo("isCurrentTask","1");
 		List<ItenderTask> itenderTasks = itenderTaskMapper.selectByExample(example);
@@ -274,6 +298,7 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 		if(ReviewStatus.approved.name().equals(status)){
 			ItenderTask itenderTask = new ItenderTask();
 			itenderTask.setRole(role);
+			itenderTask.setRemark(remark);
 			itenderTask.setStatus(ReviewStatus.verify.name());
 			itenderTask.setCreateTime(new Date());
 			itenderTask.setReviewId(id);
@@ -287,6 +312,7 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 
 		}else if(ReviewStatus.forbidden.name().equals(status)){
 			ItenderTask itenderTask = new ItenderTask();
+			itenderTask.setRemark(remark);
 		}
 
 		ItenderReview reviewExsit = findById(id);
@@ -303,6 +329,7 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 		if(itenderSigns!=null && !itenderSigns.isEmpty()){
 			 itenderSign = itenderSigns.get(0);
 			itenderSign.setResult(signResult);
+			itenderSign.setDescription(description);
 			itenderSignMapper.updateByPrimaryKeySelective(itenderSign);
 		}else{
 			 itenderSign = new ItenderSign();

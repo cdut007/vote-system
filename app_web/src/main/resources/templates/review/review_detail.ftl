@@ -10,7 +10,9 @@
 
     <div class="layui-row layui-col-space15" style="padding: 30px">
 
-       <#include "review_tender_verify.ftl">
+    <#include "review_status.ftl">
+
+    <#include "review_tender_verify.ftl">
 
     <#include "review_attachment_list.ftl">
 

@@ -253,6 +253,11 @@
             var confirmId = data.id;
 
             if (layEvent === 'sign') { //
+
+                if (!data.count||isNaN(data.count)){
+                    layer.msg("请设置份数");
+                    return;
+                }
                 // var data = {
                 //     title: "文件签章",//标题
                 //     area: 'auto',//宽高
@@ -302,15 +307,45 @@
                     , title: '修改份数'
                     , value: data.count
                 }, function (value, index) {
-                    layer.close(index);
+                    var reg = new RegExp("^[0-9]*$");
+                    if (!reg.test(value)) {
+                        layer.msg("请输入合法整数!");
+                        return
+                    }
 
-                    //这里一般是发送修改的Ajax请求
 
-                    //同步更新表格和缓存对应的值
-                    obj.update({
-                                count: value
+                    $.ajax({
+                        url: "/review/updateConfirmCount",
+                        type: "POST",
+                        dataType: "json",
+                        data: {confirmId: confirmId, count: value},
+                        success: function (res) {
+                            layer.close(index);
+                            if(res!=null){
+                                if(res.status){
+                                    //这里一般是发送修改的Ajax请求
+
+                                    //同步更新表格和缓存对应的值
+                                    obj.update({
+                                                count: value
+                                            }
+                                    );
+                                    getConfirmData();
+
+                                }else{
+                                    layer.msg("提交失败!");
+                                }
+                            }else{
+                                layer.msg("提交失败!");
                             }
-                    );
+
+                        },
+                        error: function (xmlHttpReq, error, ex) {
+                            layer.msg("提交失败!");
+                            layer.close(index);
+                        }
+                    })
+
                 });
             }
 

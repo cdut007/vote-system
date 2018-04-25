@@ -557,6 +557,28 @@ public class ReviewController {
 
 
 
+    @ApiOperation(value = "更新签章份数接口",notes = "用于更新审批信息")
+    @RequestMapping(value = "/updateConfirmCount",method = RequestMethod.POST)
+    public ResponseEntity<Map<String,Object>> updateSignResult(HttpServletRequest request,
+                                                               @ApiParam(name = "confirmId",value = "confirmId",required = true) @RequestParam(required = true) String confirmId,
+                                                               @ApiParam(name = "count",value = "count",required = true) @RequestParam(required = true) String count
+    ) throws APIException{
+
+        Map<String,Object> result = new HashMap<>();
+        ItenderConfirm itenderConfirm = new ItenderConfirm();
+        itenderConfirm.setId(confirmId);
+        itenderConfirm.setCount(count);
+        itenderConfirm = itenderReviewService.updateConfrirm(itenderConfirm);
+        if(itenderConfirm == null){
+            result.put("status", false);
+            result.put("msg", "跟新份数失败！");
+        }else{
+            result.put("status", true);
+        }
+        result.put("data", itenderConfirm);
+        return ResponseEntity.ok(result);
+    }
+
 
     @ApiOperation(value = "更新签章接口",notes = "用于更新审批信息")
     @RequestMapping(value = "/updateSignResult",method = RequestMethod.POST)
@@ -606,14 +628,15 @@ public class ReviewController {
     @RequestMapping(value = "/updateReviewStatus",method = RequestMethod.POST)
     public ResponseEntity<Map<String,Object>> updateReviewStatus(HttpServletRequest request, @ApiParam(name = "id",value = "审批ID",required = true) @RequestParam(required = true) String id,
                                                                  @ApiParam(name = "assigneeId",value = "assigneeId",required = true) @RequestParam(required = true) String assigneeId,
-                                                                 @ApiParam(name = "status",value = "status",required = true) @RequestParam(required = true) String status
+                                                                 @ApiParam(name = "status",value = "status",required = true) @RequestParam(required = true) String status,
+                                                                 @ApiParam(name = "remark",value = "remark",required = false) @RequestParam(required = false) String remark
     ) throws APIException{
 
         Map<String,Object> result = new HashMap<>();
         ItenderReview reviewExsit = null;
 
         ItenderUser itenderUser = itenderUserService.findByUserId(assigneeId);
-        reviewExsit = itenderReviewService.updateReviewStatus(id,assigneeId,itenderUser.getOperator(),status);
+        reviewExsit = itenderReviewService.updateReviewStatus(id,assigneeId,itenderUser.getOperator(),status,remark);
         if(reviewExsit == null){
             result.put("status", false);
             result.put("msg", "跟新审批失败！");

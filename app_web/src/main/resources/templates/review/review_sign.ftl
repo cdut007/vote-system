@@ -14,12 +14,12 @@
             <ul class="layui-nav layui-nav-tree"  lay-filter="test">
 
             <#--<@resource_check url="/review">-->
-                <li class="layui-nav-item layui-side-item"><a id="review" href="javascript:;"><img src="/css/img/icon_room_default.png" class="layui-nav-side-img">待办任务</a></li>
+                <li class="layui-nav-item layui-side-item"><a id="review" href="javascript:;"><img src="/css/img/icon_my_task_default.png" class="layui-nav-side-img">待办任务</a></li>
             <#--</@resource_check>-->
 
                     <#if user??>
                         <#if user.operator=='operator'>
-                        <li class="layui-nav-item layui-side-item"><a id="reviewAll" href="javascript:;"><img src="/css/img/icon_limit_default.png" class="layui-nav-side-img">所有任务</a></li>
+                        <li class="layui-nav-item layui-side-item"><a id="reviewAll" href="javascript:;"><img src="/css/img/icon_all_tasks_default.png" class="layui-nav-side-img">所有任务</a></li>
                         </#if>
                     </#if>
 
@@ -132,35 +132,19 @@
     layui.use(['element','itenderUser'], function(){
         //  var $ = layui.jquery ;
 
-        setTimeout(function(){
-            var doc = $('li .layui-this');
-            doc.each(function (i) {
-                var a = $(this);
-                var img = a.children('img').eq(0);
-                var href = a.attr('href');
-                if(href == '/review'){
-                    img.attr("src","/css/img/icon_equipment_selected.png");
-                }else if( href == '/log'){
-                    img.attr("src","/css/img/icon_record_selected.png");
-
-                }
-                a.css("color","#fff");
-
-                // img.hover(
-                //         function () {
-                //             var imgsrc = img.attr("src");
-                //             imgsrc = imgsrc.replace("default","selected");
-                //             img.attr("src",imgsrc);
-                //         },
-                //         function () {
-                //
-                //         }
-                // );
-
-                console.log(href); //得到当前点击的DOM对象
-
-            })
-        },50);
+        layui.element.on('nav(test)', function(elem){
+            //替换图片
+            var imglist = $(".layui-nav-tree").find("img");
+            imglist.each(function (index,element) {
+                var imgsrc = $(this).attr("src");
+                imgsrc = imgsrc.replace("select","default");
+                $(this).attr("src",imgsrc);
+            });
+            var oimg = elem.find("img");
+            var oimgsrc = oimg.attr("src");
+            oimgsrc = oimgsrc.replace("default","select");
+            oimg.attr("src",oimgsrc);
+        });
 
 
 
