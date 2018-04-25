@@ -147,11 +147,11 @@
 
         $("#pass").click(function () {
 
-            <#--if (GetCurrUserID()==""||sealNum==0) {-->
+            if (GetCurrUserID()==""||sealNum==0) {
 
-                <#--ShowMessage("请先盖章！");-->
-                <#--return ;-->
-            <#--}-->
+                ShowMessage("请先盖章！");
+                return ;
+            }
             var name = "${(confirm.name)}";
             var paramsArray = {"fileName":encodeURIComponent(name)};
             var returnValue = SaveDocArray(paramsArray,"/upload");
