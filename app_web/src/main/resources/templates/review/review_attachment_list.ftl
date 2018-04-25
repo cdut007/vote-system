@@ -101,17 +101,16 @@
         table.on('tool(recordAllTable)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
-            var landId = data.landId;
-            var userId = data.userId;
+
 
             if (layEvent === 'view') { //查看
-                var attachmentUrl = 'http://raw.githubusercontent.com/pauldmps/Android-pdf.js/master/assets/compressed.tracemonkey-pldi-09.pdf';
-                var curWwwPath=window.document.location.href;
-                var pathName=window.document.location.pathname;
-                var pos=curWwwPath.indexOf(pathName);
-                var localhostPath=curWwwPath.substring(0,pos);
-                window.open(localhostPath+"/pdf/web/viewer.html?file="+attachmentUrl);
-            //    view.goto('/pdf/print?userId='+userId+"&landId="+landId);
+            //     var attachmentUrl = 'http://raw.githubusercontent.com/pauldmps/Android-pdf.js/master/assets/compressed.tracemonkey-pldi-09.pdf';
+            //     var curWwwPath=window.document.location.href;
+            //     var pathName=window.document.location.pathname;
+            //     var pos=curWwwPath.indexOf(pathName);
+            //     var localhostPath=curWwwPath.substring(0,pos);
+            //     window.open(localhostPath+"/pdf/web/viewer.html?file="+attachmentUrl);
+                view.goto('/review/review_scan?attachId='+data.id);
             }else if (layEvent === 'download') { //下载
                 //
             }

@@ -1,9 +1,6 @@
 package com.itender.ms.service;
 
-import com.itender.ms.domain.ItenderConfirm;
-import com.itender.ms.domain.ItenderReview;
-import com.itender.ms.domain.ItenderSign;
-import com.itender.ms.domain.ItenderUser;
+import com.itender.ms.domain.*;
 import com.itender.ms.exception.APIException;
 
 import java.util.List;
@@ -36,7 +33,7 @@ public interface ItenderReviewService extends ItenderServiceBase<ItenderReview> 
 
 	public List<ItenderConfirm> findConfirmsByReviewId(String reviewId) throws APIException;
 
-
+	public ItenderAttach  findAttachByAttachId(String attachId) throws APIException;
 	public ItenderConfirm findConfirmByConfirmId(String confimId) throws APIException;
 
 

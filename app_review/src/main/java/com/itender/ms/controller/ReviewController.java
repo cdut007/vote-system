@@ -90,6 +90,20 @@ public class ReviewController {
         return ViewUtil.forward("/review/review_list");
     }
 
+
+    @ApiIgnore
+    @RequestMapping(value = "/review_scan",method = RequestMethod.GET)
+    public String reviewScanPage(HttpServletRequest request, HttpServletResponse response){
+        String attachId = request.getParameter("attachId");
+
+        try {
+            request.setAttribute("attach",itenderReviewService.findAttachByAttachId(attachId));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return ViewUtil.forward("/review/review_scan_file");
+    }
+
     @ApiIgnore
     @RequestMapping(value = "/review_sign",method = RequestMethod.GET)
     public String reviewSignPage(HttpServletRequest request, HttpServletResponse response){
@@ -259,6 +273,58 @@ public class ReviewController {
 
     public static boolean isWindows(String OS){
         return OS.indexOf("windows")>=0;
+    }
+
+
+
+    @RequestMapping(value = "/getAttachFile", method = RequestMethod.GET)
+    public void getAttachFile(HttpServletRequest request,HttpServletResponse res) throws Exception{
+
+
+        Map<String, String> datas = new HashMap<String, String>();
+
+        String attachId = request.getParameter("id");
+
+        ItenderAttach itenderAttach = itenderReviewService.findAttachByAttachId(attachId);
+
+        if(itenderAttach == null){
+            throw new Exception("attach file not find");
+        }
+        File attachFile = new File(getFileDirByName("attach_files")+File.separator+itenderAttach.getName());
+        String fileName = null;
+        File outFile = null;
+        fileName = attachFile.getName();
+        outFile = attachFile;
+
+
+        res.setHeader("content-type", "application/octet-stream");
+        res.setContentType("application/octet-stream");
+        res.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+        byte[] buff = new byte[1024];
+        BufferedInputStream bis = null;
+        OutputStream os = null;
+        try {
+            os = res.getOutputStream();
+            bis = new BufferedInputStream(new FileInputStream(outFile));
+            int i = bis.read(buff);
+            while (i != -1) {
+                os.write(buff, 0, buff.length);
+                os.flush();
+                i = bis.read(buff);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (bis != null) {
+                try {
+                    bis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
     }
 
 
