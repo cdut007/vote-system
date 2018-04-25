@@ -18,6 +18,7 @@ import io.swagger.annotations.ApiParam;
 import org.apache.poi.xwpf.converter.pdf.PdfConverter;
 import org.apache.poi.xwpf.converter.pdf.PdfOptions;
 import org.apache.poi.xwpf.usermodel.*;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +27,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ResourceUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.io.*;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.*;
 import java.util.List;
 
@@ -94,7 +94,12 @@ public class ReviewController {
     @RequestMapping(value = "/review_sign",method = RequestMethod.GET)
     public String reviewSignPage(HttpServletRequest request, HttpServletResponse response){
         String confirmId = request.getParameter("confirmId");
-        request.setAttribute("confirmId",confirmId);
+
+        try {
+            request.setAttribute("confirm",itenderReviewService.findConfirmByConfirmId(confirmId));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return ViewUtil.forward("/review/review_sign");
     }
 
@@ -256,6 +261,76 @@ public class ReviewController {
         return OS.indexOf("windows")>=0;
     }
 
+
+    /**
+     * 上传附件
+     *
+     * @return
+     * @throws APIException
+     */
+    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, Object> uploadFile(HttpServletRequest request,
+                                          HttpServletResponse response) throws APIException {
+
+        Map<String, Object> result = new HashMap<String, Object>();
+
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+
+
+        String fileName = multipartRequest.getParameter("fileName");
+
+        try{
+            fileName  = URLDecoder.decode(fileName);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
+
+        Map<String, Object> resultSrc = new HashMap<String, Object>();
+
+
+        String projectName = request.getContextPath();
+        String outStr = "";
+        // 文件保存目录路径
+        String savePath = getFileDirByName("review_files");
+        response.setContentType("text/html; charset=UTF-8");
+        // 检查目录
+
+        File dirFile = new File(savePath);
+        if (!dirFile.exists()) {
+            dirFile.mkdirs();
+        }
+        // 此处是直接采用Spring的上传
+        for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
+            MultipartFile mf = entity.getValue();
+            String fileFullname = fileName+".aip";
+
+            File uploadFile = new File(savePath + File.separator + fileFullname);
+            InputStream inputStream = null;
+            FileOutputStream fileOutputStream = null;
+            try {
+                inputStream = mf.getInputStream();
+                fileOutputStream = new FileOutputStream(uploadFile);
+                IOUtils.copy(inputStream, fileOutputStream);
+            } catch (Exception e) {
+                result.put("code", -1001);
+                result.put("msg", "上传失败");
+                e.printStackTrace();
+                return result;
+            } finally {
+                IOUtils.closeQuietly(inputStream);
+                IOUtils.closeQuietly(fileOutputStream);
+            }
+        }
+        result.put("code", 200);
+        result.put("msg", "上传成功");
+        result.put("data", resultSrc);
+        return result;
+        // 上传结束
+    }
+
     @RequestMapping(value = "/getSignFile", method = RequestMethod.GET)
     public void getSignFile(HttpServletRequest request,HttpServletResponse res) throws Exception{
 
@@ -265,77 +340,87 @@ public class ReviewController {
 
         String confirmId = request.getParameter("confirmId");
 
-        ItenderConfirm itenderConfirm = itenderReviewService.findConfirmsByConfirmId(confirmId);
+        ItenderConfirm itenderConfirm = itenderReviewService.findConfirmByConfirmId(confirmId);
 
         if(itenderConfirm == null){
             throw new Exception("confirm file not find");
         }
+        File aipFile = new File(getFileDirByName("review_files")+File.separator+itenderConfirm.getName()+".aip");
+        String fileName = null;
+        File outFile = null;
+        if(aipFile.exists()){
+             fileName = aipFile.getName();
+             outFile = aipFile;
+        }else{
 
-        datas.put("${projectName}", itenderConfirm.getName());
-        datas.put("${count}",itenderConfirm.getCount());
-        String exportFile = getFileDirByName("review_files")+itenderConfirm.getName()+".docx";
-       boolean result = readwriteWord(file,datas,exportFile);
-        if(result){
-            XWPFDocument document = new XWPFDocument(new FileInputStream(new File(exportFile)));
+            datas.put("${projectName}", itenderConfirm.getName());
+            datas.put("${count}",itenderConfirm.getCount());
+            String exportFile = getFileDirByName("review_files")+File.separator+itenderConfirm.getName()+".docx";
+            boolean result = readwriteWord(file,datas,exportFile);
+            if(result){
+                XWPFDocument document = new XWPFDocument(new FileInputStream(new File(exportFile)));
 
-            PdfOptions options = PdfOptions.create();
+                PdfOptions options = PdfOptions.create();
 
-            //中文字体处理
-            options.fontProvider(new IFontProvider() {
-                public com.lowagie.text.Font getFont(String familyName, String encoding, float size, int style, Color color) {
-                    try {
-                        String path = getFileDirByName("review_files")+File.separator+ "fonts"+File.separator+"wei_yah.ttf";
+                //中文字体处理
+                options.fontProvider(new IFontProvider() {
+                    public com.lowagie.text.Font getFont(String familyName, String encoding, float size, int style, Color color) {
+                        try {
+                            String path = getFileDirByName("review_files")+File.separator+ "fonts"+File.separator+"wei_yah.ttf";
 
-                        com.lowagie.text.pdf.BaseFont bfChinese =
-                                com.lowagie.text.pdf.BaseFont.createFont(path, BaseFont.IDENTITY_H, BaseFont.EMBEDDED );
-                        com.lowagie.text.Font fontChinese = new com.lowagie.text.Font(bfChinese);
-                        if (familyName != null)
-                            fontChinese.setFamily(familyName);
-                        return fontChinese;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return null;
+                            com.lowagie.text.pdf.BaseFont bfChinese =
+                                    com.lowagie.text.pdf.BaseFont.createFont(path, BaseFont.IDENTITY_H, BaseFont.EMBEDDED );
+                            com.lowagie.text.Font fontChinese = new com.lowagie.text.Font(bfChinese);
+                            if (familyName != null)
+                                fontChinese.setFamily(familyName);
+                            return fontChinese;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return null;
+                        }
                     }
-                }
-            });
-            //为输出文件创建目录
-            //更改word内容并修改为pdf
-            String fileName = itenderConfirm.getName()+".pdf";
-            File outFile = new File(getFileDirByName("review_files")+fileName);
-            outFile.getParentFile().mkdirs();
-            PdfConverter.getInstance().convert(document, new FileOutputStream(outFile), options);
+                });
+                //为输出文件创建目录
+                //更改word内容并修改为pdf
+                 fileName = itenderConfirm.getName()+".pdf";
+                 outFile = new File(getFileDirByName("review_files")+fileName);
+                outFile.getParentFile().mkdirs();
+                PdfConverter.getInstance().convert(document, new FileOutputStream(outFile), options);
 
 
-            document.close();
+                document.close();
 
 
-            //covert pdf.
+                //covert pdf.
+        }
 
 
-            res.setHeader("content-type", "application/octet-stream");
-            res.setContentType("application/octet-stream");
-            res.setHeader("Content-Disposition", "attachment;filename=" + fileName);
-            byte[] buff = new byte[1024];
-            BufferedInputStream bis = null;
-            OutputStream os = null;
-            try {
-                os = res.getOutputStream();
-                bis = new BufferedInputStream(new FileInputStream(outFile));
-                int i = bis.read(buff);
-                while (i != -1) {
-                    os.write(buff, 0, buff.length);
-                    os.flush();
-                    i = bis.read(buff);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (bis != null) {
-                    try {
-                        bis.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+        }
+
+
+        res.setHeader("content-type", "application/octet-stream");
+        res.setContentType("application/octet-stream");
+        res.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+        byte[] buff = new byte[1024];
+        BufferedInputStream bis = null;
+        OutputStream os = null;
+        try {
+            os = res.getOutputStream();
+            bis = new BufferedInputStream(new FileInputStream(outFile));
+            int i = bis.read(buff);
+            while (i != -1) {
+                os.write(buff, 0, buff.length);
+                os.flush();
+                i = bis.read(buff);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (bis != null) {
+                try {
+                    bis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }

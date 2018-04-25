@@ -81,7 +81,7 @@
     function HWPostil1_NotifyCtrlReady() {
 
         document.all.HWPostil1.HideMenuItem(30);
-        var confirmId = "${confirmId!}";
+        var confirmId = "${(confirm.id)!}";
         OpenFile("/getSignFile?confirmId="+confirmId);
 
     }
@@ -106,7 +106,7 @@
         function updateSignStatus(signResult) {
             var signResult= signResult;
             var signId = "${(user.id)!}";
-            var confirmId = "${confirmId!}";
+            var confirmId = "${confirm.id!}";
             var description = "";
             $.ajax({
                 url: "/review/updateSignResult",
@@ -152,17 +152,19 @@
                 <#--ShowMessage("请先盖章！");-->
                 <#--return ;-->
             <#--}-->
+            var name = "${(confirm.name)}";
+            var paramsArray = {"fileName":encodeURIComponent(name)};
+            var returnValue = SaveDocArray(paramsArray,"/upload");
+            var info = JSON.parse(returnValue);
 
-            <#--var paramsArray = {"taskId":"${taskId}", "id":"${expertPromise.id}","DocumentID":"${expertPromise.id}","projectInstanceId":"${expertApply.projectInstanceId}","projectInstanceName":"${projectInstance}","userType":"1","expertApplyId":"${expertApplyId}"};-->
-            <#--var returnValue = SaveDocArray(paramsArray,"${pageScope.basePath}/expertPromise/expertPromiseSave");-->
-            <#--if ("OK" == returnValue) {-->
-                <#--ShowMessage("文件上传成功！");-->
-                <#--updateSignStatus();-->
-            <#--} else {-->
-                <#--ShowMessage("操作失败！");-->
-            <#--}-->
+            if (200 == info.code) {
+                ShowMessage("文件上传成功！");
+                updateSignStatus("approved");
+            } else {
+                ShowMessage("操作失败！");
+            }
 
-            updateSignStatus("approved");
+
 
 
 

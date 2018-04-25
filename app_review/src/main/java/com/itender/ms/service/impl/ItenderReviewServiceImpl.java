@@ -84,7 +84,7 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
     }
 
 	@Override
-	public ItenderConfirm findConfirmsByConfirmId(String confimId) throws APIException {
+	public ItenderConfirm findConfirmByConfirmId(String confimId) throws APIException {
 
 		if(confimId == null){
 			return  null;
@@ -97,7 +97,7 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 	public ItenderConfirm updateConfrirm(ItenderConfirm confirm) throws APIException {
 		int  code =itenderConfirmMapper.updateByPrimaryKeySelective(confirm);
 
-		return  findConfirmsByConfirmId(confirm.getId());
+		return  findConfirmByConfirmId(confirm.getId());
 	}
 
 
