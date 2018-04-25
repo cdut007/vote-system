@@ -13,7 +13,7 @@
 
 
 
-            <div class="layui-form-item">
+            <div class="layui-form-item" style="margin-top: 50px">
                 <div class="layui-input-block">
                     <button type="submit" class="layui-btn" lay-submit lay-filter="chooseOperator">提交</button>
 
@@ -31,6 +31,7 @@
         var layer = layui.layer;
         var reviewId = "${id}";
 
+        layui.form.render();
 
         form.verify({
             name: function (value, item) {

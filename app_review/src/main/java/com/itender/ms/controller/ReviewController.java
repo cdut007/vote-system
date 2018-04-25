@@ -590,7 +590,11 @@ public class ReviewController {
     ) throws APIException{
 
         Map<String,Object> result = new HashMap<>();
-
+        if(signId == null || signId.equals("")){
+            result.put("status", false);
+            result.put("msg", "跟新审批失败！");
+            return ResponseEntity.ok(result);
+        }
         ItenderSign itenderSign = itenderReviewService.updateSignResult(confirmId,signId,signResult,description);
         if(itenderSign == null){
             result.put("status", false);
@@ -636,6 +640,13 @@ public class ReviewController {
         ItenderReview reviewExsit = null;
 
         ItenderUser itenderUser = itenderUserService.findByUserId(assigneeId);
+
+        if(itenderUser == null){
+            result.put("status", false);
+            result.put("msg", "跟新审批失败！");
+            return ResponseEntity.ok(result);
+        }
+
         reviewExsit = itenderReviewService.updateReviewStatus(id,assigneeId,itenderUser.getOperator(),status,remark);
         if(reviewExsit == null){
             result.put("status", false);

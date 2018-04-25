@@ -30,11 +30,11 @@
 
     <script type="text/html" id="signTableTool">
         {{#  if(d.status == 'approved'){ }}
-        <span style="color: #00ff00;">{{ '已通过' }}</span>
+        <span style="color: rgba(76, 76, 76, 0.85);">{{ '已通过' }}</span>
         {{#  } else { }}
 
         {{# if(d.status == 'forbidden'){ }}
-        <span style="color: #F37715;">{{ '已拒绝' }}</span>
+        <span style="color: #F37715;">{{ '不通过' }}</span>
         {{#  } else { }}
         <a class="layui-btn layui-btn-xs  btn-edit" lay-event="sign">签章</a>
         {{#  } }}
@@ -165,8 +165,13 @@
                 if(confirms){
                     for(var i = 0 ; i<confirms.length;i++){
                         if(confirms[i].status != 'approved'){
-                            layer.msg("请先签章!");
-                            return
+                            if(confirms[i].status == 'forbidden'){
+                                layer.msg("审核不通过，请退回!");
+                                return
+                            }else{
+                                layer.msg("请先签章!");
+                                return
+                            }
                         }
                     }
                     var title  = getOperatorTitle(nextOperator);

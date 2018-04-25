@@ -45,6 +45,11 @@
                             <#--<input type="button" class="layui-btn layui-btn-danger" value="通过" id="pass"/>-->
                             <#--<input type="button" class="layui-btn layui-btn-danger" value="不通过" id="fail"/>-->
                         </div>
+
+                        <div class="layui-layout-right">
+                            <input type="button" class="layui-btn layui-btn" value="通过" id="pass"/>
+                            <input type="button" class="layui-btn layui-btn" value="不通过" id="fail"/>
+                        </div>
                     </div>
 
                     <div class="usBox main" style="padding: 3px;height:560px;" id="assignBox">
@@ -86,12 +91,51 @@
         return json;
     }
 
-    $(function () {
+
+</script>
+
+<script>
+    layui.use(['element','itenderUser'], function(){
+        //  var $ = layui.jquery ;
+
+
         var sealNum = 0;
         var expertApplyId = "";
 
+
+        function updateSignStatus(signResult) {
+            var signResult= signResult;
+            var signId = "${(user.id)!}";
+            var confirmId = "${confirmId!}";
+            var description = "";
+            $.ajax({
+                url: "/review/updateSignResult",
+                type: "POST",
+                dataType: "json",
+                data: {signId:signId,description:description,confirmId:confirmId,signResult:signResult},
+                success: function (res) {
+                    if(res!=null){
+                        if(res.status){
+                            layer.closeAll('page'); //执行关闭
+                            layer.msg("提交成功!");
+                            window.history.back(-1);
+
+                        }else{
+                            ShowMessage("提交失败!");
+                        }
+                    }else{
+                        ShowMessage("提交失败!");
+                    }
+                },
+                error: function (xmlHttpReq, error, ex) {
+                    ShowMessage("提交失败!");
+                }
+            })
+        }
+
         //签章
         $("#sign").click(function () {
+
             SearchText("经办人", 0, 0);
             if (AutoSeal(0, 1, "经办人") == "-200") {
                 ShowMessage("请插入有效的USBKey！");
@@ -101,36 +145,37 @@
             ;
         });
 
+        $("#pass").click(function () {
 
-        <#--$("#pass").click(function () {-->
+            <#--if (GetCurrUserID()==""||sealNum==0) {-->
 
-        <#--if (GetCurrUserID()==""||sealNum==0) {-->
+                <#--ShowMessage("请先盖章！");-->
+                <#--return ;-->
+            <#--}-->
 
-        <#--ShowMessage("请先盖章！");-->
-        <#--return ;-->
-        <#--}-->
+            <#--var paramsArray = {"taskId":"${taskId}", "id":"${expertPromise.id}","DocumentID":"${expertPromise.id}","projectInstanceId":"${expertApply.projectInstanceId}","projectInstanceName":"${projectInstance}","userType":"1","expertApplyId":"${expertApplyId}"};-->
+            <#--var returnValue = SaveDocArray(paramsArray,"${pageScope.basePath}/expertPromise/expertPromiseSave");-->
+            <#--if ("OK" == returnValue) {-->
+                <#--ShowMessage("文件上传成功！");-->
+                <#--updateSignStatus();-->
+            <#--} else {-->
+                <#--ShowMessage("操作失败！");-->
+            <#--}-->
 
-        <#--var paramsArray = {"taskId":"${taskId}", "id":"${expertPromise.id}","DocumentID":"${expertPromise.id}","projectInstanceId":"${expertApply.projectInstanceId}","projectInstanceName":"${projectInstance}","userType":"1","expertApplyId":"${expertApplyId}"};-->
-        <#--var returnValue = SaveDocArray(paramsArray,"${pageScope.basePath}/expertPromise/expertPromiseSave");-->
-        <#--if ("OK" == returnValue) {-->
-        <#--ShowMessage("文件上传成功！");-->
-
-        <#--window.location.href="${pageScope.basePath}/expertPromise/expertPromiseAvoid?expertApplyId="+"${expertApplyId}"+"&taskId="+"${taskId}";-->
-        <#--} else {-->
-        <#--ShowMessage("操作失败！");-->
-        <#--}-->
-
-        <#--});-->
+            updateSignStatus("approved");
 
 
 
+        });
 
-    });
-</script>
 
-<script>
-    layui.use(['element','itenderUser'], function(){
-        //  var $ = layui.jquery ;
+
+        $("#fail").click(function () {
+            updateSignStatus("forbidden");
+
+
+        });
+
 
         layui.element.on('nav(test)', function(elem){
             //替换图片
