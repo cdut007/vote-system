@@ -306,7 +306,7 @@
                 if(operator != 'operator'){
                     return;
                 }
-                
+
                 if(data.status == 'approved'){
                     return;
                 }

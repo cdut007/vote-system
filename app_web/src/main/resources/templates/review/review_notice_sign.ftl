@@ -50,6 +50,15 @@
                         </div>
                     </div>
 
+                    <div class="layui-main" style="margin-bottom: 20px;">
+                        <div class="layui-form-item layui-form-text">
+                            <label class="layui-form-label">备注</label>
+                            <div class="layui-input-block">
+                                <textarea maxlength="30" placeholder="请填写备注" id="remark" name="remark" class="layui-textarea"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="usBox main" style="padding: 3px;height:560px;" id="assignBox">
                         <script type="text/javascript" src="/aip/LoadAip.js"></script>
 
@@ -105,7 +114,7 @@
             var signResult= signResult;
             var signId = "${(user.id)!}";
             var confirmId = "${confirm.id!}";
-            var description = "";
+            var description = $('#remark').text();
             $.ajax({
                 url: "/review/updateSignResult",
                 type: "POST",
