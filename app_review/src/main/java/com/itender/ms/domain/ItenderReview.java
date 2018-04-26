@@ -48,6 +48,11 @@ public class ItenderReview {
     private String name;//项目名称
 
 
+    @ApiModelProperty(value="关联id",name="referenceId",example="12133",required=true)
+    @Column(name="reference_id")
+    private String referenceId;//关联id
+
+
     @Column(name="description")
     private String description;//审批描述
 
@@ -129,6 +134,14 @@ public class ItenderReview {
     @Transient
     public List<ItenderConfirm> confirms;
 
+
+    public void setReferenceId(String referenceId) {
+        this.referenceId = referenceId;
+    }
+
+    public String getReferenceId() {
+        return referenceId;
+    }
 
     public void setAssigneeId(String assigneeId) {
         this.assigneeId = assigneeId;

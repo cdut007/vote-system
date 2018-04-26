@@ -39,6 +39,18 @@ public class ItenderConfirm {
     @Column(name="create_time")
     private Date createTime;//审批任务创建时间
 
+    @Column(name="reference_id")
+    private String referenceId;//关联id
+
+
+    public void setReferenceId(String referenceId) {
+        this.referenceId = referenceId;
+    }
+
+    public String getReferenceId() {
+        return referenceId;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }

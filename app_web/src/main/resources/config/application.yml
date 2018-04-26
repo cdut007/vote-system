@@ -136,5 +136,9 @@ privilege-uri-init:
 sys:
   version: @project.version@
 
+  #http对接地址
+httpRequest:
+  domain:  http://47.94.142.243:9090
+
 debug: false
 

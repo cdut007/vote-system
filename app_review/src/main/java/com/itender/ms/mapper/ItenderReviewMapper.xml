@@ -10,7 +10,7 @@
 		<result column="tender_no" javaType="STRING" property="tenderNo"></result>
 		<result column="assignee_id" javaType="STRING" property="assigneeId"></result>
 		<result column="organization_inner_tender_no" javaType="STRING" property="organizationInnerTenderNo"></result>
-		<result column="tender_type" javaType="STRING" property="tenderType"></result>
+		<result column="reference_id" javaType="STRING" property="referenceId"></result><result column="tender_type" javaType="STRING" property="tenderType"></result>
 		<result column="apply_person" javaType="STRING" property="applyPerson"></result>
 		<result column="tender_method" javaType="STRING" property="tenderMethod"></result>
 		<result column="tender_behavior" javaType="STRING" property="tenderBehavior"></result>

@@ -1,5 +1,7 @@
 package com.itender.ms.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageInfo;
 import com.itender.ms.convert.LayuiTableData;
 import com.itender.ms.convert.PageDataConvert;
@@ -8,6 +10,7 @@ import com.itender.ms.exception.APIException;
 import com.itender.ms.service.ItenderReviewService;
 import com.itender.ms.service.ItenderUserService;
 import com.itender.ms.util.CommonUtility;
+import com.itender.ms.util.HttpHelper;
 import com.itender.ms.util.ViewUtil;
 import com.itextpdf.text.pdf.BaseFont;
 import fr.opensagres.xdocreport.itext.extension.font.IFontProvider;
@@ -19,19 +22,23 @@ import org.apache.poi.xwpf.converter.pdf.PdfConverter;
 import org.apache.poi.xwpf.converter.pdf.PdfOptions;
 import org.apache.poi.xwpf.usermodel.*;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ResourceUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
@@ -54,6 +61,9 @@ public class ReviewController {
 
     @Autowired
     private ItenderUserService itenderUserService;
+
+    @Autowired
+    private HttpHelper httpHelper;
 
 
     @ApiIgnore
@@ -327,6 +337,59 @@ public class ReviewController {
 
     }
 
+
+
+    /**
+     *
+     *
+     * @param req
+     * @param res
+     * @param
+     * @return
+     */
+    @ApiIgnore
+    @RequestMapping(value = "/download", method = RequestMethod.GET)
+    public void download(HttpServletRequest req, HttpServletResponse res) throws APIException {
+
+        String attachId = req.getParameter("attachId");
+        if (StringUtils.isEmpty(attachId)) {
+            throw new APIException(HttpStatus.BAD_REQUEST.value(), "100400", "文件不存在!");
+        }
+
+        ItenderAttach attach = itenderReviewService.findAttachByAttachId(attachId);
+
+        if(attach == null){
+            throw new APIException(HttpStatus.BAD_REQUEST.value(), "100400", "文件不存在!");
+        }
+
+
+        httpHelper.download(res, req, attach.getName(), attach.getType());
+
+        byte[] buff = new byte[1024];
+        BufferedInputStream bis = null;
+        OutputStream os = null;
+        try {
+            os = res.getOutputStream();
+            bis = new BufferedInputStream(new FileInputStream(new File(getFileDirByName("attach_files")+File.separator+attach.getName())+"."+attach.getType()));
+            int i = bis.read(buff);
+            while (i != -1) {
+                os.write(buff, 0, buff.length);
+                os.flush();
+                i = bis.read(buff);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (bis != null) {
+                try {
+                    bis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
 
     /**
      * 上传附件

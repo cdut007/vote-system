@@ -2,17 +2,22 @@ package com.itender.ms.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.itender.ms.config.HttpConfig;
 import com.itender.ms.domain.*;
 import com.itender.ms.enums.ReviewRole;
 import com.itender.ms.enums.ReviewStatus;
 import com.itender.ms.exception.APIException;
 import com.itender.ms.mapper.*;
+import com.itender.ms.service.HttpClientService;
 import com.itender.ms.service.ItenderReviewService;
 import com.itender.ms.util.CommonUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Example;
 
@@ -44,6 +49,11 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 
 	@Autowired
 	private ItenderSignMapper itenderSignMapper;
+
+    @Autowired
+    private HttpConfig httpConfig;
+    @Autowired
+    HttpClientService httpClient;
 
 
 
@@ -257,10 +267,25 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 			}
 
 			//
-			if(ReviewRole.operator.name().equals(rollbackRole) && !isOperatorSign){
-                rollbackItenderReview.setAssigneeId("");
-                itenderReviewMapper.updateByPrimaryKeySelective(rollbackItenderReview);
-			    return 0;
+			if(ReviewRole.operator.name().equals(rollbackRole)){
+			    if(!isOperatorSign){
+                    rollbackItenderReview.setAssigneeId("");
+                    itenderReviewMapper.updateByPrimaryKeySelective(rollbackItenderReview);
+                    return 0;
+                }else{
+                    //api url地址
+                    String url = httpConfig.getDomain()+"/industry/listAll";
+                    //post请求
+                    HttpMethod method =HttpMethod.POST;
+                    // 封装参数，千万不要替换为Map与HashMap，否则参数无法传递
+                    MultiValueMap<String, String> params= new LinkedMultiValueMap<String, String>();
+                    params.add("access_token", "xxxxx");
+                    //发送http请求并返回结果
+                    String response  = httpClient.client(url,method,params);
+
+					itenderReviewMapper.delete(rollbackItenderReview);
+                    return  0;
+                }
             }
 
 			for (int i = 0; i < itenderTasks.size(); i++) {
@@ -285,6 +310,8 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 
 		return -2;
 	}
+
+
 
 
 	@Override

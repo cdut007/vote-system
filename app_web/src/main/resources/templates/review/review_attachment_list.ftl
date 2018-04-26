@@ -112,7 +112,9 @@
             //     window.open(localhostPath+"/pdf/web/viewer.html?file="+attachmentUrl);
                 view.goto('/review/review_scan?attachId='+data.id);
             }else if (layEvent === 'download') { //下载
-                //
+
+                view.goto('/review/download?attachId='+data.id);
+
             }
         });
 
