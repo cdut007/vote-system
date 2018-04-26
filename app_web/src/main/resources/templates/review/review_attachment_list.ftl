@@ -93,8 +93,8 @@
             // limit: 5, //每页默认显示的数量
             cols: [[
                 {title: '序号',templet: '#indexTpl'},
-                {title: "文档标题", field: 'name'},
-                {title: "文档操作",fixed: 'right', align: 'center', toolbar: '#attachTableTool'}
+                {title: "附件标题", field: 'name'},
+                {title: "操作",fixed: 'right', align: 'center', toolbar: '#attachTableTool'}
             ]]
         });
 

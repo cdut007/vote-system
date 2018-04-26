@@ -36,12 +36,12 @@
             <div class="layui-tab-content layui-col-md-12" id="content" lay-filter="tabTable">
                 <div class="layui-container">
                     <fieldset class="layui-elem-field layui-field-title">
-                        <legend>审核公告</legend>
+                        <legend>审核</legend>
                     </fieldset>
 
                     <div class="layui-main" style="margin-bottom: 20px;">
                         <div class="layui-btn-group">
-                         
+
                         </div>
 
                         <div class="layui-layout-right">

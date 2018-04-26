@@ -15,12 +15,14 @@
           <#if itenderReview.type=='tender'  || itenderReview.type=='bid_winning'>
 
               <#include "review_tender_verify.ftl">
-              <#include "review_attachment_list.ftl">
+
           <#else>
               <#include "review_notice_verify.ftl">
           </#if>
 
       </#if>
+
+           <#include "review_attachment_list.ftl">
 
     <#include "tender_info.ftl">
 

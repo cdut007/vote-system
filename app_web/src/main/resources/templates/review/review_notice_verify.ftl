@@ -1,7 +1,7 @@
 <div  class="form-container ">
 
     <fieldset class="layui-elem-field layui-field-title">
-        <legend>文档列表</legend>
+        <legend>审批</legend>
     </fieldset>
     <div class="layui-row">
         <div class="layui-col-md-12">
@@ -43,11 +43,6 @@
 
     </script>
 
-
-    <script type="text/html" id="attachTableTool">
-        <a class="layui-btn layui-btn-xs  btn-edit" lay-event="view">查看</a>
-        <a class="layui-btn layui-btn-xs  btn-edit" lay-event="download">下载</a>
-    </script>
 
 
     <script type="text/html" id="countTool">
@@ -248,7 +243,6 @@
             cols: [[
                 {title: '序号',templet: '#indexTpl'},
                 {title: "文档标题", field: 'name'},
-                {title: "文档操作", align: 'center', toolbar: '#attachTableTool'},
                 {title: "审核", align: 'center', toolbar: '#signTableTool'}
             ]],
             data:confirms
@@ -269,13 +263,6 @@
                 view.goto('/review/review_notice_sign?confirmId='+confirmId);
 
 
-
-            }else if (layEvent === 'view') { //查看
-
-                view.goto('/review/review_scan?referenceAttachId='+data.attachId);
-            }else if (layEvent === 'download') { //下载
-
-                view.goto('/review/download?referenceAttachId='+data.attachId);
 
             }
 

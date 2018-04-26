@@ -1,7 +1,7 @@
 <div  class="form-container ">
 
     <fieldset class="layui-elem-field layui-field-title">
-        <legend>用印审核</legend>
+        <legend>审批</legend>
     </fieldset>
     <div class="layui-row">
         <div class="layui-col-md-12">
