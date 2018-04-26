@@ -26,6 +26,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -300,7 +301,7 @@ public class ReviewController {
         if(itenderAttach == null){
             throw new Exception("attach file not find");
         }
-        File attachFile = new File(getFileDirByName("attach_files")+File.separator+itenderAttach.getName());
+        File attachFile = new File(getFileDirByName("attach_files")+File.separator+itenderAttach.getName()+"."+itenderAttach.getType());
         String fileName = null;
         File outFile = null;
         fileName = attachFile.getName();
@@ -463,8 +464,8 @@ public class ReviewController {
     @RequestMapping(value = "/getSignFile", method = RequestMethod.GET)
     public void getSignFile(HttpServletRequest request,HttpServletResponse res) throws Exception{
 
-
-        File file = ResourceUtils.getFile("classpath:static/aip/用印登记表.docx");
+        InputStream inputStream =  new ClassPathResource("static/aip/用印登记表.docx").getInputStream();
+       // File file = ResourceUtils.getFile("classpath:static/aip/用印登记表.docx");
         Map<String, String> datas = new HashMap<String, String>();
 
         String confirmId = request.getParameter("confirmId");
@@ -485,7 +486,7 @@ public class ReviewController {
             datas.put("${projectName}", itenderConfirm.getName());
             datas.put("${count}",itenderConfirm.getCount());
             String exportFile = getFileDirByName("review_files")+File.separator+itenderConfirm.getName()+".docx";
-            boolean result = readwriteWord(file,datas,exportFile);
+            boolean result = readwriteWord(inputStream,datas,exportFile);
             if(result){
                 XWPFDocument document = new XWPFDocument(new FileInputStream(new File(exportFile)));
 
@@ -560,16 +561,15 @@ public class ReviewController {
 
     /**
      * 实现对word读取和修改操作
-     * @param sourceFile    word模板路径和名称
      * @param map        待填充的数据，从数据库读取
      */
-    public static boolean readwriteWord(File sourceFile, Map<String,String> map, String exportFile){
+    public static boolean readwriteWord(InputStream sourceInputStream, Map<String,String> map, String exportFile){
         //读取word模板
 //        String fileDir = new File(base.getFile(),"http://www.cnblogs.com/http://www.cnblogs.com/../doc/").getCanonicalPath();
-        FileInputStream in = null;
+        InputStream in = null;
         try {
-            in = new FileInputStream(sourceFile);
-        } catch (FileNotFoundException e1) {
+            in = sourceInputStream;
+        } catch (Exception e1) {
             e1.printStackTrace();
             return  false;
         }
@@ -683,7 +683,7 @@ public class ReviewController {
                 if(isMacOS(os) || isMacOSX(os)){
                     root = "/Users/mac/Downloads";
                 }else if (isLinux(os)){
-                    root = "";
+                    root = "/root";
                 }
 
                 String filePath = root + File.separator+"data"+File.separator+name+File.separator;
