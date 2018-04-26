@@ -263,6 +263,7 @@
                     layer.msg("请设置份数");
                     return;
                 }
+
                 // var data = {
                 //     title: "文件签章",//标题
                 //     area: 'auto',//宽高
@@ -303,6 +304,10 @@
             } else  if(obj.event === 'setCount') {
 
                 if(operator != 'operator'){
+                    return;
+                }
+                
+                if(data.status == 'approved'){
                     return;
                 }
 
