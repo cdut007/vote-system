@@ -106,14 +106,37 @@ public class ReviewController {
     @RequestMapping(value = "/review_scan",method = RequestMethod.GET)
     public String reviewScanPage(HttpServletRequest request, HttpServletResponse response){
         String attachId = request.getParameter("attachId");
+        if(!StringUtils.isEmpty(attachId)){
 
-        try {
-            request.setAttribute("attach",itenderReviewService.findAttachByAttachId(attachId));
-        }catch (Exception e){
-            e.printStackTrace();
+            try {
+                request.setAttribute("attach",itenderReviewService.findAttachByAttachId(attachId));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }else{
+            String referenceAttachId = request.getParameter("referenceAttachId");
+            try {
+                request.setAttribute("attach",itenderReviewService.findAttachByReferenceAttachId(referenceAttachId));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
         return ViewUtil.forward("/review/review_scan_file");
     }
+
+    @ApiIgnore
+    @RequestMapping(value = "/review_notice_sign",method = RequestMethod.GET)
+    public String reviewNoticeSignPage(HttpServletRequest request, HttpServletResponse response){
+        String confirmId = request.getParameter("confirmId");
+
+        try {
+            request.setAttribute("confirm",itenderReviewService.findConfirmByConfirmId(confirmId));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return ViewUtil.forward("/review/review_notice_sign");
+    }
+
 
     @ApiIgnore
     @RequestMapping(value = "/review_sign",method = RequestMethod.GET)
@@ -353,14 +376,24 @@ public class ReviewController {
     public void download(HttpServletRequest req, HttpServletResponse res) throws APIException {
 
         String attachId = req.getParameter("attachId");
-        if (StringUtils.isEmpty(attachId)) {
-            throw new APIException(HttpStatus.BAD_REQUEST.value(), "100400", "文件不存在!");
-        }
 
-        ItenderAttach attach = itenderReviewService.findAttachByAttachId(attachId);
+        ItenderAttach attach = null;
 
-        if(attach == null){
-            throw new APIException(HttpStatus.BAD_REQUEST.value(), "100400", "文件不存在!");
+        if(!StringUtils.isEmpty(attachId)){
+
+             attach = itenderReviewService.findAttachByAttachId(attachId);
+
+            if(attach == null){
+                throw new APIException(HttpStatus.BAD_REQUEST.value(), "100400", "文件不存在!");
+            }
+        }else{
+            String referenceAttachId = req.getParameter("referenceAttachId");
+
+             attach = itenderReviewService.findAttachByReferenceAttachId(referenceAttachId);
+
+            if(attach == null){
+                throw new APIException(HttpStatus.BAD_REQUEST.value(), "100400", "文件不存在!");
+            }
         }
 
 
@@ -696,14 +729,6 @@ public class ReviewController {
         Map<String,Object> result = new HashMap<>();
 
         // 文件上传后的路径
-        String root = "C:\\\\";
-        String os = System.getProperty("os.name").toLowerCase();
-        if(isMacOS(os) || isMacOSX(os)){
-            root = "/Users/mac/Downloads";
-        }else if (isLinux(os)){
-            root = "";
-        }
-
         String filePath = getFileDirByName("review_files");
         // 解决中文问题，liunx下中文路径，图片显示问题
         // fileName = UUID.randomUUID() + suffixName;

@@ -11,10 +11,16 @@
     <div class="layui-row layui-col-space15" style="padding: 30px">
 
     <#include "review_status.ftl">
+      <#if itenderReview??>
+          <#if itenderReview.type=='tender'  || itenderReview.type=='bid_winning'>
 
-    <#include "review_tender_verify.ftl">
+              <#include "review_tender_verify.ftl">
+              <#include "review_attachment_list.ftl">
+          <#else>
+              <#include "review_notice_verify.ftl">
+          </#if>
 
-    <#include "review_attachment_list.ftl">
+      </#if>
 
     <#include "tender_info.ftl">
 

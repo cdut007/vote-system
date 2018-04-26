@@ -25,7 +25,8 @@ public class ItenderConfirm {
     private String count;
 
 
-    @Column(name="status")
+    @ApiModelProperty(value="id",hidden=true)
+    @Transient
     private String status;//签章状态
 
 
@@ -36,12 +37,25 @@ public class ItenderConfirm {
     @Column(name="review_id")
     private String reviewId;//
 
+    @Column(name="attach_id")
+    private String attachId;//
+
     @Column(name="create_time")
     private Date createTime;//审批任务创建时间
 
     @Column(name="reference_id")
     private String referenceId;//关联id
 
+
+
+
+    public String getAttachId() {
+        return attachId;
+    }
+
+    public void setAttachId(String attachId) {
+        this.attachId = attachId;
+    }
 
     public void setReferenceId(String referenceId) {
         this.referenceId = referenceId;

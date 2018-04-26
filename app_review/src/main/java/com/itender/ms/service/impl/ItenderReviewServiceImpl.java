@@ -93,7 +93,24 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
         return null;
     }
 
-    @Override
+	@Override
+	public ItenderAttach findAttachByReferenceAttachId(String referenceAttachId) {
+		if(StringUtils.isEmpty(referenceAttachId)){
+			return  null;
+		}
+
+		Example example = new Example(ItenderAttach.class);
+		example.createCriteria().andEqualTo("referenceId",referenceAttachId);
+
+		List<ItenderAttach> attaches = itenderAttachMapper.selectByExample(example);
+
+		if(attaches!=null && !attaches.isEmpty()){
+			return  attaches.get(0);
+		}
+		return  null;
+	}
+
+	@Override
     public ItenderAttach findAttachByAttachId(String attachId) {
         if(attachId == null){
             return  null;
