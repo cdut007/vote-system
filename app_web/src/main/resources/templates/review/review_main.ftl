@@ -43,8 +43,36 @@
 </body>
 
 <script>
+
+    var element;
+
+    function reload(reviewId){
+        $.ajax({
+            url: '/review/review_detail?id='+reviewId,
+            type:"GET",
+            cache:false,
+            success: function (res) {
+                //console.log(res);
+                // $('#content').html(res);
+                element.tabDelete('tabBody', 'list-review');
+                element.tabAdd('tabBody', {//添加新Tap
+                    title:'审批管理',
+                    content: res
+                    ,id: 'list-review'
+                });
+                element.tabChange('tabBody', 'list-review');
+
+            },
+            error: function (xmlHttpReq, error, ex) {
+
+            }
+        })
+    }
+
+
     layui.use(['element','itenderUser'], function(){
       //  var $ = layui.jquery ;
+        element = layui.element;
 
         layui.element.on('nav(test)', function(elem){
             //替换图片

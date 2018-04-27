@@ -91,6 +91,23 @@
     };
 
 
+
+    //调整iframe高度
+    function reinitIframe() {
+        var iframes = document.getElementsByName("iframe");
+        try {
+            for(var i = 0; i < iframes.length; i++)
+                    //iframes[i].height = iframes[i].contentWindow.document.documentElement.scrollHeight;
+            {
+                iframes[i].height = window.screen.height - 280;
+            }
+        } catch(ex) {
+
+        }
+    }
+    window.setInterval("reinitIframe()", 200);
+
+
     layui.use(['itenderReview','table','util', 'element'], function () {
         var table = layui.table;
         var itenderReview = layui.itenderReview;
@@ -260,8 +277,16 @@
             if (layEvent === 'sign') { //
 
 
-                view.goto('/review/review_notice_sign?confirmId='+confirmId);
+               // view.goto('/review/review_notice_sign?confirmId='+confirmId);
 
+                var src = '/review/review_notice_sign?confirmId='+confirmId;
+                layui.element.tabDelete('tabBody', 'list-review');
+                layui.element.tabAdd('tabBody', {//添加新Tap
+                    title:'审批管理',
+                    content: '<iframe name="iframe" src="' + src + '" frameborder="0" style="width: 100%;"></iframe>'
+                    ,id: 'list-review'
+                });
+                layui.element.tabChange('tabBody', 'list-review');
 
 
             }

@@ -89,6 +89,22 @@
         return format;
     };
 
+    //调整iframe高度
+    function reinitIframe() {
+        var iframes = document.getElementsByName("iframe");
+        try {
+            for(var i = 0; i < iframes.length; i++)
+                    //iframes[i].height = iframes[i].contentWindow.document.documentElement.scrollHeight;
+            {
+                iframes[i].height = window.screen.height - 280;
+            }
+        } catch(ex) {
+
+        }
+    }
+    window.setInterval("reinitIframe()", 200);
+
+
 
     layui.use(['itenderReview','table','util', 'element'], function () {
         var table = layui.table;
@@ -249,6 +265,9 @@
 
         });
 
+
+
+
         table.on('tool(verifyAllTable)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
@@ -264,42 +283,18 @@
                     return;
                 }
 
-                // var data = {
-                //     title: "文件签章",//标题
-                //     area: 'auto',//宽高
-                //     closeBtn: 1,//关闭按钮
-                //     shadeClose: true,//是否点击遮罩关闭
-                //     queryUrl: '/review/review_sign?confirmId'+confirmId
-                // }
-                // itenderReview.openModal(data,function (layerDom,index) {
-                //     getConfirmData();
-                // });
+
+               // view.goto('/review/review_sign?confirmId='+confirmId);
+                var src = '/review/review_sign?confirmId='+confirmId;
+                        layui.element.tabDelete('tabBody', 'list-review');
+                        layui.element.tabAdd('tabBody', {//添加新Tap
+                            title:'审批管理',
+                            content: '<iframe name="iframe" src="' + src + '" frameborder="0" style="width: 100%;"></iframe>'
+                            ,id: 'list-review'
+                        });
+                        layui.element.tabChange('tabBody', 'list-review');
 
 
-
-                view.goto('/review/review_sign?confirmId='+confirmId);
-
-
-                // $.ajax({
-                //     url: '/review/review_sign?confirmId='+confirmId,
-                //     type:"GET",
-                //     cache:false,
-                //     success: function (res) {
-                //         //console.log(res);
-                //         // $('#content').html(res);
-                //         layui.element.tabDelete('tabBody', 'list-review');
-                //         layui.element.tabAdd('tabBody', {//添加新Tap
-                //             title:'审批管理',
-                //             content: res
-                //             ,id: 'list-review'
-                //         });
-                //         layui.element.tabChange('tabBody', 'list-review');
-                //
-                //     },
-                //     error: function (xmlHttpReq, error, ex) {
-                //
-                //     }
-                // })
 
             } else  if(obj.event === 'setCount') {
 
