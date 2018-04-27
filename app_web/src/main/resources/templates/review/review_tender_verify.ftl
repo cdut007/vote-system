@@ -1,4 +1,4 @@
-<div  class="form-container ">
+<div  class="form-container " style="margin-top: 30px">
 
     <fieldset class="layui-elem-field layui-field-title">
         <legend>审批</legend>
@@ -36,7 +36,7 @@
         {{# if(d.status == 'forbidden'){ }}
         <span style="color: #F37715;">{{ '不通过' }}</span>
         {{#  } else { }}
-        <a class="layui-btn layui-btn-xs  btn-edit" lay-event="sign">签章</a>
+        <a class="layui-btn layui-btn-xs  btn-edit" lay-event="sign">用印登记</a>
         {{#  } }}
 
         {{#  } }}
@@ -240,10 +240,10 @@
             // limits: [5, 10, 15],
             // limit: 5, //每页默认显示的数量
             cols: [[
-                {title: '序号',templet: '#indexTpl'},
+                {title: '序号',fixed: 'left',width:80,templet: '#indexTpl'},
                 {title: "文档标题", field: 'name'},
-                {title: "份数", field:'count', event: 'setCount', style:'cursor: pointer;'},
-                {title: "审核",fixed: 'right', align: 'center', toolbar: '#signTableTool'}
+                {title: "份数", field:'count', align: 'center',event: 'setCount', style:'cursor: pointer;'},
+                {title: "审核",fixed: 'right',width:140, align: 'center', toolbar: '#signTableTool'}
             ]],
             data:confirms
 

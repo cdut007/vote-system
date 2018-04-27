@@ -115,7 +115,7 @@
 
 <style>
     .grid-item {
-        padding: 10px;
+        padding: 7.5px;
         text-align: left;
     }
 </style>

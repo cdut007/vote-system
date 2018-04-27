@@ -5,14 +5,18 @@
           <a><cite id="title">用印登记</cite></a>
         </span>
 
-<div class="layui-container margin-top">
+<div >
 
 
-    <div class="layui-row layui-col-space15" style="padding: 30px">
+    <div class="layui-row" style="padding: 30px">
 
-    <#include "review_attachment_list.ftl">
 
-    <#include "tender_info.ftl">
+       <#include "tender_info.ftl">
+        <#include "review_attachment_list.ftl">
+
+        <div class="layui-form-item layui-col-space15" style="padding: 30px;text-align: center">
+            <button class="layui-btn" lay-event="fetch" id="fetch">认领</button>
+        </div>
 
     </div>
 
@@ -46,7 +50,48 @@
 
     layui.use( ['table','util', 'itenderReview','element'], function () {
         var type = "${(itenderReview.type)!}";
+        var reviewId = "${(itenderReview.id)!}";
         $("#title").html(getReviewTypeName(type));
+        var assigneeId = "${(user.id)!}";
+
+        $("#fetch").click(function () {
+
+            layer.open({
+                type: 1
+                ,title: '认领任务'
+                ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+                ,id: 'dashauto' //防止重复弹出
+                ,content: '<div style="padding: 20px 100px;">确认认领该任务？</div>'
+                ,btn: '确认'
+                ,btnAlign: 'c' //按钮居中
+                ,shade: 0 //不显示遮罩
+                ,yes: function(){
+                    $.ajax({
+                        url: "/review/updateReviewStatus",
+                        type: "POST",
+                        dataType: "json",
+                        data: {id:reviewId,assigneeId:assigneeId,status:'approved'},
+                        success: function (res) {
+                            if(res!=null){
+                                if(res.status){
+                                    layer.closeAll('page'); //执行关闭
+                                    layer.msg("提交成功!");
+                                    $("#review").click();
+                                }else{
+                                    layer.msg("提交失败!");
+                                }
+                            }else{
+                                layer.msg("提交失败!");
+                            }
+                        },
+                        error: function (xmlHttpReq, error, ex) {
+                            layer.msg("提交失败!");
+                        }
+                    })
+
+                }
+            });
+        });
 
         $("#review_nav").click(function () {
             $.ajax({

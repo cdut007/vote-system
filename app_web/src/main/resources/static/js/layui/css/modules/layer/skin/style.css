@@ -69,3 +69,5 @@
 .layui-laydate-footer span[lay-type=date] {
     color: #0154AD;
 }
+
+.layui-body{overflow-y: scroll;}

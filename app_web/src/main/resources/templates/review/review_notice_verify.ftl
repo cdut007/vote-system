@@ -1,4 +1,4 @@
-<div  class="form-container ">
+<div  class="form-container " style="margin-top: 30px">
 
     <fieldset class="layui-elem-field layui-field-title">
         <legend>审批</legend>
@@ -241,9 +241,9 @@
             // limits: [5, 10, 15],
             // limit: 5, //每页默认显示的数量
             cols: [[
-                {title: '序号',templet: '#indexTpl'},
+                {title: '序号',fixed: 'left',width:80,templet: '#indexTpl'},
                 {title: "文档标题", field: 'name'},
-                {title: "审核", align: 'center', toolbar: '#signTableTool'}
+                {title: "审核",fixed: 'right', width:140,align: 'center', toolbar: '#signTableTool'}
             ]],
             data:confirms
 

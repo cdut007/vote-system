@@ -5,7 +5,7 @@
           <a><cite id="title">用印登记</cite></a>
         </span>
 
-<div class="layui-container margin-top">
+<div>
 
 
     <div class="layui-row layui-col-space15" style="padding: 30px">

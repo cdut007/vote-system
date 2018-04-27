@@ -1,11 +1,11 @@
-<div  class="form-container ">
+<div  class="form-container " style="margin-top: 30px;margin-bottom: 50px">
 
     <fieldset class="layui-elem-field layui-field-title">
         <legend>附件列表</legend>
     </fieldset>
     <div class="layui-row">
         <div class="layui-col-md-12">
-            <table class="table table-bordered table-hover" id="recordAllTable" lay-filter="recordAllTable">
+            <table class="table table-bordered table-hover"  id="recordAllTable" lay-filter="recordAllTable">
             </table>
         </div>
     </div>
@@ -92,9 +92,9 @@
             // limits: [5, 10, 15],
             // limit: 5, //每页默认显示的数量
             cols: [[
-                {title: '序号',templet: '#indexTpl'},
+                {title: '序号',fixed: 'left',width:80,templet: '#indexTpl'},
                 {title: "附件标题", field: 'name'},
-                {title: "操作",fixed: 'right', align: 'center', toolbar: '#attachTableTool'}
+                {title: "操作",width:140, fixed: 'right', align: 'center', toolbar: '#attachTableTool'}
             ]]
         });
 

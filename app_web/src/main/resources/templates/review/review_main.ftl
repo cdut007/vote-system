@@ -170,5 +170,14 @@
     .layui-this a{
         color: #f6f6f6!important;
     }
+
+    .layui-table-body {
+        position: relative;
+         overflow: hidden;
+        margin-right: -1px;
+    }
+
+    .layui-body{overflow-y: scroll;}
+     body{overflow-y: scroll;}
 </style>
 </html>
