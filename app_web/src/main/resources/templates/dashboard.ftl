@@ -155,7 +155,7 @@
         </div>
 
         <div class="layui-row layui-col-space30">
-            <div class="layui-col-md2 layui-col-md-offset1">
+            <div class="layui-col-md3 " style="margin-left: 12%">
                 <div class="mui-card">
 
                     <button id="field_supervision" class="mui-card-content" href="qc_report.html">
@@ -173,41 +173,41 @@
                     </button>
                 </div>
             </div>
-            <div class="layui-col-md2">
-                <div class="mui-card">
-                    <button id="process_supervision" class="mui-card-content" href="qc_review.html">
-                        <div class="mui-card-content-inner">
-                            <div class="mui-card-box">
-                                <div class="item-box-icon">
-                                    <img src="/css/img/icon_process_supervision.png" />
-                                </div>
-                                <div class="item-box-text">
-                                    <span>全流程监督</span>
-                                </div>
-                            </div>
+            <#--<div class="layui-col-md2">-->
+                <#--<div class="mui-card">-->
+                    <#--<button id="process_supervision" class="mui-card-content" href="qc_review.html">-->
+                        <#--<div class="mui-card-content-inner">-->
+                            <#--<div class="mui-card-box">-->
+                                <#--<div class="item-box-icon">-->
+                                    <#--<img src="/css/img/icon_process_supervision.png" />-->
+                                <#--</div>-->
+                                <#--<div class="item-box-text">-->
+                                    <#--<span>全流程监督</span>-->
+                                <#--</div>-->
+                            <#--</div>-->
 
-                        </div>
-                    </button>
-                </div>
-            </div>
-            <div class="layui-col-md2">
-                <div class="mui-card">
-                    <button id="statistics" href="qc_reform.html" class="mui-card-content">
-                        <div class="mui-card-content-inner">
-                            <div class="mui-card-box">
-                                <div class="item-box-icon">
-                                    <img src="/css/img/icon_statistics.png" />
-                                </div>
-                                <div class="item-box-text">
-                                    <span>统计分析</span>
-                                </div>
-                            </div>
+                        <#--</div>-->
+                    <#--</button>-->
+                <#--</div>-->
+            <#--</div>-->
+            <#--<div class="layui-col-md2">-->
+                <#--<div class="mui-card">-->
+                    <#--<button id="statistics" href="qc_reform.html" class="mui-card-content">-->
+                        <#--<div class="mui-card-content-inner">-->
+                            <#--<div class="mui-card-box">-->
+                                <#--<div class="item-box-icon">-->
+                                    <#--<img src="/css/img/icon_statistics.png" />-->
+                                <#--</div>-->
+                                <#--<div class="item-box-text">-->
+                                    <#--<span>统计分析</span>-->
+                                <#--</div>-->
+                            <#--</div>-->
 
-                        </div>
-                    </button>
-                </div>
-            </div>
-            <div class="layui-col-md2">
+                        <#--</div>-->
+                    <#--</button>-->
+                <#--</div>-->
+            <#--</div>-->
+            <div class="layui-col-md3">
                 <div class="mui-card">
                     <button id="backlog" href="qc_inquire.html" class="mui-card-content">
                         <div class="mui-card-content-inner">
@@ -224,7 +224,7 @@
                     </button>
                 </div>
             </div>
-            <div class="layui-col-md2">
+            <div class="layui-col-md3">
                 <div class="mui-card">
                     <button id="system_management" href="qc_inquire.html" class="mui-card-content">
                         <div class="mui-card-content-inner">
