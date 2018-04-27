@@ -18,8 +18,10 @@
           <#--</@resource_check>-->
 
                     <#if user??>
+                        <#if user.operator??>
                         <#if user.operator=='operator'>
                         <li class="layui-nav-item layui-side-item"><a id="reviewAll" href="javascript:;"><img src="/css/img/icon_all_tasks_default.png" class="layui-nav-side-img">所有任务</a></li>
+                        </#if>
                         </#if>
                     </#if>
 

@@ -21,7 +21,6 @@
 
 <script type="text/html" id="attachTableTool">
     <a class="layui-btn layui-btn-xs  btn-edit" lay-event="view">查看</a>
-    <a class="layui-btn layui-btn-xs  btn-edit" lay-event="download">下载</a>
 </script>
 
 

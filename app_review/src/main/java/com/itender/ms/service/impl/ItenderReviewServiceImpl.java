@@ -457,8 +457,23 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 			if(StringUtils.isEmpty(searchKeyword)){
 				searchKeyword = null;
 			}
+			Example.Criteria criteria = example.createCriteria();
+			if(user!=null){
 
-			itenderReview = itenderReviewMapper.selectByFilter(searchKeyword);
+				criteria.andEqualTo("assigneeId",user.getId());
+
+				user = null;
+			}else{
+				criteria.andIsNull("assigneeId").orEqualTo("assigneeId","");
+			}
+
+			criteria.andCondition("name like "+"'%"+searchKeyword+"%'"+" or "+"tender_name like "+"'%"+searchKeyword+"%'");
+
+
+
+			example.setOrderByClause("create_time desc");
+			itenderReview = itenderReviewMapper.selectByExample(example);
+
 			//reset
 			resetSearch();
 		}else {

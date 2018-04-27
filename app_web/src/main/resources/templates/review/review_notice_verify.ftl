@@ -48,6 +48,7 @@
     <script type="text/html" id="countTool">
 
         <#if user??>
+            <#if user.operator??>
             <#if user.operator=='operator'>
 
                       <div class="layui-row">
@@ -57,7 +58,7 @@
                           </div>
                           <a class="layui-btn layui-btn-xs  btn-edit" lay-event="commit_count">确认</a>
                     </div>
-
+            </#if>
             </#if>
         <#else>
             {{d.count}}
