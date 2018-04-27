@@ -129,6 +129,14 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 		return itenderConfirmMapper.selectByPrimaryKey(confimId);
 	}
 
+
+	@Override
+	public List<ItenderSign> findSignsByConfirmId(String confirmId) {
+		Example example = new Example(ItenderSign.class);
+		example.createCriteria().andEqualTo("confirmId",confirmId);
+		return itenderSignMapper.selectByExample(example);
+	}
+
 	@Override
 	public ItenderConfirm updateConfrirm(ItenderConfirm confirm) throws APIException {
 		int  code =itenderConfirmMapper.updateByPrimaryKeySelective(confirm);

@@ -26,12 +26,21 @@
                     </div>
 
                     <div class="layui-main" style="margin-bottom: 20px;;margin-top: 50px">
-                        <div class="layui-form-item layui-form-text">
-                            <label class="layui-form-label">备注</label>
-                            <div class="layui-input-block">
-                                <textarea maxlength="30" placeholder="请填写备注" id="remark" name="remark" class="layui-textarea"></textarea>
+                        <div class="layui-row">
+                            <div class="layui-col-xs6">
+                                <div class="layui-form-item layui-form-text">
+                                    <label class="layui-form-label">备注</label>
+                                    <div class="layui-input-block" style="width: 70%" >
+                                        <textarea maxlength="30" placeholder="请填写备注" id="remark" name="remark" class="layui-textarea"></textarea>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="layui-col-xs6">
+                                <label class="layui-form-label" id="remarkInfo" style="width: 100%;text-align: left"></label>
                             </div>
                         </div>
+
                     </div>
 
 
@@ -174,6 +183,35 @@
         });
 
 
+
+
+        var confirmId = "${confirm.id!}";
+        $.ajax({
+            url: "/review/getSignList",
+            type: "POST",
+            dataType: "json",
+            data: {confirmId:confirmId},
+            success: function (res) {
+                if(res!=null){
+                    if(res.status){
+                         var text='';
+                         for(var i = 0 ; i<res.data.length;i++){
+                             var item = res.data[i];
+                             text+=item.description+"<br>";
+                         }
+                        $('#remarkInfo').html(text);
+
+                    }else{
+                        console.log("提交失败!");
+                    }
+                }else{
+                    console.log("提交失败!");
+                }
+            },
+            error: function (xmlHttpReq, error, ex) {
+                console.log("提交失败!");
+            }
+        })
 
 
 

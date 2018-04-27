@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.itender.ms.convert.LayuiTableData;
 import com.itender.ms.convert.PageDataConvert;
 import com.itender.ms.domain.*;
+import com.itender.ms.enums.ReviewRole;
 import com.itender.ms.enums.ReviewType;
 import com.itender.ms.exception.APIException;
 import com.itender.ms.service.ItenderReviewService;
@@ -180,6 +181,52 @@ public class ReviewController {
 
         return ViewUtil.forward("/review/review_detail");
     }
+
+    @ApiOperation(value = "获取签章列表信息",notes = "获取签章列表信息")
+    @RequestMapping(value = "/getSignList",method = RequestMethod.POST)
+    public ResponseEntity<Map<String,Object>> getSignList(HttpServletRequest request,
+                                                               @ApiParam(name = "confirmId",value = "confirmId",required = true) @RequestParam(required = true) String confirmId
+    ) throws APIException{
+
+        Map<String,Object> result = new HashMap<>();
+        if(confirmId == null || confirmId.equals("")){
+            result.put("status", false);
+            result.put("msg", "获取签章列表信息失败！");
+            return ResponseEntity.ok(result);
+        }
+        List<ItenderSign> itenderSigns = itenderReviewService.findSignsByConfirmId(confirmId);
+        if(itenderSigns == null){
+            result.put("status", false);
+            result.put("msg", "获取签章列表信息失败！");
+        }else{
+            for (int i = 0; i < itenderSigns.size(); i++) {
+                ItenderSign itenderSign = itenderSigns.get(i);
+                ItenderUser itenderUser = itenderUserService.findByUserId(itenderSign.getSignId());
+                if(itenderUser!=null){
+                    itenderSign.setDescription(itenderUser.getPosition()+": "+itenderSign.getDescription());
+                }
+
+            }
+
+            result.put("status", true);
+        }
+        result.put("data", itenderSigns);
+        return ResponseEntity.ok(result);
+    }
+//
+//    private String getPosition(String position) {
+//
+//        if( ReviewRole.operator.name().equals(position)){
+//            return  "经办人";
+//        }else if(ReviewRole.department_leader.name().equals(position)){
+//            return  "科室负责人";
+//        }else if(ReviewRole.branch_leader.name().equals(position)){
+//            return  "分管负责人";
+//        }else if(ReviewRole.approver.name().equals(position)){
+//            return  "审批人";
+//        }
+//        return  "审批人";
+//    }
 
 
     @ApiOperation(value = "审批文件接口",notes = "用于查询所有审批信息")
@@ -518,11 +565,17 @@ public class ReviewController {
         }else{
             //
             ItenderReview itenderReview = itenderReviewService.findById(itenderConfirm.getReviewId());
-            if(itenderReview!=null && ReviewType.bid_winning.name().equals(itenderReview.getType()))
+            if(itenderReview!=null)
                 {
-                  datas.put("${projectTitle}", "山西转型综合改革示范区管理委员建设管理部工程项目招标投标备案用印登记表");
+                    if(ReviewType.bid_winning.name().equals(itenderReview.getType())){
+                        datas.put("${projectTitle}", "山西转型综合改革示范区管理委员建设管理部中标通知书用印登记表");
+                    }else{
+                        datas.put("${projectTitle}", "山西转型综合改革示范区管理委员建设管理部工程项目招标投标备案用印登记表");
+                    }
+
                 }else{
-                    datas.put("${projectTitle}", "山西转型综合改革示范区管理委员建设管理部中标通知书用印登记表");
+
+                datas.put("${projectTitle}", "山西转型综合改革示范区管理委员建设管理部工程项目招标投标备案用印登记表");
                 }
 
             datas.put("${projectName}", itenderConfirm.getName());

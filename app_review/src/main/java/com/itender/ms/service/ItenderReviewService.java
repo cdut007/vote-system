@@ -31,6 +31,8 @@ public interface ItenderReviewService extends ItenderServiceBase<ItenderReview> 
 	 */
 	public ItenderReview updateReview(ItenderReview review) throws APIException;
 
+	public List<ItenderSign> findSignsByConfirmId(String confirmId) throws APIException;
+
 	public List<ItenderConfirm> findConfirmsByReviewId(String reviewId) throws APIException;
 
 	public ItenderAttach  findAttachByReferenceAttachId(String referenceAttachId) throws APIException;
