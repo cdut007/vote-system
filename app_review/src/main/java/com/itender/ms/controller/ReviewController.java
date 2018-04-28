@@ -9,6 +9,7 @@ import com.itender.ms.domain.*;
 import com.itender.ms.enums.ReviewRole;
 import com.itender.ms.enums.ReviewSignType;
 import com.itender.ms.enums.ReviewType;
+import com.itender.ms.enums.SignResult;
 import com.itender.ms.exception.APIException;
 import com.itender.ms.service.ItenderReviewService;
 import com.itender.ms.service.ItenderUserService;
@@ -133,8 +134,10 @@ public class ReviewController {
     @RequestMapping(value = "/review_sign",method = RequestMethod.GET)
     public String reviewSignPage(HttpServletRequest request, HttpServletResponse response){
         String confirmId = request.getParameter("confirmId");
+        String title = request.getParameter("title");
 
         try {
+            request.setAttribute("title",title);
             request.setAttribute("confirm",itenderReviewService.findConfirmByConfirmId(confirmId));
         }catch (Exception e){
             e.printStackTrace();
@@ -169,6 +172,62 @@ public class ReviewController {
         request.setAttribute("itenderReview",review);
 
         return ViewUtil.forward("/review/review_detail");
+    }
+
+
+
+    @ApiOperation(value = "获取签章列表信息",notes = "获取签章列表信息")
+    @RequestMapping(value = "/getSignListByReview",method = RequestMethod.POST)
+    public ResponseEntity<Map<String,Object>> getSignListByReview(HttpServletRequest request,
+                                                          @ApiParam(name = "reviewId",value = "reviewId",required = true) @RequestParam(required = true) String reviewId,
+                                                                  @ApiParam(name = "signResult",value = "signResult",required = true) @RequestParam(required = true) String signResult
+    ) throws APIException{
+
+        Map<String,Object> result = new HashMap<>();
+        if(reviewId == null || reviewId.equals("")){
+            result.put("status", false);
+            result.put("msg", "获取签章列表信息失败！");
+            return ResponseEntity.ok(result);
+        }
+        ItenderReview itenderReview = itenderReviewService.findById(reviewId);
+
+        if(itenderReview == null){
+            result.put("status", false);
+            result.put("msg", "获取签章列表信息失败！");
+            return ResponseEntity.ok(result);
+        }
+
+        List<ItenderSign> filterItenderSigns = new ArrayList<>();
+
+        for (int i = 0; i <itenderReview.getConfirms().size(); i++) {
+            ItenderConfirm itenderConfirm = itenderReview.getConfirms().get(i);
+            List<ItenderSign> itenderSigns = itenderReviewService.findSignsByConfirmId(itenderConfirm.getId());
+            if(itenderSigns == null){
+                continue;
+            }else{
+                for (int j = 0; j < itenderSigns.size(); j++) {
+                    ItenderSign itenderSign = itenderSigns.get(j);
+
+                    if(itenderSign.getResult()!=null && itenderSign.getResult().equals(signResult)){
+                        ItenderUser itenderUser = itenderUserService.findByUserId(itenderSign.getSignId());
+                        if(itenderUser!=null){
+                            itenderSign.setDescription(itenderUser.getPosition()+"----"+itenderConfirm.getName() +": "+itenderSign.getDescription());
+                        }
+
+                        filterItenderSigns.add(itenderSign);
+                    }
+
+
+
+                }
+
+
+            }
+        }
+
+        result.put("status", true);
+        result.put("data", filterItenderSigns);
+        return ResponseEntity.ok(result);
     }
 
     @ApiOperation(value = "获取签章列表信息",notes = "获取签章列表信息")
@@ -534,8 +593,8 @@ public class ReviewController {
     @RequestMapping(value = "/getSignFile", method = RequestMethod.GET)
     public void getSignFile(HttpServletRequest request,HttpServletResponse res) throws Exception{
 
-        InputStream inputStream =  new ClassPathResource("static/aip/用印登记表.docx").getInputStream();
-       // File file = ResourceUtils.getFile("classpath:static/aip/用印登记表.docx");
+
+
         Map<String, String> datas = new HashMap<String, String>();
 
         String confirmId = request.getParameter("confirmId");
@@ -545,8 +604,23 @@ public class ReviewController {
         if(itenderConfirm == null){
             throw new Exception("confirm file not find");
         }
-        File aipFile = new File(getFileDirByName("review_files")+File.separator+itenderConfirm.getName()+".aip");
+        File aipFile = null;
         String fileName = null;
+        if(ReviewSignType.notice.name().equals(itenderConfirm.getType())){
+            ItenderAttach attach = null;
+
+            attach = itenderReviewService.findAttachByReferenceAttachId(itenderConfirm.getAttachId());
+            if(attach == null){
+                throw new Exception("confirm file not find");
+            }
+            aipFile = new File(getFileDirByName("attach_files")+File.separator+attach.getName()+"."+attach.getType());
+
+        }else{
+            //check sign is finished. current is 审批人 已经 ok return attached
+            aipFile = new File(getFileDirByName("review_files")+File.separator+itenderConfirm.getName()+".aip");
+
+        }
+
         File outFile = null;
         if(aipFile.exists()){
              fileName = aipFile.getName();
@@ -586,6 +660,7 @@ public class ReviewController {
             datas.put("${projectName}", itenderConfirm.getName());
             datas.put("${count}",itenderConfirm.getCount());
             String exportFile = getFileDirByName("review_files")+File.separator+itenderConfirm.getName()+".docx";
+            InputStream inputStream =  new ClassPathResource("static/aip/用印登记表.docx").getInputStream();
             boolean result = readwriteWord(inputStream,datas,exportFile);
             if(result){
                 XWPFDocument document = new XWPFDocument(new FileInputStream(new File(exportFile)));
@@ -865,7 +940,7 @@ public class ReviewController {
 
     @ApiOperation(value = "更新签章份数接口",notes = "用于更新审批信息")
     @RequestMapping(value = "/updateConfirmCount",method = RequestMethod.POST)
-    public ResponseEntity<Map<String,Object>> updateSignResult(HttpServletRequest request,
+    public ResponseEntity<Map<String,Object>> updateConfirmCount(HttpServletRequest request,
                                                                @ApiParam(name = "confirmId",value = "confirmId",required = true) @RequestParam(required = true) String confirmId,
                                                                @ApiParam(name = "count",value = "count",required = true) @RequestParam(required = true) String count
     ) throws APIException{

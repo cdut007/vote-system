@@ -42,6 +42,8 @@ public class ItenderAttach {
     private String referenceId;//关联id
 
 
+
+
     public void setReferenceId(String referenceId) {
         this.referenceId = referenceId;
     }

@@ -113,7 +113,7 @@
 
         }
     }
-    window.setInterval("reinitIframe()", 200);
+
 
 
 
@@ -215,7 +215,7 @@
                             ,id: 'list-review'
                         });
                         layui.element.tabChange('tabBody', 'list-review');
-
+                        reinitIframe();
                     }else{
                         var title  = getOperatorTitle(nextOperator);
                         var data = {
@@ -318,7 +318,7 @@
 
 
                // view.goto('/review/review_sign?confirmId='+confirmId);
-                var src = '/review/review_sign?confirmId='+confirmId;
+                var src = '/review/review_sign?confirmId='+confirmId+"&title="+$('#title').text();
                         layui.element.tabDelete('tabBody', 'list-review');
                         layui.element.tabAdd('tabBody', {//添加新Tap
                             title:'审批管理',
@@ -327,7 +327,7 @@
                         });
                         layui.element.tabChange('tabBody', 'list-review');
 
-
+                reinitIframe();
 
             } else  if(obj.event === 'setCount') {
 

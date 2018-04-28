@@ -47,6 +47,22 @@
         return format;
     };
 
+    //调整iframe高度
+    function reinitIframe() {
+        var iframes = document.getElementsByName("iframe");
+        try {
+            for(var i = 0; i < iframes.length; i++)
+                    //iframes[i].height = iframes[i].contentWindow.document.documentElement.scrollHeight;
+            {
+                iframes[i].height = window.screen.height - 280;
+            }
+        } catch(ex) {
+
+        }
+        console.log('refresh iframe');
+    }
+
+
 
     layui.use(['itenderReview','table','util','element'], function () {
         var table = layui.table;
@@ -103,13 +119,16 @@
 
 
             if (layEvent === 'view') { //查看
-            //     var attachmentUrl = 'http://raw.githubusercontent.com/pauldmps/Android-pdf.js/master/assets/compressed.tracemonkey-pldi-09.pdf';
-            //     var curWwwPath=window.document.location.href;
-            //     var pathName=window.document.location.pathname;
-            //     var pos=curWwwPath.indexOf(pathName);
-            //     var localhostPath=curWwwPath.substring(0,pos);
-            //     window.open(localhostPath+"/pdf/web/viewer.html?file="+attachmentUrl);
-                view.goto('/review/review_scan?attachId='+data.id);
+                //      view.goto('/review/review_scan?attachId='+data.id);
+                var src = '/review/review_scan?attachId='+data.id;
+                layui.element.tabDelete('tabBody', 'list-review');
+                layui.element.tabAdd('tabBody', {//添加新Tap
+                    title:'审批管理',
+                    content: '<iframe name="iframe" src="' + src + '" frameborder="0" style="width: 100%;"></iframe>'
+                    ,id: 'list-review'
+                });
+                layui.element.tabChange('tabBody', 'list-review');
+                reinitIframe();
             }else if (layEvent === 'download') { //下载
 
                 view.goto('/review/download?attachId='+data.id);

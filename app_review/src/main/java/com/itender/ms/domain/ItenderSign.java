@@ -45,15 +45,15 @@ public class ItenderSign {
     private Date createTime;//审批任务创建时间
 
 
-    @Column(name="delete")
-    private boolean delete;
+    @Column(name="is_delete")
+    private boolean isDelete;
 
-    public void setDelete(boolean delete) {
-        this.delete = delete;
+    public void setDelete(boolean isDelete) {
+        this.isDelete = isDelete;
     }
 
     public boolean isDelete() {
-        return delete;
+        return isDelete;
     }
 
     public Date getCreateTime() {

@@ -6,9 +6,19 @@
     <#include "../resource.ftl">
 </head>
 <body class="layui-layout-body">
+
+<span class="layui-breadcrumb">
+          <a id="my_review_nav" href="javascript:;">我的任务</a>
+          <span lay-separator="">/</span>
+          <a id="my_review_detail_nav" href="javascript:;" style="visibility: hidden">待办任务</a>
+          <span lay-separator="">/</span>
+          <a><cite id="title" style="visibility: hidden">审核</cite></a>
+        </span>
+
 <div class="layui-layout layui-layout-admin">
-  <div class="layui-container">
-                    <fieldset class="layui-elem-field layui-field-title">
+  <div class="">
+
+                   <fieldset class="layui-elem-field layui-field-title">
                         <legend>审批</legend>
                     </fieldset>
 
@@ -89,17 +99,35 @@
         var expertApplyId = "";
 
         var type = "${confirm.type!}";
+        var reviewType = "${(title)!}";
+
         if(type!='notice'){
             $("#sign").css("visibility","visible");
+            $("#title").text('用印签章');
+        }else{
+            $("#title").text('审核');
         }
 
+        $("#my_review_detail_nav").css("visibility","visible");
+        $("#title").css("visibility","visible");
+        $("#my_review_detail_nav").html(reviewType);
+
+        $("#my_review_detail_nav").click(function(){
+            var reviewId = "${confirm.reviewId!}";
+            window.parent.reload(reviewId);
+        });
+
+        $("#my_review_nav").click(function(){
+            var reviewId = "${confirm.reviewId!}";
+            window.parent.myTask();
+        });
 
         function updateSignStatus(signResult) {
             var signResult= signResult;
             var signId = "${(user.id)!}";
             var confirmId = "${confirm.id!}";
             var reviewId = "${confirm.reviewId!}";
-            var description = $('#remark').text();
+            var description = $('#remark').val();
             $.ajax({
                 url: "/review/updateSignResult",
                 type: "POST",
@@ -252,6 +280,14 @@
 </script>
 
 <style>
+    .layui-breadcrumb {
+        visibility: visible;
+        font-size: 14px;
+    }
 
+    .layui-breadcrumb span[lay-separator] {
+        margin: 0 10px;
+        color: #999;
+    }
 </style>
 </html>

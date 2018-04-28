@@ -1,27 +1,45 @@
 <div  class="form-container ">
-    <fieldset class="layui-elem-field layui-field-title">
-        <legend>任务流程</legend>
-    </fieldset>
-    <div class="time_line_box">
-        <div class="time_line" style="width:100%;">
-            <ol>
-                <li>
-                    <a data-index="0" class="order_item" style="left:10%;">经办人</a>
-                </li>
-                <li>
-                    <a data-index="1" class="order_item" style="left:37%;">科室负责人</a>
-                </li>
-                <li>
-                    <a data-index="2" class="order_item " style="left:64%;">分管负责人</a>
-                </li>
-                <li>
-                    <a data-index="3" class="order_item" style="left:90%;">审批人</a>
-                </li>
 
-            </ol> <!--0.125,0.40 0.67 0.92-->
-            <span class="filling_line" id="cursor" style="transform: scaleX(0.40);"></span>
+    <div class="layui-row">
+        <div class="layui-col-xs5 status-container" style="width: 49%;margin-right: 1%">
+            <label class="form">任务流程</label>
+            <fieldset class="layui-elem-field layui-field-title">
+
+            </fieldset>
+
+            <div class="time_line_box">
+                <div class="time_line" style="width:100%;">
+                    <ol>
+                        <li>
+                            <a data-index="0" class="order_item" style="left:6%;">经办人</a>
+                        </li>
+                        <li>
+                            <a data-index="1" class="order_item" style="left:33%;">科室负责人</a>
+                        </li>
+                        <li>
+                            <a data-index="2" class="order_item " style="left:60%;">分管负责人</a>
+                        </li>
+                        <li>
+                            <a data-index="3" class="order_item" style="left:86%;">审批人</a>
+                        </li>
+
+                    </ol> <!--0.125,0.40 0.67 0.92-->
+                    <span class="filling_line" id="cursor" style="transform: scaleX(0.40);"></span>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-xs5 status-container" style="width: 49%;margin-left: 1%">
+            <label class="form">任务状态</label>
+            <fieldset class="layui-elem-field layui-field-title">
+
+            </fieldset>
+            <label class="layui-form-label" id="fail_label" style="width: 100%;text-align: left;color: red;display:none;">未通过审核</label>
+            <label class="layui-form-label" id="remarkInfo" style="width: 100%;text-align: left">审核中</label>
         </div>
     </div>
+
+
+
 
 
 </div>
@@ -29,6 +47,19 @@
 
 
 <style>
+
+    .status-container{
+
+        background-clip: padding-box;
+        box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, .3);
+        border-width: 1px;
+        padding: 10px;
+        border-radius: 2px;
+        border-color: #e6e6e6;
+        background-color:#FFFFFF;
+
+
+    }
 
     .time_line_box{
         position: relative;
@@ -111,10 +142,44 @@
 
     layui.use(['itenderReview','table','util','element'], function () {
         var items = $(".order_item");
-        var cursorFlags=[0.122,0.40 ,0.67 ,1.0];
+        var cursorFlags=[0.10,0.40 ,0.67 ,1.0];
         var cursor = document.getElementById("cursor");
         var operator ="${(user.operator)!}";
         var currentCursorIndex = getOperatorIndex(operator);
+
+
+        var id = "${itenderReview.id!}";
+        $.ajax({
+            url: "/review/getSignListByReview",
+            type: "POST",
+            dataType: "json",
+            data: {reviewId:id,signResult:'forbidden'},
+            success: function (res) {
+                if(res!=null){
+                    if(res.status){
+                        var text='';
+                        for(var i = 0 ; i<res.data.length;i++){
+                            var item = res.data[i];
+                            text+=item.description+"<br>";
+                        }
+                        if(res.data.length>0){
+                            $("#fail_label").css('display','block');
+                            $('#remarkInfo').html(text);
+                        }
+
+
+                    }else{
+                        console.log("提交失败!");
+                    }
+                }else{
+                    console.log("提交失败!");
+                }
+            },
+            error: function (xmlHttpReq, error, ex) {
+                console.log("提交失败!");
+            }
+        })
+
 
 
         function getOperatorIndex(operator) {

@@ -4,7 +4,7 @@
    <#-- <span class="logo">综改区监督平台</span>-->
     <ul class="layui-nav no-border-radius layui-header" style="padding-left: 8%">
 <#if user??>
-    <li class="layui-nav-item">您好！${user.userName},欢迎使用综改区公共资源交易监督系统</li>
+    <li class="layui-nav-item">您好！${user.nickName},欢迎使用综改区公共资源交易监督系统</li>
 <#else>
     <li class="layui-nav-item">您好！欢迎使用综改区公共资源交易监督系统</li>
 </#if>

@@ -12,7 +12,7 @@
         <li class="layui-nav-item">
             <a href="javascript:;">
                 <#--<img src="" class="layui-nav-img">-->
-                ${user.userName!'#unknow'}
+                ${user.nickName!'#unknow'}
             </a>
             <ul class="layui-nav-child">
                 <li><a id="userDetils" href="javascript:;">基本资料</a></li>

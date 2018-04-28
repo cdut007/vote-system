@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>待办任务列表</title>
+    <title>我的任务列表</title>
 <#include "../resource.ftl">
 </head>
 <body class="layui-layout-body">
@@ -14,7 +14,7 @@
             <ul class="layui-nav layui-nav-tree"  lay-filter="test">
 
           <#--<@resource_check url="/review">-->
-        <li class="layui-nav-item layui-side-item"><a id="review" href="javascript:;"><img src="/css/img/icon_my_task_default.png" class="layui-nav-side-img">待办任务</a></li>
+        <li class="layui-nav-item layui-side-item"><a id="review" href="javascript:;"><img src="/css/img/icon_my_task_default.png" class="layui-nav-side-img">我的任务</a></li>
           <#--</@resource_check>-->
 
                     <#if user??>
@@ -47,6 +47,10 @@
 <script>
 
     var element;
+
+    function myTask(){
+        $("#review").click();
+    }
 
     function reload(reviewId){
         $.ajax({
@@ -209,5 +213,8 @@
 
     .layui-body{overflow-y: scroll;}
      body{overflow-y: scroll;}
+
+
+
 </style>
 </html>
