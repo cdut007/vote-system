@@ -7,6 +7,7 @@ import com.itender.ms.convert.LayuiTableData;
 import com.itender.ms.convert.PageDataConvert;
 import com.itender.ms.domain.*;
 import com.itender.ms.enums.ReviewRole;
+import com.itender.ms.enums.ReviewSignType;
 import com.itender.ms.enums.ReviewType;
 import com.itender.ms.exception.APIException;
 import com.itender.ms.service.ItenderReviewService;
@@ -568,14 +569,30 @@ public class ReviewController {
             if(itenderReview!=null)
                 {
                     if(ReviewType.bid_winning.name().equals(itenderReview.getType())){
-                        datas.put("${projectTitle}", "山西转型综合改革示范区管理委员建设管理部中标通知书用印登记表");
+
+                        if(ReviewSignType.bid_winning.name().equals(itenderConfirm.getType()))
+                        {
+                            datas.put("${projectTitle}", "山西转型综合改革示范区管理委员建设管理部中标通知书用印登记表");
+                        }else{
+                            datas.put("${projectTitle}", "山西转型综合改革示范区管理委员建设管理部中标通知书（中标通知书附件）用印登记表");
+                        }
                     }else{
-                        datas.put("${projectTitle}", "山西转型综合改革示范区管理委员建设管理部工程项目招标投标备案用印登记表");
+                        if(ReviewSignType.tender_table.name().equals(itenderConfirm.getType()))
+                        {
+                            datas.put("${projectTitle}", "山西转型综合改革示范区管理委员建设管理部工程项目招标投标备案用印登记表");
+                        }else{
+                            datas.put("${projectTitle}", "山西转型综合改革示范区管理委员建设管理部招标文件用印登记表");
+                        }
                     }
 
-                }else{
 
-                datas.put("${projectTitle}", "山西转型综合改革示范区管理委员建设管理部工程项目招标投标备案用印登记表");
+                }else{
+                        if(ReviewSignType.tender_table.name().equals(itenderConfirm.getType()))
+                        {
+                            datas.put("${projectTitle}", "山西转型综合改革示范区管理委员建设管理部工程项目招标投标备案用印登记表");
+                        }else{
+                            datas.put("${projectTitle}", "山西转型综合改革示范区管理委员建设管理部招标文件用印登记表");
+                        }
                 }
 
             datas.put("${projectName}", itenderConfirm.getName());

@@ -19,7 +19,7 @@ public class ItenderConfirm {
     private String id;
 
     @Column(name="type")
-    private String type;
+    private String type;//sign,
 
     @Column(name="count")
     private String count;
