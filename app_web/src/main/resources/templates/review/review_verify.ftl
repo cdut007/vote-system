@@ -36,13 +36,18 @@
         {{# if(d.status == 'forbidden'){ }}
         <span style="color: #F37715;">{{ '不通过' }}</span>
         {{#  } else { }}
-        <a class="layui-btn layui-btn-xs  btn-edit" lay-event="sign">审核</a>
+
+                {{# if(d.type == 'notice'){ }}
+                 <a class="layui-btn layui-btn-xs  btn-edit" lay-event="sign">审核</a>
+                {{#  } else { }}
+                <a class="layui-btn layui-btn-xs  btn-edit" lay-event="sign">用印登记</a>
+                {{#  } }}
+
         {{#  } }}
 
         {{#  } }}
 
     </script>
-
 
 
     <script type="text/html" id="countTool">
@@ -51,17 +56,21 @@
             <#if user.operator??>
             <#if user.operator=='operator'>
 
-                      <div class="layui-row">
+             {{# if(d.type == 'notice'){ }}
+                  {{'/'}}
+                {{#  } else { }}
+                   {{d.count}}
+                {{#  } }}
 
-                          <div class="layui-input-block">
-                              <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入份数" class="layui-input">
-                          </div>
-                          <a class="layui-btn layui-btn-xs  btn-edit" lay-event="commit_count">确认</a>
-                    </div>
             </#if>
             </#if>
         <#else>
-            {{d.count}}
+         {{# if(d.type == 'notice'){ }}
+                  {{'/'}}
+                {{#  } else { }}
+                 {{d.count}}
+                {{#  } }}
+
         </#if>
 
     </script>
@@ -91,8 +100,6 @@
         return format;
     };
 
-
-
     //调整iframe高度
     function reinitIframe() {
         var iframes = document.getElementsByName("iframe");
@@ -107,6 +114,7 @@
         }
     }
     window.setInterval("reinitIframe()", 200);
+
 
 
     layui.use(['itenderReview','table','util', 'element'], function () {
@@ -261,11 +269,15 @@
             cols: [[
                 {title: '序号',fixed: 'left',width:80,templet: '#indexTpl'},
                 {title: "文档标题", field: 'name'},
-                {title: "审核",fixed: 'right', width:140,align: 'center', toolbar: '#signTableTool'}
+                {title: "份数", field:'count', align: 'center',event: 'setCount', style:'cursor: pointer;',templet: '#countTool'},
+                {title: "审核",fixed: 'right',width:140, align: 'center', toolbar: '#signTableTool'}
             ]],
             data:confirms
 
         });
+
+
+
 
         table.on('tool(verifyAllTable)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
@@ -277,19 +289,87 @@
 
             if (layEvent === 'sign') { //
 
+                if(data.type != 'notice'){
+                    if (!data.count||isNaN(data.count)){
+                        layer.msg("请设置份数");
+                        return;
+                    }
+                }
 
-               // view.goto('/review/review_notice_sign?confirmId='+confirmId);
 
-                var src = '/review/review_notice_sign?confirmId='+confirmId;
-                layui.element.tabDelete('tabBody', 'list-review');
-                layui.element.tabAdd('tabBody', {//添加新Tap
-                    title:'审批管理',
-                    content: '<iframe name="iframe" src="' + src + '" frameborder="0" style="width: 100%;"></iframe>'
-                    ,id: 'list-review'
+
+               // view.goto('/review/review_sign?confirmId='+confirmId);
+                var src = '/review/review_sign?confirmId='+confirmId;
+                        layui.element.tabDelete('tabBody', 'list-review');
+                        layui.element.tabAdd('tabBody', {//添加新Tap
+                            title:'审批管理',
+                            content: '<iframe name="iframe" src="' + src + '" frameborder="0" style="width: 100%;"></iframe>'
+                            ,id: 'list-review'
+                        });
+                        layui.element.tabChange('tabBody', 'list-review');
+
+
+
+            } else  if(obj.event === 'setCount') {
+
+                if(operator != 'operator'){
+                    return;
+                }
+
+                if(data.status == 'approved'){
+                    return;
+                }
+                if(data.type == 'notice'){
+                    return;
+                }
+
+
+
+                layer.prompt({
+                    formType: 2
+                    , title: '修改份数'
+                    , value: data.count
+                }, function (value, index) {
+                    var reg = new RegExp("^[0-9]*$");
+                    if (!reg.test(value)) {
+                        layer.msg("请输入合法整数!");
+                        return
+                    }
+
+
+                    $.ajax({
+                        url: "/review/updateConfirmCount",
+                        type: "POST",
+                        dataType: "json",
+                        data: {confirmId: confirmId, count: value},
+                        success: function (res) {
+                            layer.close(index);
+                            if(res!=null){
+                                if(res.status){
+                                    //这里一般是发送修改的Ajax请求
+
+                                    //同步更新表格和缓存对应的值
+                                    obj.update({
+                                                count: value
+                                            }
+                                    );
+                                    getConfirmData();
+
+                                }else{
+                                    layer.msg("提交失败!");
+                                }
+                            }else{
+                                layer.msg("提交失败!");
+                            }
+
+                        },
+                        error: function (xmlHttpReq, error, ex) {
+                            layer.msg("提交失败!");
+                            layer.close(index);
+                        }
+                    })
+
                 });
-                layui.element.tabChange('tabBody', 'list-review');
-
-
             }
 
 

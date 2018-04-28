@@ -2,21 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>电子签章</title>
+    <title>审批</title>
     <#include "../resource.ftl">
 </head>
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
   <div class="layui-container">
                     <fieldset class="layui-elem-field layui-field-title">
-                        <legend>电子签章</legend>
+                        <legend>审批</legend>
                     </fieldset>
 
                     <div class="layui-main" style="margin-bottom: 20px;">
                         <div class="layui-btn-group">
-                            <input type="button" class="layui-btn layui-btn-danger" value="电子印章" id="sign"/>
-                            <#--<input type="button" class="layui-btn layui-btn-danger" value="通过" id="pass"/>-->
-                            <#--<input type="button" class="layui-btn layui-btn-danger" value="不通过" id="fail"/>-->
+                            <input type="button" class="layui-btn layui-btn-danger" value="电子印章" id="sign" style="visibility: hidden"/>
                         </div>
 
                         <div class="layui-layout-right">
@@ -90,6 +88,11 @@
         var sealNum = 0;
         var expertApplyId = "";
 
+        var type = "${confirm.type!}";
+        if(type!='notice'){
+            $("#sign").css("visibility","visible");
+        }
+
 
         function updateSignStatus(signResult) {
             var signResult= signResult;
@@ -151,25 +154,38 @@
 
         $("#pass").click(function () {
 
-            if (GetCurrUserID()==""||sealNum==0) {
+            layer.open({
+                type: 1
+                ,title: '审核'
+                ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+                ,id: 'dashauto' //防止重复弹出
+                ,content: '<div style="padding: 20px 100px;">确认通过？</div>'
+                ,btn: '确认'
+                ,btnAlign: 'c' //按钮居中
+                ,shade: 0 //不显示遮罩
+                ,yes: function(){
+                    if(type=='notice'){
+                        updateSignStatus("approved");
+                    }else{
+                        if (GetCurrUserID()==""||sealNum==0) {
 
-                ShowMessage("请先盖章！");
-                return ;
-            }
-            var name = "${(confirm.name)}";
-            var paramsArray = {"fileName":encodeURIComponent(name)};
-            var returnValue = SaveDocArray(paramsArray,"/upload");
-            var info = JSON.parse(returnValue);
+                            ShowMessage("请先盖章！");
+                            return ;
+                        }
+                        var name = "${(confirm.name)}";
+                        var paramsArray = {"fileName":encodeURIComponent(name)};
+                        var returnValue = SaveDocArray(paramsArray,"/upload");
+                        var info = JSON.parse(returnValue);
 
-            if (200 == info.code) {
-                ShowMessage("文件上传成功！");
-                updateSignStatus("approved");
-            } else {
-                ShowMessage("操作失败！");
-            }
-
-
-
+                        if (200 == info.code) {
+                            ShowMessage("文件上传成功！");
+                            updateSignStatus("approved");
+                        } else {
+                            ShowMessage("操作失败！");
+                        }
+                    }
+                }
+            });
 
 
         });
@@ -177,7 +193,21 @@
 
 
         $("#fail").click(function () {
-            updateSignStatus("forbidden");
+
+            layer.open({
+                type: 1
+                ,title: '审核'
+                ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+                ,id: 'dashauto' //防止重复弹出
+                ,content: '<div style="padding: 20px 100px;">确认不通过？</div>'
+                ,btn: '确认'
+                ,btnAlign: 'c' //按钮居中
+                ,shade: 0 //不显示遮罩
+                ,yes: function(){
+                    updateSignStatus("forbidden");
+                }
+            });
+
 
 
         });

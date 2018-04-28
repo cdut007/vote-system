@@ -12,13 +12,7 @@
 
     <#include "review_status.ftl">
       <#if itenderReview??>
-          <#if itenderReview.type=='tender'  || itenderReview.type=='bid_winning'>
-
-              <#include "review_tender_verify.ftl">
-
-          <#else>
-              <#include "review_notice_verify.ftl">
-          </#if>
+              <#include "review_verify.ftl">
 
       </#if>
 
