@@ -107,7 +107,7 @@
             for(var i = 0; i < iframes.length; i++)
                     //iframes[i].height = iframes[i].contentWindow.document.documentElement.scrollHeight;
             {
-                iframes[i].height = window.screen.height - 280;
+                iframes[i].height = window.screen.height;
             }
         } catch(ex) {
 
