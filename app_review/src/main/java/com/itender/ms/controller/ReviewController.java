@@ -127,18 +127,6 @@ public class ReviewController {
         return ViewUtil.forward("/review/review_scan_file");
     }
 
-    @ApiIgnore
-    @RequestMapping(value = "/review_notice_sign",method = RequestMethod.GET)
-    public String reviewNoticeSignPage(HttpServletRequest request, HttpServletResponse response){
-        String confirmId = request.getParameter("confirmId");
-
-        try {
-            request.setAttribute("confirm",itenderReviewService.findConfirmByConfirmId(confirmId));
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return ViewUtil.forward("/review/review_notice_sign");
-    }
 
 
     @ApiIgnore

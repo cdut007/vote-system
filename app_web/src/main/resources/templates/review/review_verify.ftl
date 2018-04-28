@@ -187,6 +187,10 @@
             })
         }
 
+        if(operator == 'approver'){
+            $("#verify").text('盖章');
+        }
+
         $("#verify").click(function () {
             getConfirmData( function(confirms){
                 if(confirms){
@@ -201,17 +205,32 @@
                             }
                         }
                     }
-                    var title  = getOperatorTitle(nextOperator);
-                    var data = {
-                        title: title,//标题
-                        area: 'auto',//宽高
-                        closeBtn: 1,//关闭按钮
-                        shadeClose: true,//是否点击遮罩关闭
-                        queryUrl: '/review/choose_operator_page?operator='+nextOperator+"&id="+id
+
+                    if(operator == 'approver'){
+                        var src = '/review/review_sign?reviewId='+id;
+                        layui.element.tabDelete('tabBody', 'list-review');
+                        layui.element.tabAdd('tabBody', {//添加新Tap
+                            title:'审批管理',
+                            content: '<iframe name="iframe" src="' + src + '" frameborder="0" style="width: 100%;"></iframe>'
+                            ,id: 'list-review'
+                        });
+                        layui.element.tabChange('tabBody', 'list-review');
+
+                    }else{
+                        var title  = getOperatorTitle(nextOperator);
+                        var data = {
+                            title: title,//标题
+                            area: 'auto',//宽高
+                            closeBtn: 1,//关闭按钮
+                            shadeClose: true,//是否点击遮罩关闭
+                            queryUrl: '/review/choose_operator_page?operator='+nextOperator+"&id="+id
+                        }
+                        itenderReview.openModal(data,function (layerDom,index) {
+                            getConfirmData();
+                        });
                     }
-                    itenderReview.openModal(data,function (layerDom,index) {
-                        getConfirmData();
-                    });
+
+
                 }
             });
 

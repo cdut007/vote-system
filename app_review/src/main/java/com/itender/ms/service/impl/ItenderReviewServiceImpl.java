@@ -273,8 +273,8 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 						for (int j = 0; j < confirms.size(); j++) {
 							Example example2 = new Example(ItenderSign.class);
 							example2.createCriteria().andEqualTo("signId",userId).andEqualTo("confirmId",confirms.get(j).getId());
+							List<ItenderSign> signList = itenderSignMapper.selectByExample(example2);
                             if(ReviewRole.operator.name().equals(rollbackRole)){
-                                List<ItenderSign> signList = itenderSignMapper.selectByExample(example2);
                                 if(signList!=null && !signList.isEmpty()){
                                     isOperatorSign = true;
                                 }else{
@@ -283,7 +283,14 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
                                     itenderConfirmMapper.updateByPrimaryKeySelective(confirms.get(j));
                                 }
                             }
-							itenderSignMapper.deleteByExample(example2);
+
+                            if(signList!=null && !signList.isEmpty()){
+								for (int k = 0; k < signList.size(); k++) {
+									ItenderSign itenderSign = signList.get(k);
+									itenderSign.setDelete(true);
+									itenderSignMapper.updateByPrimaryKeySelective(itenderSign);
+								}
+							}
 						}
 					}
 
@@ -370,6 +377,17 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 			itenderReview.setId(id);
 			itenderReview.setAssigneeId(assigneeId);
 			itenderReviewMapper.updateByPrimaryKeySelective(itenderReview);
+			//delete sign mark = 1
+			ItenderReview rollbackItenderReview = findById(id);
+			List<ItenderConfirm> confirms = rollbackItenderReview.getConfirms();
+			if(confirms!=null && !confirms.isEmpty()){
+				for (int j = 0; j < confirms.size(); j++) {
+					Example example2 = new Example(ItenderSign.class);
+					example2.createCriteria().andEqualTo("delete",true).andEqualTo("confirmId",confirms.get(j).getId());
+					itenderSignMapper.deleteByExample(example2);
+				}
+			}
+
 
 		}else if(ReviewStatus.forbidden.name().equals(status)){
 			ItenderTask itenderTask = new ItenderTask();
@@ -377,6 +395,8 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 		}
 
 		ItenderReview reviewExsit = findById(id);
+
+
 
 		return reviewExsit;
 	}
@@ -390,6 +410,7 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 		if(itenderSigns!=null && !itenderSigns.isEmpty()){
 			 itenderSign = itenderSigns.get(0);
 			itenderSign.setResult(signResult);
+			itenderSign.setDelete(false);
 			itenderSign.setDescription(description);
 			itenderSignMapper.updateByPrimaryKeySelective(itenderSign);
 		}else{

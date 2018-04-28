@@ -5,6 +5,7 @@
     	<id column="id" javaType="String" property="id"></id>
         <result column="result" javaType="STRING" property="result"></result>
         <result column="name" javaType="STRING" property="name"></result>
+		<result column="delete" javaType="Boolean" property="delete"></result>
 		<result column="description" javaType="STRING" property="description"></result>
 		<result column="sign_id" javaType="STRING" property="signId"></result>
 		<result column="confirm_id" javaType="STRING" property="confirmId"></result>
