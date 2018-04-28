@@ -318,7 +318,10 @@
 
 
                // view.goto('/review/review_sign?confirmId='+confirmId);
-                var src = '/review/review_sign?confirmId='+confirmId+"&title="+$('#title').text();
+                var title = $('#title').text();
+
+
+                var src = '/review/review_sign?confirmId='+confirmId+"&title="+  encodeURIComponent(title);
                         layui.element.tabDelete('tabBody', 'list-review');
                         layui.element.tabAdd('tabBody', {//添加新Tap
                             title:'审批管理',

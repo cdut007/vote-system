@@ -137,7 +137,7 @@ public class ReviewController {
         String title = request.getParameter("title");
 
         try {
-            request.setAttribute("title",title);
+            request.setAttribute("title",URLDecoder.decode(title));
             request.setAttribute("confirm",itenderReviewService.findConfirmByConfirmId(confirmId));
         }catch (Exception e){
             e.printStackTrace();
