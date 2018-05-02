@@ -10,6 +10,16 @@ public class HttpConfig {
 
     private String domain;
 
+    private String socket;
+
+    public void setSocket(String socket) {
+        this.socket = socket;
+    }
+
+    public String getSocket() {
+        return socket;
+    }
+
     public void setDomain(String domain) {
         this.domain = domain;
     }
@@ -17,4 +27,6 @@ public class HttpConfig {
     public String getDomain() {
         return domain;
     }
+
+
 }

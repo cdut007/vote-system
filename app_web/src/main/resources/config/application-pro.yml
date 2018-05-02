@@ -15,4 +15,9 @@ db:
   username: root
   password: Ycp7WyjzNA
 
+    #http对接地址
+httpRequest:
+   domain:  http://47.94.142.243:9090
+   socket:  47.94.142.243
+
 

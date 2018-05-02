@@ -15,3 +15,8 @@ db:
   username: root  #pro root , stage  dev
   password: Ycp7WyjzNA
 
+
+httpRequest:
+    domain:  http://47.94.142.243:9090
+    socket:  127.0.0.1
+

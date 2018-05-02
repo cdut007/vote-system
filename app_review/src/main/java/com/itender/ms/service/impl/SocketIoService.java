@@ -4,10 +4,12 @@ import com.corundumstudio.socketio.*;
 import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
 import com.corundumstudio.socketio.listener.DisconnectListener;
+import com.itender.ms.config.HttpConfig;
 import com.itender.ms.controller.ReviewController;
 import com.itender.ms.domain.ChatObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -19,6 +21,9 @@ public class SocketIoService {
 	 SocketIONamespace chat1namespace;
 	static SocketIOServer server;
 	static Map<String,SocketIOClient> clientsMap  = new HashMap<String, SocketIOClient>();
+
+	@Autowired
+	private HttpConfig httpConfig;
 
 	/**
 	 * 停止服务
@@ -72,7 +77,7 @@ public class SocketIoService {
 
 	private void startServer() throws InterruptedException{
 		Configuration config = new Configuration();
-		config.setHostname("localhost");
+		config.setHostname(httpConfig.getSocket());
 		config.setPort(9091);
 		config.setMaxFramePayloadLength(1024 * 1024);
 		config.setMaxHttpContentLength(1024 * 1024);
