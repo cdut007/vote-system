@@ -9,6 +9,20 @@
 <script type="text/javascript">
 
 
+
+    function checkReviewNeedSign(reviewType) {
+        if(reviewType == 'tender'){
+            return true;
+        }else if (reviewType == 'notice_again'){
+            return true;
+        }else if (reviewType == 'bid_winning'){
+            return true;
+        }
+        return false
+    }
+
+
+
     function getReviewTypeName(reviewType) {
         if(reviewType == 'tender'){
             return '招标登记表、招标文件审核';

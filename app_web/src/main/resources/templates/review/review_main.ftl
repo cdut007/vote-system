@@ -52,6 +52,29 @@
         $("#review").click();
     }
 
+
+    function reloadSignFile(reviewId){
+        var src = '/review/review_sign_file?reviewId='+reviewId;
+        layui.element.tabDelete('tabBody', 'list-review');
+        layui.element.tabAdd('tabBody', {//添加新Tap
+            title:'审批管理',
+            content: '<iframe name="iframe" src="' + src + '" frameborder="0" style="width: 100%;"></iframe>'
+            ,id: 'list-review'
+        });
+        layui.element.tabChange('tabBody', 'list-review');
+        var iframes = document.getElementsByName("iframe");
+        try {
+            for(var i = 0; i < iframes.length; i++)
+                    //iframes[i].height = iframes[i].contentWindow.document.documentElement.scrollHeight;
+            {
+                iframes[i].height = window.screen.height;
+            }
+        } catch(ex) {
+
+        }
+    }
+
+
     function reload(reviewId){
         $.ajax({
             url: '/review/review_detail?id='+reviewId,

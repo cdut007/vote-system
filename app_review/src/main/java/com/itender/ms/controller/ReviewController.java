@@ -129,6 +129,41 @@ public class ReviewController {
     }
 
 
+    @ApiIgnore
+    @RequestMapping(value = "/review_sign_file",method = RequestMethod.GET)
+    public String reviewSignFilePage(HttpServletRequest request, HttpServletResponse response){
+        String reviewId = request.getParameter("reviewId");
+        String title = request.getParameter("title");
+
+        try {
+            List<ItenderConfirm> itenderConfirms = itenderReviewService.findConfirmsByReviewId(reviewId);
+            ItenderUser  user = (ItenderUser)request.getSession().getAttribute("user");
+            ItenderConfirm itenderConfirm=null;
+            boolean lastOne = false;
+            for (int i = 0; i < itenderConfirms.size(); i++) {
+                 itenderConfirm = itenderConfirms.get(i);
+                List<ItenderSign> signList = itenderReviewService.findSignsByConfirmId(itenderConfirm.getId());
+                for (int j = 0; j <signList.size(); j++) {
+                    ItenderSign itenderSign = signList.get(j);
+                    if(user.getId().equals(itenderSign.getSignId()) && !SignResult.approved.equals(itenderSign.getFileSignResult())){
+                        if(i == itenderConfirms.size() -1){
+                            lastOne = true;
+                        }
+                        break;
+                    }
+                }
+
+            }
+            request.setAttribute("title",URLDecoder.decode(title));
+            request.setAttribute("confirm",itenderConfirm);
+            request.setAttribute("lastOne",lastOne);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return ViewUtil.forward("/review/review_sign_file");
+    }
+
+
 
     @ApiIgnore
     @RequestMapping(value = "/review_sign",method = RequestMethod.GET)
@@ -998,6 +1033,44 @@ public class ReviewController {
             result.put("status", true);
         }
         result.put("data", itenderConfirm);
+        return ResponseEntity.ok(result);
+    }
+
+
+
+
+
+    @ApiOperation(value = "更新签章文件接口",notes = "用于更新审批信息")
+    @RequestMapping(value = "/updateSignFileResult",method = RequestMethod.POST)
+    public ResponseEntity<Map<String,Object>> updateSignFileResult(HttpServletRequest request,
+                                                               @ApiParam(name = "signId",value = "signId",required = true) @RequestParam(required = true) String signId,
+                                                               @ApiParam(name = "description",value = "description",required = false) @RequestParam(required = false) String description,
+                                                               @ApiParam(name = "confirmId",value = "confirmId",required = true) @RequestParam(required = true) String confirmId,
+                                                                   @ApiParam(name = "lastItem",value = "lastItem",required = true) @RequestParam(required = true) boolean lastItem,
+                                                               @ApiParam(name = "signResult",value = "signResult",required = true) @RequestParam(required = true) String signResult
+    ) throws APIException{
+
+        Map<String,Object> result = new HashMap<>();
+        if(signId == null || signId.equals("")){
+            result.put("status", false);
+            result.put("msg", "跟新审批失败！");
+            return ResponseEntity.ok(result);
+        }
+        ItenderSign itenderSign = itenderReviewService.updateSignFileResult(confirmId,signId,signResult,description);
+        if(lastItem){
+           String reviewId = itenderReviewService.findConfirmByConfirmId(confirmId).getReviewId();
+            boolean ok = itenderReviewService.postToResult(reviewId);
+        }
+
+        if(itenderSign == null){
+            result.put("status", false);
+            result.put("msg", "跟新审批失败！");
+        }else{
+            result.put("status", true);
+        }
+        result.put("data", itenderSign);
+
+
         return ResponseEntity.ok(result);
     }
 

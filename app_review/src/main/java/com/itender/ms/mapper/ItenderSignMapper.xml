@@ -9,7 +9,8 @@
 		<result column="description" javaType="STRING" property="description"></result>
 		<result column="sign_id" javaType="STRING" property="signId"></result>
 		<result column="confirm_id" javaType="STRING" property="confirmId"></result>
-        <result column="type" javaType="STRING" property="type"></result>
+		<result column="file_sign_result" javaType="STRING" property="fileSignResult"></result>
+		 <result column="type" javaType="STRING" property="type"></result>
 		<result column="create_time" javaType="DATE" property="createTime"></result>
 
     </resultMap>

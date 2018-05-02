@@ -26,6 +26,9 @@ public class ItenderSign {
     @Column(name="result")
     private String result;//签章状态
 
+    @Column(name="file_sign_result")
+    private String fileSignResult;//签章状态
+
 
     @Column(name="name")
     private String name;//文档标题
@@ -47,6 +50,15 @@ public class ItenderSign {
 
     @Column(name="is_delete")
     private boolean isDelete;
+
+    public void setFileSignResult(String fileSignResult) {
+        this.fileSignResult = fileSignResult;
+    }
+
+    public String getFileSignResult() {
+        return fileSignResult;
+    }
+
 
     public void setDelete(boolean isDelete) {
         this.isDelete = isDelete;

@@ -261,6 +261,27 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 	}
 
 	@Override
+	public boolean postToResult(String reviewId) {
+		ItenderReview itenderReview = findById(reviewId);
+		//api url地址
+		String url = httpConfig.getDomain()+"/industry/listAll";
+		//post请求
+		HttpMethod method =HttpMethod.POST;
+		// 封装参数，千万不要替换为Map与HashMap，否则参数无法传递
+		MultiValueMap<String, String> params= new LinkedMultiValueMap<String, String>();
+		params.add("access_token", "xxxxx");
+		//发送http请求并返回结果
+		String response  = httpClient.client(url,method,params);
+		//delele task
+//		itenderTaskMapper.delete(itenderReview);
+//		itenderSignMapper.delete();
+//		itenderConfirmMapper.delete(itenderReview.confirms);
+//		itenderAttachMapper.delete(itenderReview.attaches);
+		itenderReviewMapper.delete(itenderReview);
+		return false;
+	}
+
+	@Override
 	public int rollbackReviewStatus(String id, String userId) throws APIException {
 
 		ItenderReview rollbackItenderReview = findById(id);
@@ -319,17 +340,8 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
                     itenderReviewMapper.updateByPrimaryKeySelective(rollbackItenderReview);
                     return 0;
                 }else{
-                    //api url地址
-                    String url = httpConfig.getDomain()+"/industry/listAll";
-                    //post请求
-                    HttpMethod method =HttpMethod.POST;
-                    // 封装参数，千万不要替换为Map与HashMap，否则参数无法传递
-                    MultiValueMap<String, String> params= new LinkedMultiValueMap<String, String>();
-                    params.add("access_token", "xxxxx");
-                    //发送http请求并返回结果
-                    String response  = httpClient.client(url,method,params);
-
-					itenderReviewMapper.delete(rollbackItenderReview);
+			    	//不通过原因
+					postToResult(rollbackItenderReview.getId());
                     return  0;
                 }
             }
@@ -414,6 +426,27 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 
 		return reviewExsit;
 	}
+
+
+	@Override
+	public ItenderSign updateSignFileResult(String confirmId,String signId,String signResult,String description) throws APIException {
+		Example example = new Example(ItenderSign.class);
+		example.createCriteria().andEqualTo("confirmId",confirmId).andEqualTo("signId",signId);
+		List<ItenderSign> itenderSigns = itenderSignMapper.selectByExample(example);
+		ItenderSign itenderSign;
+		if(itenderSigns!=null && !itenderSigns.isEmpty()){
+			itenderSign = itenderSigns.get(0);
+			itenderSign.setDelete(false);
+			itenderSign.setFileSignResult(signResult);
+			//itenderSign.setDescription(description);
+			itenderSignMapper.updateByPrimaryKeySelective(itenderSign);
+			return itenderSign;
+		}else{
+			return  null;
+		}
+
+	}
+
 
 	@Override
 	public ItenderSign updateSignResult(String confirmId,String signId,String signResult,String description) throws APIException {

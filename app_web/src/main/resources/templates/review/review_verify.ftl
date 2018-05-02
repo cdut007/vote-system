@@ -187,7 +187,7 @@
             })
         }
 
-        if(operator == 'approver'){
+        if(checkReviewNeedSign(operator)){
             $("#verify").text('盖章');
         }
 
@@ -206,8 +206,8 @@
                         }
                     }
 
-                    if(operator == 'approver'){
-                        var src = '/review/review_sign?reviewId='+id;
+                    if(checkReviewNeedSign(operator)){
+                        var src = '/review/review_sign_file?reviewId='+id;
                         layui.element.tabDelete('tabBody', 'list-review');
                         layui.element.tabAdd('tabBody', {//添加新Tap
                             title:'审批管理',
