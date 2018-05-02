@@ -18,5 +18,5 @@ db:
 
 httpRequest:
     domain:  http://47.94.142.243:9090
-    socket:  192.168.99.133
+    socket:  0.0.0.0
 
