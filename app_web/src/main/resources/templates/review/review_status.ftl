@@ -212,7 +212,7 @@
                                         var operatorName = getOperatorNameByIndex(index);
 
                                 for(var j = 0 ; j<res.data.length;j++){
-                                    var itemTask = res.data[i];
+                                    var itemTask = res.data[j];
                                     if(itemTask.role == operatorName){
                                         var operator = cursorNames[index];
                                         $(item).text(operator+":"+ itemTask.userNickName);

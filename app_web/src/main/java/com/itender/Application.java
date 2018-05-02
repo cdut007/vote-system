@@ -3,9 +3,14 @@ package com.itender;
 import com.alibaba.druid.support.http.StatViewFilter;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
+import com.itender.ms.controller.ReviewController;
+import com.itender.ms.service.impl.SocketIoService;
 import freemarker.template.Configuration;
 import freemarker.template.Version;
 import org.mybatis.spring.annotation.MapperScan;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -41,12 +46,14 @@ import javax.sql.DataSource;
 @ServletComponentScan
 public class Application{
 
+    private static final Logger logger = LoggerFactory.getLogger(ReviewController.class);
 
 
 
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class,args);
+
     }
 
     @Bean
@@ -68,6 +75,8 @@ public class Application{
         servletRegistrationBean.addUrlMappings("/druid/*");
         return servletRegistrationBean;
     }
+
+
 
 
 //    @Bean

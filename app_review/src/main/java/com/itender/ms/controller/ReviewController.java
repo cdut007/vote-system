@@ -13,6 +13,7 @@ import com.itender.ms.enums.SignResult;
 import com.itender.ms.exception.APIException;
 import com.itender.ms.service.ItenderReviewService;
 import com.itender.ms.service.ItenderUserService;
+import com.itender.ms.service.impl.SocketIoService;
 import com.itender.ms.util.CommonUtility;
 import com.itender.ms.util.HttpHelper;
 import com.itender.ms.util.ViewUtil;
@@ -71,6 +72,11 @@ public class ReviewController {
     private HttpHelper httpHelper;
 
 
+    @Autowired
+    private SocketIoService socketIoService;
+
+
+
     @ApiIgnore
     @RequestMapping("")
     public String index(HttpServletRequest request,HttpServletResponse response){
@@ -106,9 +112,15 @@ public class ReviewController {
     }
 
 
+
+
+
+
     @ApiIgnore
     @RequestMapping(value = "/review_scan",method = RequestMethod.GET)
     public String reviewScanPage(HttpServletRequest request, HttpServletResponse response){
+
+
         String attachId = request.getParameter("attachId");
         if(!StringUtils.isEmpty(attachId)){
 
@@ -132,6 +144,9 @@ public class ReviewController {
     @ApiIgnore
     @RequestMapping(value = "/review_sign_file",method = RequestMethod.GET)
     public String reviewSignFilePage(HttpServletRequest request, HttpServletResponse response){
+
+        socketIoService.startSokectIO();
+
         String reviewId = request.getParameter("reviewId");
         String title = request.getParameter("title");
 
@@ -168,6 +183,8 @@ public class ReviewController {
     @ApiIgnore
     @RequestMapping(value = "/review_sign",method = RequestMethod.GET)
     public String reviewSignPage(HttpServletRequest request, HttpServletResponse response){
+        socketIoService.startSokectIO();
+
         String confirmId = request.getParameter("confirmId");
         String title = request.getParameter("title");
 
@@ -984,6 +1001,10 @@ public class ReviewController {
                                                         @RequestBody ItenderReview review) throws APIException{
         Map<String,Object> result = new HashMap<>();
         review.setCreateTime(new Date());
+        if(review.getConfirms()!=null){
+            //bind attach id
+        }
+
         review = itenderReviewService.add(review);
         if(!CommonUtility.isNonEmpty(review.getId())){
             result.put("status", false);

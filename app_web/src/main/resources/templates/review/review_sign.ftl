@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>审批</title>
     <#include "../resource.ftl">
+    <script src="/js/socket.io/socket.io.js?v=${version!}"></script>
 </head>
 <body class="layui-layout-body">
 
@@ -73,6 +74,40 @@
 <script>
     var h = $(window).innerHeight();
     $("#assignBox").height(h - 200);
+    var hostname = location.hostname;
+    console.log('hostname=='+hostname);
+    var signSocket =  io.connect('http://'+hostname+':9091/sign');
+    var timestamp = new Date().getTime();
+    signSocket.on('connect', function() {
+        console.log('client connect sokect io ');
+        var confirmId = "${(confirm.id)!}";
+        var userId = "${(user.id)!}";
+        var jsonObject = {
+            userName: userId,
+            message: confirmId,
+            timestamp:timestamp
+        };
+        signSocket.emit('chatevent',jsonObject);
+    });
+
+    signSocket.on('disconnect', function() {
+        console.log('client disconnect sokect io ');
+    });
+
+
+    signSocket.on('chatevent', function(data) {
+        var confirmId = "${(confirm.id)!}";
+        var userId = "${(user.id)!}";
+        console.log(data.timestamp+"当前文件!timestamp"+timestamp);
+        if(data.userName == userId && data.message == confirmId && data.timestamp&& timestamp!=data.timestamp){
+            alert("该用户在其他地方打开了当前文件!");
+            var reviewId = "${confirm.reviewId!}";
+            window.parent.reload(reviewId);
+        }
+
+        console.log('get the chat event ===>'+JSON.stringify(data));
+    });
+
 
     function HWPostil1_NotifyCtrlReady() {
 
@@ -80,12 +115,16 @@
         var confirmId = "${(confirm.id)!}";
         OpenFile("/getSignFile?confirmId="+confirmId);
 
+
+
     }
 
     function strToJson(str) {
         var json = eval('(' + str + ')');
         return json;
     }
+
+
 
 
 </script>
