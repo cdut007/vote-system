@@ -1075,6 +1075,31 @@ public class ReviewController {
     }
 
 
+    @ApiOperation(value = "更新同步结果接口",notes = "更新同步结果接口")
+    @RequestMapping(value = "/postToResult",method = RequestMethod.POST)
+    public ResponseEntity<Map<String,Object>> postToResult(HttpServletRequest request,
+                                                               @ApiParam(name = "reviewId",value = "reviewId",required = true) @RequestParam(required = true) String reviewId
+    ) throws APIException{
+
+        Map<String,Object> result = new HashMap<>();
+        if(reviewId == null || reviewId.equals("")){
+            result.put("status", false);
+            result.put("msg", "更新同步结果接口失败！");
+            return ResponseEntity.ok(result);
+        }
+        boolean postToResult = itenderReviewService.postToResult(reviewId);
+        if(!postToResult){
+            result.put("status", false);
+            result.put("msg", "更新同步结果接口失败！");
+        }else{
+            result.put("status", true);
+        }
+        result.put("data", postToResult);
+        return ResponseEntity.ok(result);
+    }
+
+
+
     @ApiOperation(value = "更新签章接口",notes = "用于更新审批信息")
     @RequestMapping(value = "/updateSignResult",method = RequestMethod.POST)
     public ResponseEntity<Map<String,Object>> updateSignResult(HttpServletRequest request,

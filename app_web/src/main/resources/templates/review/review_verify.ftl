@@ -120,6 +120,7 @@
     layui.use(['itenderReview','table','util', 'element'], function () {
         var table = layui.table;
         var itenderReview = layui.itenderReview;
+        var type = "${(itenderReview.type)!}";
         var operator ="${(user.operator)!}";
         var id = "${(itenderReview.id)!}";
         var confirms = [];
@@ -187,9 +188,39 @@
             })
         }
 
-        if(checkReviewNeedSign(operator)){
+        if(checkReviewNeedSign(type) && operator == 'approver'){
             $("#verify").text('盖章');
         }
+
+
+        function postToResult() {
+
+            $.ajax({
+                url: "/review/postToResult",
+                type: "POST",
+                dataType: "json",
+                data: {reviewId:reviewId},
+                success: function (res) {
+                    if(res!=null){
+                        if(res.status){
+                            layer.closeAll('page'); //执行关闭
+                            layer.msg("提交成功!");
+                            $("#review_nav").click();
+
+                        }else{
+                            ShowMessage("提交失败!");
+                        }
+                    }else{
+                        ShowMessage("提交失败!");
+                    }
+                },
+                error: function (xmlHttpReq, error, ex) {
+                    ShowMessage("提交失败!");
+                }
+            })
+        }
+
+
 
         $("#verify").click(function () {
             getConfirmData( function(confirms){
@@ -206,7 +237,7 @@
                         }
                     }
 
-                    if(checkReviewNeedSign(operator)){
+                    if(checkReviewNeedSign(type) && operator == 'approver'){
                         var src = '/review/review_sign_file?reviewId='+id;
                         layui.element.tabDelete('tabBody', 'list-review');
                         layui.element.tabAdd('tabBody', {//添加新Tap
@@ -217,17 +248,37 @@
                         layui.element.tabChange('tabBody', 'list-review');
                         reinitIframe();
                     }else{
-                        var title  = getOperatorTitle(nextOperator);
-                        var data = {
-                            title: title,//标题
-                            area: 'auto',//宽高
-                            closeBtn: 1,//关闭按钮
-                            shadeClose: true,//是否点击遮罩关闭
-                            queryUrl: '/review/choose_operator_page?operator='+nextOperator+"&id="+id
+
+                        if(operator == 'approver'){
+
+                            layer.open({
+                                type: 1
+                                ,title: '提交'
+                                ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+                                ,id: 'dashauto' //防止重复弹出
+                                ,content: '<div style="padding: 20px 100px;">确认提交至交易平台？</div>'
+                                ,btn: '确认'
+                                ,btnAlign: 'c' //按钮居中
+                                ,shade: 0 //不显示遮罩
+                                ,yes: function(){
+                                    postToResult();
+                                }
+                            });
+
+                        }else{
+                            var title  = getOperatorTitle(nextOperator);
+                            var data = {
+                                title: title,//标题
+                                area: 'auto',//宽高
+                                closeBtn: 1,//关闭按钮
+                                shadeClose: true,//是否点击遮罩关闭
+                                queryUrl: '/review/choose_operator_page?operator='+nextOperator+"&id="+id
+                            }
+                            itenderReview.openModal(data,function (layerDom,index) {
+                                getConfirmData();
+                            });
                         }
-                        itenderReview.openModal(data,function (layerDom,index) {
-                            getConfirmData();
-                        });
+
                     }
 
 
