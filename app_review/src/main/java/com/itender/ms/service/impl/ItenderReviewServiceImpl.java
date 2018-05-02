@@ -119,7 +119,21 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
         return itenderAttachMapper.selectByPrimaryKey(attachId);
     }
 
-    @Override
+
+	@Override
+	public List<ItenderTask> findTasksByReviewId(String reviewId)throws APIException {
+		if(reviewId == null){
+			return  null;
+		}
+		Example example = new Example(ItenderTask.class);
+		example.createCriteria().andEqualTo("reviewId",reviewId);
+		List<ItenderTask> itenderTasks = itenderTaskMapper.selectByExample(example);
+
+
+		return itenderTasks;
+	}
+
+	@Override
 	public ItenderConfirm findConfirmByConfirmId(String confimId) throws APIException {
 
 		if(confimId == null){
@@ -496,7 +510,7 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 				criteria.andIsNull("assigneeId").orEqualTo("assigneeId","");
 			}
 
-			criteria.andCondition("name like "+"'%"+searchKeyword+"%'"+" or "+"tender_name like "+"'%"+searchKeyword+"%'");
+			criteria.andCondition("(name like "+"'%"+searchKeyword+"%'"+" or "+"tender_name like "+"'%"+searchKeyword+"%' )");
 
 
 

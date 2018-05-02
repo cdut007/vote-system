@@ -28,7 +28,7 @@
                 </div>
             </div>
         </div>
-        <div class="layui-col-xs5 status-container" style="width: 49%;margin-left: 1%">
+        <div class="layui-col-xs5 status-container" style="width: 49%;margin-left: 1%;min-height:128px">
             <label class="form">任务状态</label>
             <fieldset class="layui-elem-field layui-field-title">
 
@@ -143,6 +143,8 @@
     layui.use(['itenderReview','table','util','element'], function () {
         var items = $(".order_item");
         var cursorFlags=[0.10,0.40 ,0.67 ,1.0];
+        var cursorNames=['经办人','科室负责人' ,'分管负责人' ,'审批人'];
+
         var cursor = document.getElementById("cursor");
         var operator ="${(user.operator)!}";
         var currentCursorIndex = getOperatorIndex(operator);
@@ -179,6 +181,62 @@
                 console.log("提交失败!");
             }
         })
+
+
+
+        function getOperatorNameByIndex(index) {
+
+            var operators=['operator','department_leader','branch_leader','approver'];
+            if(!index ||index == -1){
+                return null;
+            }
+
+            return operators[index];
+        }
+
+
+
+        $.ajax({
+            url: "/review/getTaskListByReview",
+            type: "POST",
+            dataType: "json",
+            data: {reviewId:id},
+            success: function (res) {
+                if(res!=null){
+                    if(res.status){
+
+
+                        if(res.data.length>0){
+                            items.each(function(i, item) {
+                                        var index =  $(item).attr('data-index');
+                                        var operatorName = getOperatorNameByIndex(index);
+
+                                for(var j = 0 ; j<res.data.length;j++){
+                                    var itemTask = res.data[i];
+                                    if(itemTask.role == operatorName){
+                                        var operator = cursorNames[index];
+                                        $(item).text(operator+":"+ itemTask.userNickName);
+                                        break;
+                                    }
+                                }
+
+                                    }
+                            );
+                        }
+
+
+                    }else{
+                        console.log("获取任务列表失败!");
+                    }
+                }else{
+                    console.log("获取任务列表失败!");
+                }
+            },
+            error: function (xmlHttpReq, error, ex) {
+                console.log("获取任务列表失败!");
+            }
+        })
+
 
 
 

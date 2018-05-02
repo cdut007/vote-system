@@ -175,6 +175,47 @@ public class ReviewController {
     }
 
 
+    @ApiOperation(value = "获取任务列表信息",notes = "获取签章列表信息")
+    @RequestMapping(value = "/getTaskListByReview",method = RequestMethod.POST)
+    public ResponseEntity<Map<String,Object>> getTaskListByReview(HttpServletRequest request,
+                                                                  @ApiParam(name = "reviewId",value = "reviewId",required = true) @RequestParam(required = true) String reviewId
+    ) throws APIException{
+
+        Map<String,Object> result = new HashMap<>();
+        if(reviewId == null || reviewId.equals("")){
+            result.put("status", false);
+            result.put("msg", "获取任务列表信息失败！");
+            return ResponseEntity.ok(result);
+        }
+
+        List<ItenderTask> itenderTasks = itenderReviewService.findTasksByReviewId(reviewId);
+        if(itenderTasks == null){
+            result.put("status", false);
+            result.put("msg", "获取任务列表信息失败！");
+            return ResponseEntity.ok(result);
+        }else{
+            for (int j = 0; j < itenderTasks.size(); j++) {
+                ItenderTask itenderTask = itenderTasks.get(j);
+                ItenderUser itenderUser = itenderUserService.findByUserId(itenderTask.getUserId());
+                if(itenderUser!=null){
+                    itenderTask.userNickName = itenderUser.getNickName();
+                }
+
+
+
+            }
+
+
+        }
+
+
+        result.put("status", true);
+        result.put("data", itenderTasks);
+        return ResponseEntity.ok(result);
+    }
+
+
+
 
     @ApiOperation(value = "获取签章列表信息",notes = "获取签章列表信息")
     @RequestMapping(value = "/getSignListByReview",method = RequestMethod.POST)

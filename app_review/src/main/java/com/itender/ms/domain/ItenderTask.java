@@ -22,7 +22,12 @@ public class ItenderTask {
 
     @Column(name="user_id")
 
-    private String userId;//审批id
+    private String userId;//用户id
+
+
+    @Transient
+    public String userNickName;
+
 
     @Column(name="remark")
 
