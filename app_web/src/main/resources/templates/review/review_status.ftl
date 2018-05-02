@@ -142,7 +142,7 @@
 
     layui.use(['itenderReview','table','util','element'], function () {
         var items = $(".order_item");
-        var cursorFlags=[0.10,0.40 ,0.67 ,1.0];
+        var cursorFlags=[0.12,0.40 ,0.67 ,1.0];
         var cursorNames=['经办人','科室负责人' ,'分管负责人' ,'审批人'];
 
         var cursor = document.getElementById("cursor");
