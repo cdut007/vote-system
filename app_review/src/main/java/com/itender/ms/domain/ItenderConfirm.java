@@ -25,7 +25,7 @@ public class ItenderConfirm {
     private String count;
 
 
-    @ApiModelProperty(value="id",hidden=true)
+    @ApiModelProperty(value="status",hidden=true)
     @Transient
     private String status;//签章状态
 
@@ -35,6 +35,7 @@ public class ItenderConfirm {
 
 
     @Column(name="review_id")
+    @ApiModelProperty(value="reviewId",hidden=true)
     private String reviewId;//
 
     @Column(name="attach_id")

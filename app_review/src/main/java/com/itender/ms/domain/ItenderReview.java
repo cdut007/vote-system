@@ -29,10 +29,11 @@ public class ItenderReview {
     @Transient
     private String role;//审批角色
 
-
+    @ApiModelProperty(value="assigneeId",hidden=true)
     private String assigneeId;
 
     @Transient
+    @ApiModelProperty(value="status",hidden=true)
     private String status;//审批状态
 
 

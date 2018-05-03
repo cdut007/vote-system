@@ -33,6 +33,7 @@ public class ItenderAttach {
 
 
     @Column(name="review_id")
+    @ApiModelProperty(value="reviewId",hidden=true)
     private String reviewId;//审批描述
 
     @Column(name="create_time")
