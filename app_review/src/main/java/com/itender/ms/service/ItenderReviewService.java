@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface ItenderReviewService extends ItenderServiceBase<ItenderReview> {
 
-	public void setSearchInfo(String keyword);
+	public void setSearchInfo(String keyword,String type);
 
 	public void setCurrentUser(ItenderUser currentUser);
 

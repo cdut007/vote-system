@@ -22,6 +22,7 @@ public class ItenderConfirm {
     private String type;//sign,
 
     @Column(name="count")
+    @ApiModelProperty(value="count",hidden=true)
     private String count;
 
 

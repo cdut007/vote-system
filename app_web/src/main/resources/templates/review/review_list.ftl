@@ -6,6 +6,30 @@
 
         <div class="searchTable">
 
+            <div class="layui-inline">
+
+                <form class="layui-form" action="">
+
+                    <label class="layui-form-label">任务名称</label>
+                    <div class="layui-input-inline">
+                        <select name="typeId" lay-verify="required" lay-filter="type_select">
+                            <option value="">请选择</option>
+                            <option value='tender'>招标登记表、招标文件审核</option>
+                            <option value='notice_delay'>延期公告审核</option>
+                            <option value='notice_update'>变更公告审核</option>
+                            <option value='notice_cancel'>撤销公告审核</option>
+                            <option value='notice_again'>再次公告审核</option>
+                            <option value='notice_price_verfiy'>控制价公告&清单审核</option>
+                            <option value='bid_winning'>中标通知书及附件审核</option>
+                        </select>
+                    </div>
+
+
+                </form>
+
+            </div>
+
+
 
             <div class="layui-inline">
                 <label class="layui-form-label">搜索任务</label>
@@ -92,10 +116,22 @@
     };
 
 
-    layui.use(['table', 'util', 'itenderReview'], function () {
+    layui.use(['form','table', 'util', 'itenderReview'], function () {
         var table = layui.table;
+        var form = layui.form;
         var itenderReview = layui.itenderReview;
         var keyword;
+        var type;
+        layui.form.render();
+
+
+        form.on('select(type_select)', function(data){
+            type = data.value;
+            searchReload();
+
+            return false;
+        });
+
 
         $('#keyword').bind('keypress', function (event) {
             if (event.keyCode == "13") {//enter
@@ -119,9 +155,10 @@
                     curr: 1 //重新从第 1 页开始
                 },
 
-                where:{keyword:keyword},
+                where:{keyword:keyword,type:type},
                 request: {
                     keyword:'keyword',
+                    type:'type',
                     pageName: 'pageNum', //页码的参数名称，默认：page
                     limitName: 'pagesize' //每页数据量的参数名，默认：limit
                 }
@@ -147,10 +184,11 @@
                 {title: "操作",fixed: 'right', align: 'center', toolbar: '#reviewTableTool'}
             ]],
 
-            where:{keyword:keyword},
+            where:{keyword:keyword,type:type},
 
             request: {
                 keyword:'keyword',
+                type:'type',
                 pageName: 'pageNum' //页码的参数名称，默认：page
                 , limitName: 'pagesize' //每页数据量的参数名，默认：limit
             },

@@ -426,6 +426,7 @@ public class ReviewController {
                                                        @RequestParam(required = false) Integer pageNum,
                                                        @RequestParam(required = false) Integer pagesize,
                                                     @RequestParam(required = false) String keyword,
+                                                    @RequestParam(required = false) String type,
                                                     @RequestParam(required = false) boolean all
     ) throws APIException{
         ItenderUser user=null ;
@@ -443,7 +444,7 @@ public class ReviewController {
 
         PageInfo<ItenderReview> page = null;
         itenderReviewService.setCurrentUser(user);
-        itenderReviewService.setSearchInfo(keyword);
+        itenderReviewService.setSearchInfo(keyword,type);
         page = itenderReviewService.findPage(pageNum, pagesize);
 
         return ResponseEntity.ok(PageDataConvert.convertToLayuiData(page,200,"success"));
@@ -959,21 +960,43 @@ public class ReviewController {
             }
 
     @ApiOperation(value = "添加审批附件接口",notes = "用于新增审批信息")
-    @RequestMapping(value = "/addReviewAttach",method = RequestMethod.POST)
-    public ResponseEntity<Map<String,Object>> addReviewAttach(HttpServletRequest request,ItenderReview review,@RequestParam("file") MultipartFile file) throws APIException{
+    @RequestMapping(value = "/addReviewAttach",method = RequestMethod.POST,headers = "content-type=multipart/form-data")
+    public ResponseEntity<Map<String,Object>> addReviewAttach(HttpServletRequest request, @ApiParam(name = "review",value = "review",required = true) @RequestParam(required = true) String review,@RequestParam("multipartfiles") MultipartFile[] multipartfiles) throws APIException{
         Map<String,Object> result = new HashMap<>();
+
+//转换器
+        ObjectMapper mapper = new ObjectMapper();
+        ItenderReview itenderReview = null;
+        // 对象--json数据
+        // 将json 字符串转成User类
+        try {
+             itenderReview = mapper.readValue(review, ItenderReview.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         // 文件上传后的路径
         String filePath = getFileDirByName("review_files");
         // 解决中文问题，liunx下中文路径，图片显示问题
         // fileName = UUID.randomUUID() + suffixName;
-        File dest = new File(filePath + file.getOriginalFilename());
+        //File dest = new File(filePath + file.getOriginalFilename());
         // 检测是否存在目录
-        if (!dest.getParentFile().exists()) {
-            boolean success =  dest.getParentFile().mkdirs();
-        }
+//        if (!dest.getParentFile().exists()) {
+//            boolean success =  dest.getParentFile().mkdirs();
+//        }
+
         try {
-            file.transferTo(dest);
+
+            if(multipartfiles != null && multipartfiles.length != 0){
+                if(null != multipartfiles && multipartfiles.length > 0){
+                    //遍历并保存文件
+                    for(MultipartFile file : multipartfiles){
+                        file.transferTo(new File(filePath + file.getOriginalFilename()));
+                    }
+                }
+            }
+            //file.transferTo(dest);
 
         } catch (IllegalStateException e) {
             e.printStackTrace();
@@ -982,14 +1005,14 @@ public class ReviewController {
         }
 
         //  review.setStatus(ReviewStatus.normal.name());
-        review = itenderReviewService.add(review);
-        if(!CommonUtility.isNonEmpty(review.getId())){
+        itenderReview = itenderReviewService.add(itenderReview);
+        if(!CommonUtility.isNonEmpty(itenderReview.getId())){
             result.put("status", false);
             result.put("msg", "添加审批失败！");
         }else{
             result.put("status", true);
         }
-        result.put("data", review);
+        result.put("data", itenderReview);
         return ResponseEntity.ok(result);
     }
 

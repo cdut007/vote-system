@@ -200,10 +200,10 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 
 	private  boolean  searchModel = false;
 
-	private String searchKeyword;
+	private String searchKeyword,searchType;
 
 	@Override
-	public void setSearchInfo(String keyword) {
+	public void setSearchInfo(String keyword,String type) {
 		if(keyword!=null){
 			keyword = keyword.trim();
 		}
@@ -213,10 +213,15 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 			searchModel = true;
 		}
 
+		if(!StringUtils.isEmpty(type)){
+			searchType = type;
+		}
+
+
 	}
 	void resetSearch(){
 		searchModel = false;
-
+		searchType = null;
 		searchKeyword = null;
 	}
 
@@ -270,15 +275,57 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 		// 封装参数，千万不要替换为Map与HashMap，否则参数无法传递
 		MultiValueMap<String, String> params= new LinkedMultiValueMap<String, String>();
 		params.add("access_token", "xxxxx");
-		//发送http请求并返回结果
-		String response  = httpClient.client(url,method,params);
+		boolean resultOk=false;
+
+		List<ItenderConfirm> confirms = itenderReview.getConfirms();
+//		if(confirms!=null && !confirms.isEmpty()){
+//			for (int j = 0; j < confirms.size(); j++) {
+//				Example example4 = new Example(ItenderSign.class);
+//				example4.createCriteria().andEqualTo("confirmId",confirms.get(j).getId());
+//				itenderSignMapper.selectByExample(example4);
+//			}
+//		}
+
+
+		if(ReviewStatus.approved.name().equals(itenderReview.getStatus())){
+			//发送http请求并返回结果
+			String response  = httpClient.client(url,method,params);
+			resultOk=true;
+		}else{
+			//发送http请求并返回结果
+			String response  = httpClient.client(url,method,params);
+
+			resultOk=true;
+		}
+
+
+
+
+
 		//delele task
-//		itenderTaskMapper.delete(itenderReview);
-//		itenderSignMapper.delete();
-//		itenderConfirmMapper.delete(itenderReview.confirms);
-//		itenderAttachMapper.delete(itenderReview.attaches);
+		Example example = new Example(ItenderTask.class);
+		example.createCriteria().andEqualTo("reviewId",itenderReview.getId());
+		itenderTaskMapper.deleteByExample(example);
+
+		Example example2 = new Example(ItenderConfirm.class);
+		example2.createCriteria().andEqualTo("reviewId",itenderReview.getId());
+		itenderConfirmMapper.deleteByExample(example2);
+
+		confirms = itenderReview.getConfirms();
+		if(confirms!=null && !confirms.isEmpty()){
+			for (int j = 0; j < confirms.size(); j++) {
+				Example example4 = new Example(ItenderSign.class);
+				example4.createCriteria().andEqualTo("confirmId",confirms.get(j).getId());
+				itenderSignMapper.deleteByExample(example4);
+			}
+		}
+
+
+		Example example3 = new Example(ItenderAttach.class);
+		example3.createCriteria().andEqualTo("reviewId",itenderReview.getId());
+		itenderAttachMapper.deleteByExample(example3);
 		itenderReviewMapper.delete(itenderReview);
-		return false;
+		return resultOk;
 	}
 
 	@Override
@@ -529,10 +576,15 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 		List<ItenderReview> itenderReview = null;
 		if(searchModel){
 			logger.debug("==searchModel=");
-			logger.debug("==searchKeyword="+searchKeyword);
+			logger.debug("==searchKeyword="+searchKeyword+";searchType=="+searchType);
 			if(StringUtils.isEmpty(searchKeyword)){
 				searchKeyword = null;
 			}
+
+			if(StringUtils.isEmpty(searchType)){
+				searchType = null;
+			}
+
 			Example.Criteria criteria = example.createCriteria();
 			if(user!=null){
 
@@ -545,7 +597,9 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 
 			criteria.andCondition("(name like "+"'%"+searchKeyword+"%'"+" or "+"tender_name like "+"'%"+searchKeyword+"%' )");
 
-
+			if(!StringUtils.isEmpty(searchType)){
+				criteria.andEqualTo("type",searchType);
+			}
 
 			example.setOrderByClause("create_time desc");
 			itenderReview = itenderReviewMapper.selectByExample(example);
@@ -553,13 +607,19 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 			//reset
 			resetSearch();
 		}else {
+			Example.Criteria criteria = example.createCriteria();
 			if(user!=null){
 
-				example.createCriteria().andEqualTo("assigneeId",user.getId());
+				criteria.andEqualTo("assigneeId",user.getId());
 
 				user = null;
 			}else{
-				example.createCriteria().andIsNull("assigneeId").orEqualTo("assigneeId","");
+				criteria.andIsNull("assigneeId").orEqualTo("assigneeId","");
+			}
+
+			if(!StringUtils.isEmpty(searchType)){
+				criteria.andEqualTo("type",searchType);
+				searchType = null;
 			}
 
 			example.setOrderByClause("create_time desc");
