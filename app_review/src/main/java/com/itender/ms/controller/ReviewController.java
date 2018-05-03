@@ -1044,7 +1044,13 @@ public class ReviewController {
         if(review.getConfirms()!=null){
             //bind attach id
         }
-
+       ItenderReview findReview =  itenderReviewService.findByReviewReferenceId(review.getReferenceId());
+        if(findReview!=null){
+            result.put("status", false);
+            result.put("msg", "该任务已经存在");
+            result.put("data", review);
+            return ResponseEntity.ok(result);
+        }
         review = itenderReviewService.add(review);
         if(!CommonUtility.isNonEmpty(review.getId())){
             result.put("status", false);

@@ -17,6 +17,8 @@ public interface ItenderReviewService extends ItenderServiceBase<ItenderReview> 
 
 
 	public ItenderReview findByReviewId(String reviewId);
+
+	public ItenderReview findByReviewReferenceId(String referenceId);
 	/**
 	 * 按审批名查询
 	 * @param reviewName

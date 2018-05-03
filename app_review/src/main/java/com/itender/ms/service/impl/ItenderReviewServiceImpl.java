@@ -226,6 +226,19 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 	}
 
 	@Override
+	public ItenderReview findByReviewReferenceId(String referenceId) {
+		Example example = new Example(ItenderReview.class);
+		example.createCriteria().andEqualTo("referenceId",referenceId);
+		List<ItenderReview> reviews = itenderReviewMapper.selectByExample(example);
+		if(reviews!=null && !reviews.isEmpty()){
+			return reviews.get(0);
+		}
+
+		return null;
+
+	}
+
+	@Override
 	public ItenderReview findByReviewId(String reviewId) {
 		 return itenderReviewMapper.selectByPrimaryKey(reviewId);
 	}
