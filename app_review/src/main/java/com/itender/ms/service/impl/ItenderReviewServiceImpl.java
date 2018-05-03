@@ -286,7 +286,7 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 	public boolean postToResult(String reviewId) {
 		ItenderReview itenderReview = findById(reviewId);
 		//api url地址
-		String url = httpConfig.getDomain()+"/supervisePlatform/listAll";
+		String url = httpConfig.getDomain()+"/supervisePlatform/callback";
 		//post请求
 		HttpMethod method =HttpMethod.POST;
 		// 封装参数，千万不要替换为Map与HashMap，否则参数无法传递
@@ -348,7 +348,13 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 			}
 			String response  = httpClient.client(url,method,jsonObject);
 
-			resultOk=true;
+			try {
+				JSONObject result = new JSONObject(response);
+				resultOk = result.optBoolean("success");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			
 		}else{
 			try {
 				jsonObject.put("result","false");
@@ -357,8 +363,14 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 			}
 			//发送http请求并返回结果
 			String response  = httpClient.client(url,method,jsonObject);
+			try {
+				JSONObject result = new JSONObject(response);
+				resultOk = result.optBoolean("success");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 
-			resultOk=true;
+
 		}
 
 
@@ -519,7 +531,7 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 			if(confirms!=null && !confirms.isEmpty()){
 				for (int j = 0; j < confirms.size(); j++) {
 					Example example2 = new Example(ItenderSign.class);
-					example2.createCriteria().andEqualTo("delete",true).andEqualTo("confirmId",confirms.get(j).getId());
+					example2.createCriteria().andEqualTo("isDelete",true).andEqualTo("confirmId",confirms.get(j).getId());
 					itenderSignMapper.deleteByExample(example2);
 				}
 			}

@@ -17,7 +17,7 @@ public class HttpClientService {
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		HttpEntity<String> requestEntity = new HttpEntity<String>(jsonObject.toString(),headers);
 		//  执行HTTP请求
-		ResponseEntity<String> response = client.postForEntity(url, requestEntity, String.class);
+		ResponseEntity<String> response = client.exchange(url, HttpMethod.POST, requestEntity, String.class);
 		return response.getBody();
 	}
 

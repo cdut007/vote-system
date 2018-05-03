@@ -223,7 +223,7 @@
 
 
         $("#verify").click(function () {
-            //postToResult();
+            postToResult();
 
             getConfirmData( function(confirms){
                 if(confirms){
