@@ -6,11 +6,15 @@ import com.itender.ms.config.HttpConfig;
 import com.itender.ms.domain.*;
 import com.itender.ms.enums.ReviewRole;
 import com.itender.ms.enums.ReviewStatus;
+import com.itender.ms.enums.SignResult;
 import com.itender.ms.exception.APIException;
 import com.itender.ms.mapper.*;
 import com.itender.ms.service.HttpClientService;
 import com.itender.ms.service.ItenderReviewService;
 import com.itender.ms.util.CommonUtility;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -282,31 +286,77 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 	public boolean postToResult(String reviewId) {
 		ItenderReview itenderReview = findById(reviewId);
 		//api url地址
-		String url = httpConfig.getDomain()+"/industry/listAll";
+		String url = httpConfig.getDomain()+"/supervisePlatform/listAll";
 		//post请求
 		HttpMethod method =HttpMethod.POST;
 		// 封装参数，千万不要替换为Map与HashMap，否则参数无法传递
 		MultiValueMap<String, String> params= new LinkedMultiValueMap<String, String>();
-		params.add("access_token", "xxxxx");
+
 		boolean resultOk=false;
 
 		List<ItenderConfirm> confirms = itenderReview.getConfirms();
-//		if(confirms!=null && !confirms.isEmpty()){
-//			for (int j = 0; j < confirms.size(); j++) {
-//				Example example4 = new Example(ItenderSign.class);
-//				example4.createCriteria().andEqualTo("confirmId",confirms.get(j).getId());
-//				itenderSignMapper.selectByExample(example4);
-//			}
-//		}
 
+
+
+		JSONObject jsonObject = null;
+		try {
+			jsonObject = new JSONObject();
+			jsonObject.put("referenceId",itenderReview.getReferenceId());
+			if(confirms!=null && !confirms.isEmpty()){
+				JSONArray confirmsArray = new JSONArray();
+			for (int j = 0; j < confirms.size(); j++) {
+				JSONObject confirmObject = new JSONObject();
+				ItenderConfirm confirm = confirms.get(j);
+				confirmObject.put("referenceId",confirm.getReferenceId());
+				//confirmObject.put("path",confirm.get());
+
+						Example example4 = new Example(ItenderSign.class);
+				example4.createCriteria().andEqualTo("confirmId",confirm.getId());
+				List<ItenderSign> signList = itenderSignMapper.selectByExample(example4);
+				JSONArray checkInfos = new JSONArray();
+
+				for (int i = 0; i < signList.size(); i++) {
+					JSONObject checkInfoObject = new JSONObject();
+					ItenderSign sign = signList.get(i);
+					checkInfoObject.put("success",SignResult.approved.equals(sign.getResult()));
+					//checkInfoObject.put("ruleName",);
+					checkInfoObject.put("desc",sign.getDescription());
+					checkInfoObject.put("time",sign.getCreateTime().toString());
+
+					checkInfos.put(checkInfoObject);
+				}
+
+				confirmObject.put("checkInfos",checkInfos);
+
+				confirmsArray.put(confirmObject);
+
+			}
+				jsonObject.put("confirms",confirmsArray);
+		}
+
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 
 		if(ReviewStatus.approved.name().equals(itenderReview.getStatus())){
 			//发送http请求并返回结果
-			String response  = httpClient.client(url,method,params);
+			try {
+				jsonObject.put("result","true");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			String response  = httpClient.client(url,method,jsonObject);
+
 			resultOk=true;
 		}else{
+			try {
+				jsonObject.put("result","false");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 			//发送http请求并返回结果
-			String response  = httpClient.client(url,method,params);
+			String response  = httpClient.client(url,method,jsonObject);
 
 			resultOk=true;
 		}

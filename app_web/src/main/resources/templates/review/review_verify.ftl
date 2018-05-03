@@ -199,7 +199,7 @@
                 url: "/review/postToResult",
                 type: "POST",
                 dataType: "json",
-                data: {reviewId:reviewId},
+                data: {reviewId:id},
                 success: function (res) {
                     if(res!=null){
                         if(res.status){
@@ -223,6 +223,8 @@
 
 
         $("#verify").click(function () {
+            //postToResult();
+
             getConfirmData( function(confirms){
                 if(confirms){
                     for(var i = 0 ; i<confirms.length;i++){
