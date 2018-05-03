@@ -78,7 +78,7 @@
         document.all.HWPostil1.HideMenuItem(30);
 
         var id = "${(confrim.attachId)!}";
-        OpenFile("/getAttachFile?id="+id);
+        OpenFile("/getAttachFile?referenceAttachId="+id);
 
 
     }
@@ -158,24 +158,11 @@
             })
         }
 
-        function getOperatorName(operator) {
-
-            if(operator == 'department_leader'){
-                return '科室负责人';
-            }else if(operator == 'branch_leader'){
-                return '分管负责人';
-            }else if(operator == 'approver'){
-                return '审批人';
-            }
-
-            return "经办人";
-        }
 
 
         //签章
         $("#sign").click(function () {
-            var operator ="${(user.operator)!}";
-            var name  = getOperatorName(operator);
+            var name  ='签章';
             SearchText(name, 0, 0);
             if (AutoSeal(0, 1, name) == "-200") {
                 ShowMessage("请插入有效的USBKey！");

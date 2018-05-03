@@ -509,11 +509,28 @@ public class ReviewController {
 
         String attachId = request.getParameter("id");
 
-        ItenderAttach itenderAttach = itenderReviewService.findAttachByAttachId(attachId);
+        ItenderAttach itenderAttach = null;
+        if(StringUtils.isEmpty(attachId)){
+            String referenceAttachId = request.getParameter("referenceAttachId");
 
-        if(itenderAttach == null){
-            throw new Exception("attach file not find");
+            itenderAttach = itenderReviewService.findAttachByReferenceAttachId(referenceAttachId);
+
+            if(itenderAttach == null){
+                throw new APIException(HttpStatus.BAD_REQUEST.value(), "100400", "文件不存在!");
+            }
+
+        }else{
+             itenderAttach = itenderReviewService.findAttachByAttachId(attachId);
+
+
+            if(itenderAttach == null){
+                throw new Exception("attach file not find");
+            }
         }
+
+
+
+
         File attachFile = new File(getFileDirByName("attach_files")+File.separator+itenderAttach.getName()+"."+itenderAttach.getType());
         String fileName = null;
         File outFile = null;
