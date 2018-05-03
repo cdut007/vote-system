@@ -7,6 +7,7 @@ spring:
     ## 多环境配置
     profiles:
         active: staging
+
  #设置文件上大小
     http:
         multipart:
@@ -136,9 +137,7 @@ privilege-uri-init:
 sys:
   version: @project.version@
 
-  #http对接地址
-httpRequest:
-  domain:  http://47.94.142.243:9090
+
 
 debug: false
 
