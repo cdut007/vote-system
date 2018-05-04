@@ -423,6 +423,7 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 		List<ItenderTask> itenderTasks = itenderTaskMapper.selectByExample(example);
 		//reset
         boolean isOperatorSign = false;
+        boolean hasForbiddenSign = false;
 		if(itenderTasks!=null&& !itenderTasks.isEmpty()){
 			String rollbackRole = null;
 			for (int i = 0; i < itenderTasks.size(); i++) {
@@ -452,6 +453,9 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 									ItenderSign itenderSign = signList.get(k);
 									itenderSign.setDelete(true);
 									itenderSignMapper.updateByPrimaryKeySelective(itenderSign);
+									if(SignResult.forbidden.name().equals(itenderSign.getResult())){
+										hasForbiddenSign = true;
+									}
 								}
 							}
 						}
@@ -480,11 +484,16 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 				if(itenderTask.getUserId()!=null && itenderTask.getRole()!=null && itenderTask.getRole().equals(role)){
 					itenderTask.setCurrentTask(true);
 					itenderTask.setCreateTime(new Date());
-					itenderTask.setStatus(ReviewStatus.verify.name());
+					if(hasForbiddenSign){
+						itenderTask.setStatus(ReviewStatus.forbidden.name());
+					}else {
+						itenderTask.setStatus(ReviewStatus.verify.name());
+					}
 					itenderTaskMapper.updateByPrimaryKeySelective(itenderTask);
 					ItenderReview itenderReview = new ItenderReview();
 					itenderReview.setId(itenderTask.getReviewId());
 					itenderReview.setAssigneeId(itenderTask.getUserId());
+
 					itenderReviewMapper.updateByPrimaryKeySelective(itenderReview);
 					return 0;
 					}
@@ -544,8 +553,12 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 
 
 		}else if(ReviewStatus.forbidden.name().equals(status)){
-			ItenderTask itenderTask = new ItenderTask();
-			itenderTask.setRemark(remark);
+//			ItenderTask itenderTask = new ItenderTask();
+//			itenderTask.setRemark(remark);
+			ItenderReview itenderReview = new ItenderReview();
+			itenderReview.setId(id);
+			itenderReview.setStatus(ReviewStatus.forbidden.name());
+			itenderReviewMapper.updateByPrimaryKeySelective(itenderReview);
 		}
 
 		ItenderReview reviewExsit = findById(id);
@@ -604,6 +617,7 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 	@Override
 	public ItenderReview add(ItenderReview review) throws APIException {
 		//review.setCreateTime(new Date(System.currentTimeMillis()));
+		review.setStatus(ReviewStatus.verify.name());
 		int rows = itenderReviewMapper.insertSelective(review);
 		if(review.getAttaches()!=null){
 			List<ItenderAttach> attaches = review.getAttaches();
@@ -654,7 +668,7 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 		PageHelper.startPage(pageNum,pagesize);
 
         Example example = new Example(ItenderReview.class);
-		List<ItenderReview> itenderReview = null;
+		List<ItenderReview> itenderReviews = null;
 		if(searchModel){
 			logger.debug("==searchModel=");
 			logger.debug("==searchKeyword="+searchKeyword+";searchType=="+searchType);
@@ -683,7 +697,7 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 			}
 
 			example.setOrderByClause("create_time desc");
-			itenderReview = itenderReviewMapper.selectByExample(example);
+			itenderReviews = itenderReviewMapper.selectByExample(example);
 
 			//reset
 			resetSearch();
@@ -704,9 +718,16 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 			}
 
 			example.setOrderByClause("create_time desc");
-			 itenderReview = itenderReviewMapper.selectByExample(example);
+			 itenderReviews = itenderReviewMapper.selectByExample(example);
 		}
-        return new PageInfo<>(itenderReview);
+
+		if(itenderReviews!=null && !itenderReviews.isEmpty()){
+			for (int i = 0; i < itenderReviews.size(); i++) {
+				checkTask(itenderReviews.get(i));
+			}
+		}
+
+        return new PageInfo<>(itenderReviews);
 	}
 
 

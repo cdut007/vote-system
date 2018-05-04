@@ -72,22 +72,15 @@
 </script>
 
 
-
-
-
-<script type="text/html" id="statusLabel">
-    {{#  if(d.status != 'normal'){ }}
-    <span style="color: #FF0000;">{{ d.statusLabel }}</span>
+<script type="text/html" id="nameLabel">
+    {{#  if(d.status == 'forbidden'){ }}
+     <span style="color: #FF0000;">{{ '【未通过】' }}</span>{{ d.name }}
     {{#  } else { }}
-
-      {{# if(d.roomId){ }}
-            <span style="color: #F37715;">{{ '使用中' }}</span>
-        {{#  } else { }}
-        {{ d.statusLabel }}
-       {{#  } }}
+    {{ d.name }}
 
     {{#  } }}
 </script>
+
 
 
 
@@ -177,7 +170,7 @@
             method: "POST",
             cols: [[
                 {title: '序号',templet: '#indexTpl'},
-                {title: "项目名称", field: 'name'},
+                {title: "项目名称", templet: '#nameLabel'},
                 {title: "招标项目名称", field: 'tenderName'},
                 {title: "任务名称", templet: '#typeLabel'},
                 {title: "创建时间", templet: '#createTimeLabel'},
