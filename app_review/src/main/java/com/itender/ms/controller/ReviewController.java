@@ -1038,7 +1038,7 @@ public class ReviewController {
     @ApiOperation(value = "添加审批接口",notes = "用于新增审批信息,审批类型: tender (招标登记表，招标文件审批),notice_delay（公告变更）, notice_update（公告延期）,notice_cancel（再次公告）,notice_again（控制价&清单）,notice_price_verfiy（公告延期）,bid_winning（中标通知书）")
     @RequestMapping(value = "/addReview",method = RequestMethod.POST)
     public ResponseEntity<Map<String,Object>> addReview(HttpServletRequest request,
-                                                        @RequestBody ItenderReview review) throws APIException{
+                                                        @RequestBody ItenderReview review){
         Map<String,Object> result = new HashMap<>();
         review.setCreateTime(new Date());
         if(review.getConfirms()!=null){
@@ -1051,7 +1051,16 @@ public class ReviewController {
             result.put("data", review);
             return ResponseEntity.ok(result);
         }
-        review = itenderReviewService.add(review);
+        try {
+            review = itenderReviewService.add(review);
+        } catch (APIException e) {
+            e.printStackTrace();
+            itenderReviewService.deleteById(review.getId());
+            result.put("status", false);
+            result.put("msg", "该任务添加失败"+e.getLocalizedMessage());
+            return ResponseEntity.ok(result);
+
+        }
         if(!CommonUtility.isNonEmpty(review.getId())){
             result.put("status", false);
             result.put("msg", "添加审批失败！");

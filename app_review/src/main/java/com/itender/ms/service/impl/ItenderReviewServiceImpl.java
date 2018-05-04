@@ -83,6 +83,20 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 	public Integer deleteById(String id) {
 		ItenderReview itenderReview = new ItenderReview();
 		itenderReview.setId(id);
+
+		//delele task
+		Example example = new Example(ItenderTask.class);
+		example.createCriteria().andEqualTo("reviewId",itenderReview.getId());
+		itenderTaskMapper.deleteByExample(example);
+
+		Example example2 = new Example(ItenderConfirm.class);
+		example2.createCriteria().andEqualTo("reviewId",itenderReview.getId());
+		itenderConfirmMapper.deleteByExample(example2);
+
+		Example example3 = new Example(ItenderAttach.class);
+		example3.createCriteria().andEqualTo("reviewId",itenderReview.getId());
+		itenderAttachMapper.deleteByExample(example3);
+		
 		return itenderReviewMapper.delete(itenderReview);
 	}
 
