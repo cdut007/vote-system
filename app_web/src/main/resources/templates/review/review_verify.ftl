@@ -59,7 +59,12 @@
              {{# if(d.type == 'notice'){ }}
                   {{'/'}}
                 {{#  } else { }}
-                   {{d.count}}
+                      {{# if(!d.count){ }}
+                          {{'输入份数'}}
+                        {{#  } else { }}
+                           {{d.count}}
+                        {{#  } }}
+
                 {{#  } }}
 
             </#if>
@@ -68,7 +73,11 @@
          {{# if(d.type == 'notice'){ }}
                   {{'/'}}
                 {{#  } else { }}
-                 {{d.count}}
+                 {{# if(!d.count){ }}
+                          {{'输入份数'}}
+                        {{#  } else { }}
+                           {{d.count}}
+                        {{#  } }}
                 {{#  } }}
 
         </#if>
@@ -223,7 +232,7 @@
 
 
         $("#verify").click(function () {
-            postToResult();
+            //postToResult();
 
             getConfirmData( function(confirms){
                 if(confirms){

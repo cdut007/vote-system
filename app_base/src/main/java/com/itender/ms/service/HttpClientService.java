@@ -4,6 +4,7 @@ import org.json.JSONObject;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -17,8 +18,15 @@ public class HttpClientService {
 		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		HttpEntity<String> requestEntity = new HttpEntity<String>(jsonObject.toString(),headers);
 		//  执行HTTP请求
-		ResponseEntity<String> response = client.exchange(url, HttpMethod.POST, requestEntity, String.class);
-		return response.getBody();
+		try{
+			ResponseEntity<String> response = client.exchange(url, HttpMethod.POST, requestEntity, String.class);
+			return response.getBody();
+		}catch (RestClientException e){
+			e.printStackTrace();
+			return e.getLocalizedMessage();
+		}
+
+
 	}
 
 }

@@ -346,7 +346,9 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
+			logger.info("httpClient request="+url+";param="+jsonObject.toString());
 			String response  = httpClient.client(url,method,jsonObject);
+			logger.info("httpClient response="+response);
 
 			try {
 				JSONObject result = new JSONObject(response);
@@ -354,7 +356,7 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			
+
 		}else{
 			try {
 				jsonObject.put("result","false");
@@ -371,6 +373,10 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 			}
 
 
+		}
+
+		if(!resultOk){
+			return false;
 		}
 
 
