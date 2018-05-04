@@ -1,6 +1,6 @@
 ##Staging环境
 spring:
-    profiles: pro
+    profiles: dev
 
 
 #服务端口
