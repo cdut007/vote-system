@@ -11,6 +11,7 @@ import com.itender.ms.exception.APIException;
 import com.itender.ms.mapper.*;
 import com.itender.ms.service.HttpClientService;
 import com.itender.ms.service.ItenderReviewService;
+import com.itender.ms.service.ItenderUserService;
 import com.itender.ms.util.CommonUtility;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,6 +54,11 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 
 	@Autowired
 	private ItenderSignMapper itenderSignMapper;
+
+
+
+	@Autowired
+	private ItenderUserService itenderUserService;
 
     @Autowired
     private HttpConfig httpConfig;
@@ -308,9 +314,9 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 				JSONObject confirmObject = new JSONObject();
 				ItenderConfirm confirm = confirms.get(j);
 				confirmObject.put("referenceId",confirm.getReferenceId());
-				//confirmObject.put("path",confirm.get());
+				confirmObject.put("path",httpConfig.getDomain()+"/getAttachFile?id="+confirm.getAttachId());
 
-						Example example4 = new Example(ItenderSign.class);
+				Example example4 = new Example(ItenderSign.class);
 				example4.createCriteria().andEqualTo("confirmId",confirm.getId());
 				List<ItenderSign> signList = itenderSignMapper.selectByExample(example4);
 				JSONArray checkInfos = new JSONArray();
@@ -319,7 +325,11 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 					JSONObject checkInfoObject = new JSONObject();
 					ItenderSign sign = signList.get(i);
 					checkInfoObject.put("success",SignResult.approved.equals(sign.getResult()));
-					//checkInfoObject.put("ruleName",);
+					ItenderUser user = itenderUserService.findByUserId(sign.getSignId());
+					if(user!=null){
+						checkInfoObject.put("ruleName",user.getPosition());
+					}
+
 					checkInfoObject.put("desc",sign.getDescription());
 					checkInfoObject.put("time",sign.getCreateTime().toString());
 

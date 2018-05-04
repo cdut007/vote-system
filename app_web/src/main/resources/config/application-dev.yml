@@ -10,7 +10,7 @@ server:
 
 #数据库IP
 db:
-  ip: 127.0.0.1
+  ip: 39.107.127.11
   name: itender_supervise
   username: root
   password: Ycp7WyjzNA
@@ -18,7 +18,7 @@ db:
     #http对接地址
 httpRequest:
    domain:  http://47.94.241.88:80
-    host:   http://47.94.142.243:9090
+   host:  http://192.168.99.133:9090
    socket:  0.0.0.0
 
 

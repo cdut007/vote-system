@@ -10,7 +10,17 @@ public class HttpConfig {
 
     private String domain;
 
+    private String host;
+
     private String socket;
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getHost() {
+        return host;
+    }
 
     public void setSocket(String socket) {
         this.socket = socket;

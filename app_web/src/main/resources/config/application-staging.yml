@@ -10,7 +10,7 @@ server:
 
 #数据库IP
 db:
-  ip: 47.94.142.243 #pro 47.94.142.243 ,stage 47.94.241.88
+  ip: 127.0.0.1 #pro 47.94.142.243 ,stage 47.94.241.88
   name: itender_supervise
   username: root  #pro root , stage  dev
   password: Ycp7WyjzNA
@@ -18,5 +18,6 @@ db:
 
 httpRequest:
     domain: http://192.168.99.19:8080
+     host:   http://39.107.127.11:9090
     socket:  0.0.0.0
 
