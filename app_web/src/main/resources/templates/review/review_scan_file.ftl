@@ -43,7 +43,9 @@
 
         document.all.HWPostil1.HideMenuItem(30);
         var id = "${(attach.id)!}";
-        OpenFile("/getAttachFile?id="+id);
+        var path = "${(attach.path)!}";
+        console.log("file path="+path);
+        OpenFile(path);
 
     }
 
