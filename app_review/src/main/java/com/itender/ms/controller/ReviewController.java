@@ -384,15 +384,15 @@ public class ReviewController {
             return ResponseEntity.ok(result);
         }
         itenderReviewService.setCurrentUser(user);
-        ItenderReview review = itenderReviewService.findById(id);
+        List<ItenderConfirm> confirms = itenderReviewService.findConfirmsByReviewId(id);
 
-        if(!CommonUtility.isNonEmpty(review.getId())){
+        if(confirms == null){
             result.put("status", false);
             result.put("msg", "添加审批失败！");
         }else{
             result.put("status", true);
         }
-        result.put("data", review.getConfirms());
+        result.put("data", confirms);
 
         return ResponseEntity.ok(result);
 

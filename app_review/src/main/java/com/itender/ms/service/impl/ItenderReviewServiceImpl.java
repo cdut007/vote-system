@@ -190,15 +190,18 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 		Example example2 = new Example(ItenderConfirm.class);
 		example2.createCriteria().andEqualTo("reviewId",itenderReview.getId());
 		List<ItenderConfirm> confirms = itenderConfirmMapper.selectByExample(example2);
+		String userId = null;
+		if(user!=null){
+			userId = user.getId();
+			user = null;
+		}
+
 		if(confirms!=null && !confirms.isEmpty()){
 			for (int i = 0; i < confirms.size(); i++) {
 				ItenderConfirm itenderConfirm = confirms.get(i);
 				Example example3 = new Example(ItenderSign.class);
-				String userId = null;
-				if(user!=null){
-					userId = user.getId();
-					user = null;
-				}
+
+
 				example3.createCriteria().andEqualTo("confirmId",itenderConfirm.getId()).andEqualTo("signId",userId);
 				List<ItenderSign> itenderSigns = itenderSignMapper.selectByExample(example3);
 				if(itenderSigns!=null && !itenderSigns.isEmpty()) {
