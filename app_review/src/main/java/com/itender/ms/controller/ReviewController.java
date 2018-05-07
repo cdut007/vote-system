@@ -771,7 +771,7 @@ public class ReviewController {
             datas.put("${projectName}", itenderConfirm.getName());
             datas.put("${count}",itenderConfirm.getCount());
             String exportFile = getFileDirByName("review_files")+File.separator+itenderConfirm.getName()+".docx";
-            InputStream inputStream =  new ClassPathResource("static/aip/用印登记表(2).docx").getInputStream();
+            InputStream inputStream =  new ClassPathResource("static/aip/用印登记表.docx").getInputStream();
             boolean result = readwriteWord(inputStream,datas,exportFile);
             if(result){
                 XWPFDocument document = new XWPFDocument(new FileInputStream(new File(exportFile)));

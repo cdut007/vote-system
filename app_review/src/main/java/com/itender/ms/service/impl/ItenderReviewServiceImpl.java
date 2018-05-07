@@ -96,7 +96,7 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 		Example example3 = new Example(ItenderAttach.class);
 		example3.createCriteria().andEqualTo("reviewId",itenderReview.getId());
 		itenderAttachMapper.deleteByExample(example3);
-		
+
 		return itenderReviewMapper.delete(itenderReview);
 	}
 
