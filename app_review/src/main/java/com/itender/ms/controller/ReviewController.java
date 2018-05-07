@@ -1053,9 +1053,13 @@ public class ReviewController {
         }
         try {
             review = itenderReviewService.add(review);
-        } catch (APIException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            itenderReviewService.deleteById(review.getId());
+             findReview =  itenderReviewService.findByReviewReferenceId(review.getReferenceId());
+           if(findReview!=null){
+               itenderReviewService.deleteById(review.getId());
+           }
+
             result.put("status", false);
             result.put("msg", "该任务添加失败"+e.getLocalizedMessage());
             return ResponseEntity.ok(result);

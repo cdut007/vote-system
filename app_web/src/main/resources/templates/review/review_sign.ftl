@@ -220,39 +220,30 @@
         });
 
         $("#pass").click(function () {
+            var r = ShowMessageOkCancel("确认通过?");
+            if(r==1){
+                if(type=='notice'){
+                    updateSignStatus("approved");
+                }else{
+                    if (GetCurrUserID()==""||sealNum==0) {
 
-            layer.open({
-                type: 1
-                ,title: '审核'
-                ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
-                ,id: 'dashauto' //防止重复弹出
-                ,content: '<div style="padding: 20px 100px;">确认通过？</div>'
-                ,btn: '确认'
-                ,btnAlign: 'c' //按钮居中
-                ,shade: 0 //不显示遮罩
-                ,yes: function(){
-                    if(type=='notice'){
+                        ShowMessage("请先盖章！");
+                        return ;
+                    }
+                    var name = "${(confirm.name)}";
+                    var paramsArray = {"fileName":encodeURIComponent(name)};
+                    var returnValue = SaveDocArray(paramsArray,"/upload");
+                    var info = JSON.parse(returnValue);
+
+                    if (200 == info.code) {
+                        ShowMessage("文件上传成功！");
                         updateSignStatus("approved");
-                    }else{
-                        if (GetCurrUserID()==""||sealNum==0) {
-
-                            ShowMessage("请先盖章！");
-                            return ;
-                        }
-                        var name = "${(confirm.name)}";
-                        var paramsArray = {"fileName":encodeURIComponent(name)};
-                        var returnValue = SaveDocArray(paramsArray,"/upload");
-                        var info = JSON.parse(returnValue);
-
-                        if (200 == info.code) {
-                            ShowMessage("文件上传成功！");
-                            updateSignStatus("approved");
-                        } else {
-                            ShowMessage("操作失败！");
-                        }
+                    } else {
+                        ShowMessage("操作失败！");
                     }
                 }
-            });
+            }
+
 
 
         });
@@ -260,22 +251,10 @@
 
 
         $("#fail").click(function () {
-
-            layer.open({
-                type: 1
-                ,title: '审核'
-                ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
-                ,id: 'dashauto' //防止重复弹出
-                ,content: '<div style="padding: 20px 100px;">确认不通过？</div>'
-                ,btn: '确认'
-                ,btnAlign: 'c' //按钮居中
-                ,shade: 0 //不显示遮罩
-                ,yes: function(){
-                    updateSignStatus("forbidden");
-                }
-            });
-
-
+            var r = ShowMessageOkCancel("确认不通过?");
+            if(r==1){
+                updateSignStatus("forbidden");
+            }
 
         });
 
