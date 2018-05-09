@@ -108,9 +108,22 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 		return itenderReview;
 	}
 
-    @Override
+	@Override
+	public List<ItenderAttach> findAttachsByReviewId(String reviewId) {
+		ItenderReview itenderReview = new ItenderReview();
+		itenderReview.setId(reviewId);
+		findAttachs(itenderReview);
+		if(itenderReview!=null){
+			return  itenderReview.getAttaches();
+		}
+		return null;
+	}
+
+	@Override
     public List<ItenderConfirm> findConfirmsByReviewId(String reviewId) throws APIException {
-        ItenderReview itenderReview = findById(reviewId);
+		ItenderReview itenderReview = new ItenderReview();
+		itenderReview.setId(reviewId);
+		findConfirms(itenderReview);
         if(itenderReview!=null){
             return  itenderReview.getConfirms();
         }
@@ -184,9 +197,17 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 
 
 	private void findAttachsAndConfirms(ItenderReview itenderReview){
+	    findAttachs(itenderReview);
+		findConfirms(itenderReview);
+	}
+
+	private void findAttachs(ItenderReview itenderReview){
 		Example example = new Example(ItenderAttach.class);
 		example.createCriteria().andEqualTo("reviewId",itenderReview.getId());
 		itenderReview.setAttaches(itenderAttachMapper.selectByExample(example));
+	}
+
+	private void findConfirms(ItenderReview itenderReview){
 		Example example2 = new Example(ItenderConfirm.class);
 		example2.createCriteria().andEqualTo("reviewId",itenderReview.getId());
 		List<ItenderConfirm> confirms = itenderConfirmMapper.selectByExample(example2);

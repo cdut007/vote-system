@@ -217,6 +217,9 @@ public class ReviewController {
     public String reviewDetailPage(HttpServletRequest request, HttpServletResponse response){
         String reviewId = request.getParameter("id");
         ItenderReview review = null;
+        ItenderUser user = (ItenderUser)request.getSession().getAttribute("user");
+        itenderReviewService.setCurrentUser(user);
+
         if(CommonUtility.isNonEmpty(reviewId)){
             review = itenderReviewService.findById(reviewId);
         }
@@ -277,6 +280,16 @@ public class ReviewController {
     ) throws APIException{
 
         Map<String,Object> result = new HashMap<>();
+
+        ItenderUser user = (ItenderUser)request.getSession().getAttribute("user");
+
+        if(user == null){
+            result.put("status", false);
+            result.put("msg", "用户不存在，查询审批失败！");
+            return ResponseEntity.ok(result);
+        }
+        itenderReviewService.setCurrentUser(user);
+
         if(reviewId == null || reviewId.equals("")){
             result.put("status", false);
             result.put("msg", "获取签章列表信息失败！");
@@ -404,15 +417,15 @@ public class ReviewController {
                                                        @RequestParam(required = false) String id
     ) throws APIException{
 
-        ItenderReview review = itenderReviewService.findById(id);
+        List<ItenderAttach> attachs = itenderReviewService.findAttachsByReviewId(id);
         Map<String,Object> result = new HashMap<>();
-        if(!CommonUtility.isNonEmpty(review.getId())){
+        if(attachs == null){
             result.put("status", false);
-            result.put("msg", "添加审批失败！");
+            result.put("msg", "get attach failed！");
         }else{
             result.put("status", true);
         }
-        result.put("data", review.getAttaches());
+        result.put("data", attachs);
 
         return ResponseEntity.ok(result);
 

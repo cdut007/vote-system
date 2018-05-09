@@ -51,36 +51,15 @@
 
 
     <script type="text/html" id="countTool">
-
-        <#if user??>
-            <#if user.operator??>
-            <#if user.operator=='operator'>
-
-             {{# if(d.type == 'notice'){ }}
-                  {{'/'}}
-                {{#  } else { }}
-                      {{# if(!d.count){ }}
-                          {{'输入份数'}}
-                        {{#  } else { }}
-                           {{d.count}}
-                        {{#  } }}
-
-                {{#  } }}
-
-            </#if>
-            </#if>
-        <#else>
-         {{# if(d.type == 'notice'){ }}
-                  {{'/'}}
-                {{#  } else { }}
-                 {{# if(!d.count){ }}
-                          {{'输入份数'}}
-                        {{#  } else { }}
-                           {{d.count}}
-                        {{#  } }}
-                {{#  } }}
-
-        </#if>
+        {{# if(d.type == 'notice'){ }}
+        {{'/'}}
+        {{#  } else { }}
+        {{# if(!d.count){ }}
+        {{'输入份数'}}
+        {{#  } else { }}
+        {{d.count}}
+        {{#  } }}
+        {{#  } }}
 
     </script>
 
