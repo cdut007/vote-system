@@ -78,8 +78,27 @@
         document.all.HWPostil1.HideMenuItem(30);
 
         var id = "${(confrim.attachId)!}";
-        OpenFile("/getAttachFile?referenceAttachId="+id);
 
+        $.ajax({
+            url: "/review/attach",
+            type: "POST",
+            dataType: "json",
+            data: {id:id},
+            success: function (res) {
+                if(res!=null){
+                    if(res.status){
+                        OpenFile(res.data.path);
+                    }else{
+
+                    }
+                }else{
+
+                }
+            },
+            error: function (xmlHttpReq, error, ex) {
+
+            }
+        })
 
     }
 

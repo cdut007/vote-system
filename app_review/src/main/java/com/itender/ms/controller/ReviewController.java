@@ -382,6 +382,28 @@ public class ReviewController {
 //        return  "审批人";
 //    }
 
+    @ApiOperation(value = "获取文件接口",notes = "用于查询所有审批信息")
+    @RequestMapping(value = "/attach",method = RequestMethod.POST)
+    public ResponseEntity<Map<String,Object>> attach(HttpServletRequest request,
+                                                       @RequestParam(required = true) String id
+    ) throws APIException{
+        Map<String,Object> result = new HashMap<>();
+
+        ItenderAttach attach = itenderReviewService.findAttachByReferenceAttachId(id);
+
+        if(attach == null){
+            result.put("status", false);
+            result.put("msg", "获取附件失败！");
+        }else{
+            result.put("status", true);
+        }
+        result.put("data", attach);
+
+        return ResponseEntity.ok(result);
+
+    }
+
+
 
     @ApiOperation(value = "审批文件接口",notes = "用于查询所有审批信息")
     @RequestMapping(value = "/confirms",method = RequestMethod.POST)
