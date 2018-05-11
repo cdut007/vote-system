@@ -1172,12 +1172,13 @@ public class ReviewController {
             return ResponseEntity.ok(result);
         }
         ItenderSign itenderSign = itenderReviewService.updateSignFileResult(confirmId,signId,signResult,description);
+        boolean ok = true;
         if(lastItem){
            String reviewId = itenderReviewService.findConfirmByConfirmId(confirmId).getReviewId();
-            boolean ok = itenderReviewService.postToResult(reviewId);
+             ok = itenderReviewService.postToResult(reviewId);
         }
 
-        if(itenderSign == null){
+        if(itenderSign == null || !ok){
             result.put("status", false);
             result.put("msg", "跟新审批失败！");
         }else{

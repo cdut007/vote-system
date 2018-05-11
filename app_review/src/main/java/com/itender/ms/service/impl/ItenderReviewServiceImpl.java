@@ -470,7 +470,7 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 		example.createCriteria().andEqualTo("reviewId",id);
 		List<ItenderTask> itenderTasks = itenderTaskMapper.selectByExample(example);
 		//reset
-        boolean isOperatorSign = false;
+
         boolean hasForbiddenSign = false;
 		if(itenderTasks!=null&& !itenderTasks.isEmpty()){
 			String rollbackRole = null;
@@ -479,7 +479,7 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 				if(rollbackTask.getUserId()!=null && rollbackTask.getUserId().equals(userId) && rollbackTask.getCurrentTask()){
 					logger.info("find the task exsit.");
 					rollbackRole = rollbackTask.getRole();
-					itenderTaskMapper.delete(rollbackTask);
+
 					List<ItenderConfirm> confirms = rollbackItenderReview.getConfirms();
 					if(confirms!=null && !confirms.isEmpty()){
 						for (int j = 0; j < confirms.size(); j++) {
@@ -488,11 +488,20 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 							List<ItenderSign> signList = itenderSignMapper.selectByExample(example2);
                             if(ReviewRole.operator.name().equals(rollbackRole)){
                                 if(signList!=null && !signList.isEmpty()){
-                                    isOperatorSign = true;
+									//不通过原因
+									boolean result = postToResult(rollbackItenderReview.getId());
+									if(result){
+										return  0;
+									}else{
+										return -1;
+									}
                                 }else{
-
-                                    confirms.get(j).setCount("0");
-                                    itenderConfirmMapper.updateByPrimaryKeySelective(confirms.get(j));
+                                	confirms.get(j).setCount("0");
+                                	itenderConfirmMapper.updateByPrimaryKeySelective(confirms.get(j));
+									rollbackItenderReview.setAssigneeId("");
+									itenderReviewMapper.updateByPrimaryKeySelective(rollbackItenderReview);
+									itenderTaskMapper.delete(rollbackTask);
+									return 0;
                                 }
                             }
 
@@ -508,23 +517,13 @@ public class ItenderReviewServiceImpl implements ItenderReviewService {
 							}
 						}
 					}
+					itenderTaskMapper.delete(rollbackTask);
 
 					break;
 				}
 			}
 
-			//
-			if(ReviewRole.operator.name().equals(rollbackRole)){
-			    if(!isOperatorSign){
-                    rollbackItenderReview.setAssigneeId("");
-                    itenderReviewMapper.updateByPrimaryKeySelective(rollbackItenderReview);
-                    return 0;
-                }else{
-			    	//不通过原因
-					postToResult(rollbackItenderReview.getId());
-                    return  0;
-                }
-            }
+
 
 			for (int i = 0; i < itenderTasks.size(); i++) {
 				ItenderTask itenderTask = itenderTasks.get(i);
