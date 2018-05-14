@@ -6,7 +6,7 @@ logging:
 spring:
     ## 多环境配置
     profiles:
-        active: staging
+        active: dev
 
  #设置文件上大小
     http:
@@ -111,6 +111,7 @@ privilege-uri-init:
     - /static/*
     - /review*
     - /industry/listAll
+    - /test*
   #登录后无需检查URI
   login_uncheck_uri:
     - /
@@ -125,6 +126,7 @@ privilege-uri-init:
     - /supervision/leaveRoom
     - /review*
     - /industry/listAll
+    - /test*
   #后台登录URI
   backend_login_uri: /
   #前台登录URI
@@ -135,7 +137,7 @@ privilege-uri-init:
   frontend_check_prefix: /home
 
 sys:
-  version: @project.version@
+  version: "@project.version@"
 
 
 

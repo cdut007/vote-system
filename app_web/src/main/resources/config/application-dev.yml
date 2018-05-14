@@ -17,7 +17,7 @@ db:
 
     #http对接地址
 httpRequest:
-   domain:  http://47.94.241.88:80
+   domain:  http://10.0.0.145:8080
    host:  http://192.168.99.133:9090
    socket:  0.0.0.0
 
