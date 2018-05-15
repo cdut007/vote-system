@@ -6,26 +6,14 @@
     <#include "../resource.ftl">
     <script src="/js/encryption.js"></script>
     <script src="/js/md5.js"></script>
-    <link rel="stylesheet" href="/css/mui.min.css">
     <style>
 
-        #background {
-            margin-top: 1px;
-            height: 100%;
-            width: 100%;
-            background: url("/css/img/login_bg.jpg") no-repeat;
-            background-size: 100%;
-            background-size:cover;
-            background-position:center;
 
-        }
         .login-label {
             text-align: center;
             font-size: 16px;
-            background-color: #0154AD;
+            background-color: #ff0000;
             color: white;
-            border-top-left-radius:8px;
-            border-top-right-radius:8px;
             padding: 12px 10px 12px 10px;
         }
         .mui-card{
@@ -46,38 +34,47 @@
 
     </style>
 </head>
-<body>
+<body style="background-color: whitesmoke">
 
-<div id="background" class="layui-container login  mui-fullscreen">
-    <div align="center" class="mui-content mui-card" style="margin:0 auto;width:380px; height: 420px;background-color:#f6f6f6;z-index: 1000; margin-top: 15%;">
-        <header id="exam_label_bg" class="box-label-div">
-            <div  class="login-label">
-               测试系统
-            </div>
-        </header>
+<div id="background" >
+
+    <div  class="login-label" id="title">
+        测试系统
+    </div>
+
+    <div align="center" class="" style="margin:0 auto;width:380px; height: 420px;background-color:#f6f6f6;z-index: 1000; ">
 
         <div class="layui-row" style="">
 
+            <form class="layui-form" action="">
 
-                    <div class="layui-form-item">
+                <select id="account_item" name="account" lay-verify="required" lay-filter="account_select">
+                    <option value="">请选择账号</option>
+                    <option value='zhaofu1;12345678'>招负1（zhaofu1）</option>
+                    <option value='daifu1;12345678'>代负1（daifu1）</option>
+                    <option value='lilaoshi;123456'>李老师（lilaoshi）</option>
+                </select>
+            </form>
 
-                        <div class="layui-input-block">
-                            <input type="text" class="layui-input" name="username" id="username" lay-verify="username" lay-verType="tips" placeholder="请输入用户名">
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
+            <form class="layui-form" action="">
 
-                        <div class="layui-input-block">
-                            <input type="password" class="layui-input" name="password" id="password" lay-verify="password" lay-verType="tips" placeholder="请输入密码">
-                        </div>
-                    </div>
+                <select id="domain_item" name="domain" lay-verify="required" lay-filter="domain_select">
+                    <option value="">请选择环境</option>
+                    <option value='http://47.93.99.57'>57环境</option>
+                    <option value='http://47.94.241.88'>88环境</option>
+                    <option value='http://127.0.0.1:8080'>本地环境</option>
+                </select>
+            </form>
+
                     <div class="layui-form-item">
                         <div class="layui-input-block">
                             <button id="login" type="submit" class="layui-btn layui-btn-default layui-btn-block" lay-submit lay-filter="login" style="width: 100%">
                                 登录
                             </button>
                         </div>
+
                     </div>
+
 
             <div class="layui-form-item">
                 <div class="layui-input-block">
@@ -98,40 +95,137 @@
             </div>
 
         </div>
+
+
+
     </div>
 
 
+    <div class="layui-row">
+        <div class="layui-col-md-12">
+            <table class="table table-bordered table-hover" id="taskTable" lay-filter="taskTable">
+            </table>
+        </div>
+    </div>
+
 </div>
 </body>
+
+
+<div id="chooseOrganizationA"  style="display: none">
+    <form class="layui-form" action="">
+    <select id="organization_item" lay-verify="required" lay-filter="organization_select">
+        <option value="">请选择代理机构</option>
+    </select>
+</form>
+    <div class="layui-input-block">
+
+        <button id="online_organizationA"  class="layui-btn layui-btn-default layui-btn-block" style="width: 100%">
+            在线提交
+        </button>
+    </div>
+</div>
+
+
+<script type="text/html" id="indexTpl">
+    {{d.LAY_INDEX}}
+</script>
+<script type="text/html" id="taskTableTool">
+    <a class="layui-btn layui-btn-xs btn-edit" lay-event="review">点击办理</a>
+</script>
+
+<script type="text/html" id="createTimeLabel">
+    {{ d.createTime}}
+</script>
+
+<script type="text/html" id="typeLabel">
+</script>
+
 <script>
-    layui.use(['form','layer','itenderUser'], function () {
+
+
+    Date.prototype.format = function (format) {
+        var args = {
+            "M+": this.getMonth() + 1,
+            "d+": this.getDate(),
+            "h+": this.getHours(),
+            "m+": this.getMinutes(),
+            "s+": this.getSeconds(),
+            "q+": Math.floor((this.getMonth() + 3) / 3),  //quarter
+            "S": this.getMilliseconds()
+        };
+        if (/(y+)/.test(format))
+            format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var i in args) {
+            var n = args[i];
+            if (new RegExp("(" + i + ")").test(format))
+                format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? n : ("00" + n).substr(("" + n).length));
+        }
+        return format;
+    };
+
+    layui.use(['form','layer','table','itenderUser'], function () {
         var form = layui.form;
         var itenderUser = layui.itenderUser;
         var layer = layui.layer;
-
+        var table = layui.table;
+        var domain;
+        var account;
+        var organizationA;
+        form.render();
         $("#login").show();
         $("#logout").hide();
+        form.on('select(organization_select)', function(data){
 
-       $("#login").click(function () {
-           var password = encode64($("#password").val());
-           var  verify = (b64_md5(Utf8Encode($("#username").val())));
-           verify = verify+(b64_md5(Utf8Encode(password)));
-           var username = $("#username").val();
+            organizationA = data.value;
 
+            return false;
+        });
+
+        form.on('select(domain_select)', function(data){
+            domain = data.value;
+
+            return false;
+        });
+
+        form.on('select(account_select)', function(data){
+            account = data.value;
+
+            return false;
+        });
+
+
+        $("#login").click(function () {
+
+           if(!account){
+               layer.msg("选择登录账号!");
+               return;
+           }
+
+           var userInfo = account.split(";");
+
+            var password = encode64(userInfo[1]);
+            var  verify = (b64_md5(Utf8Encode(userInfo[0])));
+            verify = verify+(b64_md5(Utf8Encode(password)));
+            var username = userInfo[0];
 
            $.ajax({
                url: "/test/login",
                type: "POST",
                dataType: "json",
-               data: {password:password,verify:verify,username:username},
+               data: {password:password,verify:verify,username:username,domain:domain},
                success: function (res) {
                    if(res!=null){
                        if(res.status){
-                           alert("登陸成功!");
+                           $("#title").text('已登录');
+                           $("#title").css({"background-color":"#00ff00"});
+
+                           layer.msg("登陸成功!");
+                           reloadTaskTable();
                            $("#login").hide();
                            $("#logout").show();
                        }else{
-                           alert("登陸失敗!");
+                           layer.msg("登陸失敗!");
                        }
                    }
                },
@@ -153,7 +247,7 @@
                     if(res!=null){
                         if(res.status){
                             alert("創建成功!");
-
+                            reloadTaskTable();
                         }else{
                             alert("創建失敗!"+ res.msg);
                         }
@@ -174,7 +268,8 @@
                 dataType: "json",
                 data: {},
                 success: function (res) {
-                    alert("登出成功!");
+                    $("#title").text('测试系统');
+                    $("#title").css({"background-color":"#ff0000"});
                     $("#login").show();
                     $("#logout").hide();
                 },
@@ -183,6 +278,173 @@
                 }
             })
         });
+
+
+        var currentTable = table.render({
+            elem: "#taskTable", skin: 'nob',
+            even: true,
+            page: true,
+            url: "/test/workflow/pagingTask",
+            method: "POST",
+            cols: [[
+                {title: '序号',templet: '#indexTpl'},
+                {title: "任务名称", field: 'name'},
+                {title: "任务描述", field: 'description'},
+                {title: "创建时间", templet: '#createTimeLabel'},
+                {title: "操作",fixed: 'right', align: 'center', toolbar: '#taskTableTool'}
+            ]],
+
+            where:{},
+
+            request: {
+                pageName: 'pageNum' //页码的参数名称，默认：page
+                , limitName: 'pagesize' //每页数据量的参数名，默认：limit
+            },
+            response: {
+                statusName: 'statusCode' //数据状态的字段名称，默认：code
+                , statusCode: 200 //成功的状态码，默认：0
+                , msgName: 'msg' //状态信息的字段名称，默认：msg
+                , countName: 'total' //数据总数的字段名称，默认：count
+                , dataName: 'data' //数据列表的字段名称，默认：data
+            },
+            done: function (res, curr, count) {
+                //如果是异步请求数据方式，res即为你接口返回的信息。
+                //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+                console.log(res);
+
+                //得到当前页码
+                console.log(curr);
+
+                //得到数据总量
+                console.log(count);
+            }
+        });
+
+        table.on('tool(taskTable)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var taskId = data.id;
+
+            if (layEvent === 'review') { //点击办理
+
+
+                $.ajax({
+                    url: '/test/workflow/customTaskForm?taskId='+taskId,
+                    type:"GET",
+                    cache:false,
+                    success: function (res) {
+                        if(res!=null){
+                            if(res.status){
+                                var obj =res.data;
+                                var objLength = obj.length;
+                                if(objLength>0){
+
+                                    $('#organization_item').empty();
+                                    $("#organization_item").append('<option value="">请选择代理机构</option>');
+
+                                    $(obj).each(function (i) {
+
+                                        $("#organization_item").append('<option value="' + obj[i].organizationAId + '">' + obj[i].title + '</option>');
+
+                                    });
+
+
+                                }else{
+
+                                    $('#organization_item').find('option').remove();
+                                    $("#organization_item").append('<option value="">请选择代理机构</option>');
+
+
+                                }
+
+                                bindOrganizationCommit(taskId,obj);
+
+                                layer.open({
+                                    title: '选择代理机构',
+                                    type: 1,
+                                    area: ['500px', '300px']
+                                    ,content: $('#chooseOrganizationA')
+                                    ,
+                                    success: function() {
+                                        form.render()
+
+
+                                    }
+                                });
+                            }else{
+                                alert("获取代理机构失败!"+ res.msg);
+                            }
+                        }
+
+
+                    },
+                    error: function (xmlHttpReq, error, ex) {
+
+                    }
+                })
+
+
+                function bindOrganizationCommit(taskId,data) {
+                    $("#online_organizationA").click(function() {
+                        if (!organizationA) {
+                            layer.msg("选择代理机构!");
+                            return;
+                        }
+
+                        var orgName = '';
+                        for (var i = 0; i < data.length; i++) {
+                            if(data[i].organizationAId == organizationA){
+                                orgName = data[i].title;
+                                break
+                            }
+                        }
+
+                        $.ajax({
+                            url: "/test/commitOrgazationA",
+                            type: "POST",
+                            dataType: "json",
+                            data: {
+                                orgId: organizationA,
+                                organAName:orgName,
+                                taskId:taskId
+                            },
+                            success: function(res) {
+                                if (res != null) {
+                                    if (res.status) {
+                                        alert("选择代理机构提交成功!");
+                                        reloadTaskTable();
+                                    } else {
+                                        layer.msg("选择代理机构提交失敗!");
+                                    }
+                                }
+                            },
+                            error: function(xmlHttpReq, error, ex) {
+                                layer.msg("选择代理机构提交失敗!");
+                            }
+                        })
+                    });
+                }
+
+            }
+        });
+
+
+        function reloadTaskTable() {
+            currentTable.reload({
+
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                },
+
+                where:{},
+                request: {
+                    pageName: 'pageNum', //页码的参数名称，默认：page
+                    limitName: 'pagesize' //每页数据量的参数名，默认：limit
+                }
+
+
+            });
+        }
 
 
 
