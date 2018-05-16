@@ -221,6 +221,9 @@
             verify = verify+(b64_md5(Utf8Encode(password)));
             var username = userInfo[0];
             userId = username;
+            var index = layer.load(1, {
+                shade: [0.1,'#fff'] //0.1透明度的白色背景
+            });
 
            $.ajax({
                url: "/test/login",
@@ -228,6 +231,7 @@
                dataType: "json",
                data: {password:password,verify:verify,username:username,domain:domain,userId:userId},
                success: function (res) {
+                   layer.close(index);
                    if(res!=null){
                        if(res.status){
                            $("#title").text('已登录');
@@ -243,6 +247,7 @@
                    }
                },
                error: function (xmlHttpReq, error, ex) {
+                   layer.close(index);
                    alert("登陸失敗!");
                }
            })
@@ -342,59 +347,84 @@
 
             if (layEvent === 'review') { //点击办理
 
+                var index = layer.load(1, {
+                    shade: [0.1,'#fff'] //0.1透明度的白色背景
+                });
 
                 $.ajax({
                     url: '/test/workflow/customTaskForm?taskId='+taskId+"&userId="+userId,
                     type:"GET",
                     cache:false,
                     success: function (res) {
+                        layer.close(index);
                         if(res!=null){
                             if(res.status){
-                                var obj =res.data;
-                                var objLength = obj.length;
-                                if(objLength>0){
+                               if(res.type == '委托代理机构'){
+                                   var obj =res.data;
+                                   var objLength = obj.length;
+                                   if(objLength>0){
 
-                                    $('#organization_item').empty();
-                                    $("#organization_item").append('<option value="">请选择代理机构</option>');
+                                       $('#organization_item').empty();
+                                       $("#organization_item").append('<option value="">请选择代理机构</option>');
 
-                                    $(obj).each(function (i) {
+                                       $(obj).each(function (i) {
 
-                                        $("#organization_item").append('<option value="' + obj[i].organizationAId + '">' + obj[i].title + '</option>');
+                                           $("#organization_item").append('<option value="' + obj[i].organizationAId + '">' + obj[i].title + '</option>');
 
-                                    });
-
-
-                                }else{
-
-                                    $('#organization_item').find('option').remove();
-                                    $("#organization_item").append('<option value="">请选择代理机构</option>');
+                                       });
 
 
-                                }
+                                   }else{
 
-                                bindOrganizationCommit(taskId,obj);
-
-                                layer.open({
-                                    title: '选择代理机构',
-                                    type: 1,
-                                    area: ['500px', '300px']
-                                    ,content: $('#chooseOrganizationA')
-                                    ,
-                                    success: function() {
-                                        form.render()
+                                       $('#organization_item').find('option').remove();
+                                       $("#organization_item").append('<option value="">请选择代理机构</option>');
 
 
-                                    }
-                                });
+                                   }
+
+                                   bindOrganizationCommit(taskId,obj);
+
+                                   layer.open({
+                                       title: '选择代理机构',
+                                       type: 1,
+                                       area: ['500px', '300px']
+                                       ,content: $('#chooseOrganizationA')
+                                       ,
+                                       success: function() {
+                                           form.render()
+
+
+                                       }
+                                   });
+                               }else if(res.type == '上传委托代理合同'){
+
+                                   layer.open({
+                                       type: 1
+                                       ,title: '上传委托代理合同'
+                                       ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+                                       ,id: 'dashauto' //防止重复弹出
+                                       ,content: '上传委托代理合同成功'
+                                       ,btn: '确认'
+                                       ,btnAlign: 'c' //按钮居中
+                                       ,shade: 0 //不显示遮罩
+                                       ,yes: function(){
+
+                                       }
+                                   });
+                                   reloadTaskTable();
+
+                               }else{
+                                   reloadTaskTable();
+                               }
                             }else{
-                                alert("获取代理机构失败!"+ res.msg);
+                                alert("处理失败!"+ res.msg);
                             }
                         }
 
 
                     },
                     error: function (xmlHttpReq, error, ex) {
-
+                        layer.close(index);
                     }
                 })
 
