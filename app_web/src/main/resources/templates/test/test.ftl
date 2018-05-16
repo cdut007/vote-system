@@ -50,9 +50,20 @@
 
                 <select id="account_item" name="account" lay-verify="required" lay-filter="account_select">
                     <option value="">请选择账号</option>
-                    <option value='zhaofu1;12345678'>招负1（zhaofu1）</option>
-                    <option value='daifu1;12345678'>代负1（daifu1）</option>
-                    <option value='lilaoshi;123456'>李老师（lilaoshi）</option>
+                    <option value='zhaofu1;12345678'>招标人-招负1（zhaofu1）</option>
+                    <option value='toufu1;12345678'>投标人-投负1（toufu1）</option>
+                    <option value='toufu2;12345678'>投标人-投负2（toufu2）</option>
+                    <option value='toufu3;12345678'>投标人-投负3（toufu3）</option>
+                    <option value='daifu1;12345678'>代理机构-代负1（daifu1）</option>
+                    <option value='zhaozhuanyuan;123456'>专员-zhaozhuanyuan</option>
+                    <option value='zhangjingli;123456'>经理-zhangjingli</option>
+                    <option value='likuaiji;123456'>会计-likuaiji</option>
+                    <option value='樊俊明;123456'>专家-樊俊明</option>
+                    <option value='翟旭东;123456'>专家-翟旭东</option>
+                    <option value='张小平;123456'>专家-张小平</option>
+                    <option value='张志明;123456'>专家-张志明</option>
+                    <option value='王朝霞;123456'>专家-王朝霞</option>
+                    <option value='E;Ul!@#$%12345'>平台审核-E</option>
                 </select>
             </form>
 
@@ -79,7 +90,7 @@
             <div class="layui-form-item">
                 <div class="layui-input-block">
 
-                    <button id="logout" type="submit" class="layui-btn layui-btn-default layui-btn-block" lay-submit lay-filter="login" style="width: 100%">
+                    <button id="logout" type="submit" class="layui-btn layui-btn-danger layui-btn-block" lay-submit lay-filter="login" style="width: 100%">
                         登出
                     </button>
                 </div>
@@ -171,6 +182,7 @@
         var table = layui.table;
         var domain;
         var account;
+        var userId;
         var organizationA;
         form.render();
         $("#login").show();
@@ -208,12 +220,13 @@
             var  verify = (b64_md5(Utf8Encode(userInfo[0])));
             verify = verify+(b64_md5(Utf8Encode(password)));
             var username = userInfo[0];
+            userId = username;
 
            $.ajax({
                url: "/test/login",
                type: "POST",
                dataType: "json",
-               data: {password:password,verify:verify,username:username,domain:domain},
+               data: {password:password,verify:verify,username:username,domain:domain,userId:userId},
                success: function (res) {
                    if(res!=null){
                        if(res.status){
@@ -241,7 +254,7 @@
                 url: "/test/createProject",
                 type: "POST",
                 dataType: "json",
-                data: {},
+                data: {userId:userId},
                 success: function (res) {
 
                     if(res!=null){
@@ -266,12 +279,14 @@
                 url: "/test/logout",
                 type: "POST",
                 dataType: "json",
-                data: {},
+                data: {userId:userId},
                 success: function (res) {
                     $("#title").text('测试系统');
                     $("#title").css({"background-color":"#ff0000"});
                     $("#login").show();
                     $("#logout").hide();
+                    userId=null;
+                    reloadTaskTable();
                 },
                 error: function (xmlHttpReq, error, ex) {
 
@@ -329,7 +344,7 @@
 
 
                 $.ajax({
-                    url: '/test/workflow/customTaskForm?taskId='+taskId,
+                    url: '/test/workflow/customTaskForm?taskId='+taskId+"&userId="+userId,
                     type:"GET",
                     cache:false,
                     success: function (res) {
@@ -407,6 +422,7 @@
                                 orgId: organizationA,
                                 organAName:orgName,
                                 taskId:taskId
+                                ,userId:userId
                             },
                             success: function(res) {
                                 if (res != null) {
@@ -436,7 +452,7 @@
                     curr: 1 //重新从第 1 页开始
                 },
 
-                where:{},
+                where:{userId:userId},
                 request: {
                     pageName: 'pageNum', //页码的参数名称，默认：page
                     limitName: 'pagesize' //每页数据量的参数名，默认：limit

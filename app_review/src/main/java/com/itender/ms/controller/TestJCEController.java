@@ -83,7 +83,7 @@ public class TestJCEController {
         return "test/test";
     }
 
-    private String sessionId;
+    private HashMap<String,String> sessionIdMap = new HashMap<>();
 
 
     @ApiOperation(value = "用户登录接口",notes = "用于用户登出")
@@ -93,8 +93,24 @@ public class TestJCEController {
         Map<String,Object> result = new HashMap<>();
 //api url地址
         String url = getDomain()+"/logout";
-         sessionId = null;
+      removeUserSessionCache(request.getParameter("userId"));
+
         return ResponseEntity.ok(result);
+    }
+
+    boolean removeUserSessionCache(String userId){
+
+          sessionIdMap.remove(userId);
+          return  true;
+    }
+
+    String getUserSessionCache(String userId){
+
+       return sessionIdMap.get(userId);
+    }
+
+    void setUserSessionCache(String userId,String sessionId){
+        sessionIdMap.put(userId,sessionId);
     }
 
     @ApiOperation(value = "任务流程详细接口",notes = "用于任务流程详细")
@@ -110,7 +126,7 @@ public class TestJCEController {
             jsonObject.put("createByAgency"," false");
             Jsoup jsoup;//委托代理机构
             String url = getDomain()+"/workflow/customTaskForm?taskId="+taskId;
-            ResponseEntity resultInfo =  clientForm(url,HttpMethod.GET,jsonObject);
+            ResponseEntity resultInfo =  clientForm(getUserSessionCache(request.getParameter("userId")),url,HttpMethod.GET,jsonObject);
             if(resultInfo.getStatusCodeValue() == 200){
                 //parse 關鍵字
                 String html = (String) resultInfo.getBody();
@@ -261,7 +277,7 @@ public class TestJCEController {
             jsonObject.put("page",pageNum);
             jsonObject.put("pageSize",pagesize);
 
-            ResponseEntity resultInfo =  clientForm(url,HttpMethod.POST,jsonObject);
+            ResponseEntity resultInfo =  clientForm(getUserSessionCache(request.getParameter("userId")),url,HttpMethod.POST,jsonObject);
             if(resultInfo.getStatusCodeValue() == 200){
                 //parse 關鍵字
                 String json = (String) resultInfo.getBody();
@@ -273,7 +289,7 @@ public class TestJCEController {
             }else{
                 result.put("status", false);
                 result.put("msg", "获取失敗!");
-                return ResponseEntity.ok(convertToLayuiData(new JSONObject(""),200,"success"));
+                return ResponseEntity.ok(convertToLayuiData(new JSONObject("{}"),200,"success"));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -344,7 +360,7 @@ public class TestJCEController {
             jsonObject.put("jdbmdm","");
             jsonObject.put("jdbmfzr","james");
             jsonObject.put("jdbmdh","18688173429");
-            ResponseEntity resultInfo =  clientForm(url,HttpMethod.POST,jsonObject);
+            ResponseEntity resultInfo =  clientForm(getUserSessionCache(request.getParameter("userId")),url,HttpMethod.POST,jsonObject);
             if(resultInfo.getStatusCodeValue() == 200){
               //parse 關鍵字
                String json = (String) resultInfo.getBody();
@@ -387,7 +403,7 @@ public class TestJCEController {
             jsonObject.put("organAName",organAName);
             jsonObject.put("contractSignMode",true);//默认在线签订
 
-            ResponseEntity resultInfo =  clientForm(url,HttpMethod.POST,jsonObject);
+            ResponseEntity resultInfo =  clientForm(getUserSessionCache(request.getParameter("userId")),url,HttpMethod.POST,jsonObject);
             if(resultInfo.getStatusCodeValue() == 200){
                 String json = (String) resultInfo.getBody();
                 if(json.contains("系统内部错误，请联系管理员")){
@@ -426,7 +442,8 @@ public class TestJCEController {
                                                     @ApiParam(name = "verify",value = "verify",required = true) @RequestParam(required = true) String verify,
                                                     @ApiParam(name = "domain",value = "domain",required = false) @RequestParam(required = false) String domain
     ) throws APIException{
-        sessionId =null;
+
+        removeUserSessionCache(request.getParameter("userId"));
         Map<String,Object> result = new HashMap<>();
         setDomain(domain);
 //api url地址
@@ -440,7 +457,7 @@ public class TestJCEController {
             jsonObject.put("validateCode","");
             jsonObject.put("isVerify","");
             jsonObject.put("verify",verify);
-            ResponseEntity resultInfo =  clientForm(url,HttpMethod.POST,jsonObject);
+            ResponseEntity resultInfo =  clientForm(getUserSessionCache(request.getParameter("userId")),url,HttpMethod.POST,jsonObject);
             if(resultInfo.getStatusCodeValue() == 302){
                 HttpHeaders headers = resultInfo.getHeaders();
                 List<String> cookies = headers.get("Set-Cookie");
@@ -451,7 +468,7 @@ public class TestJCEController {
                 }
                 for (String cookie : cookies) {
                    if(cookie.startsWith("shiro.session.id")){
-                       sessionId = cookie;
+                       setUserSessionCache(request.getParameter("userId"),cookie);
                        result.put("status", true);
                        result.put("msg", "登录成功!");
                        return ResponseEntity.ok(result);
@@ -472,7 +489,7 @@ public class TestJCEController {
 
 
 
-    public ResponseEntity clientForm(String url, HttpMethod method, JSONObject jsonObject){
+    public ResponseEntity clientForm(String sessionId,String url, HttpMethod method, JSONObject jsonObject){
         RestTemplate client = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.set("User-Agent","Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko");
@@ -510,7 +527,7 @@ public class TestJCEController {
     }
 
 
-    public String client(String url, HttpMethod method, JSONObject jsonObject){
+    public String client(String sessionId,String url, HttpMethod method, JSONObject jsonObject){
         RestTemplate client = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.set("User-Agent","Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko");
