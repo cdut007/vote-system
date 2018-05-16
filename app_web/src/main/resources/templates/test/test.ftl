@@ -254,14 +254,16 @@
        });
 
         $("#createProject").click(function () {
-
+            var index = layer.load(1, {
+                shade: [0.1,'#fff'] //0.1透明度的白色背景
+            });
             $.ajax({
                 url: "/test/createProject",
                 type: "POST",
                 dataType: "json",
                 data: {userId:userId},
                 success: function (res) {
-
+                    layer.close(index);
                     if(res!=null){
                         if(res.status){
                             alert("創建成功!");
@@ -272,6 +274,7 @@
                     }
                 },
                 error: function (xmlHttpReq, error, ex) {
+                    layer.close(index);
                     alert("創建失敗!");
                 }
             })
@@ -397,22 +400,12 @@
                                        }
                                    });
                                }else if(res.type == '上传委托代理合同'){
-
-                                   layer.open({
-                                       type: 1
-                                       ,title: '上传委托代理合同'
-                                       ,offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
-                                       ,id: 'dashauto' //防止重复弹出
-                                       ,content: '上传委托代理合同成功'
-                                       ,btn: '确认'
-                                       ,btnAlign: 'c' //按钮居中
-                                       ,shade: 0 //不显示遮罩
-                                       ,yes: function(){
-
-                                       }
-                                   });
+                                   layer.msg("上传委托代理合同成功!");
                                    reloadTaskTable();
 
+                               }else if(res.type == '指定项目经理'){
+                                   layer.msg("指定项目经理成功!");
+                                   reloadTaskTable();
                                }else{
                                    reloadTaskTable();
                                }

@@ -282,6 +282,8 @@ public class TestJCEController {
                             break;
                         }
 
+                    }else if (text.contains("指定项目经理")){
+                        parseDeliveryManager(request.getParameter("userId"),taskId,doc,result,"指定项目经理");
                     }
                 }
 
@@ -302,6 +304,8 @@ public class TestJCEController {
 
     }
 
+
+
     String getFileDirByName(String name) {
         String root = "C:\\\\";
         String os = System.getProperty("os.name").toLowerCase();
@@ -313,6 +317,36 @@ public class TestJCEController {
 
         String filePath = root + File.separator + "data" + File.separator + name + File.separator;
         return filePath;
+    }
+
+    boolean  parseDeliveryManager(String userId, String taskId,Document doc, Map<String, Object> result, String type) throws  JSONException {
+        //张经理id 3227a76b-5305-48ce-a171-b2681bd02cce
+        result.put("type", type);
+
+
+        //更新工作流状态
+        String activitiUrl = getDomain() + "/workflow/completeForm";
+        JSONObject activitiJsonObject = new JSONObject();
+
+
+        activitiJsonObject.put("taskId", taskId);
+        activitiJsonObject.put("ownerId", "3227a76b-5305-48ce-a171-b2681bd02cce");
+
+        ResponseEntity taskResultInfo = clientForm(getUserSessionCache(userId), activitiUrl, HttpMethod.POST, activitiJsonObject);
+        if (taskResultInfo.getStatusCodeValue() != 302) {
+
+            result.put("status", false);
+            result.put("msg", "处理失败!");
+            return false;
+
+        }
+        result.put("status", true);
+        String json = (String) taskResultInfo.getBody();
+//        JSONObject resultData = new JSONObject(json);
+//        result.put("status", resultData.optBoolean("success"));
+//        result.put("msg", resultData.optString("msg"));
+
+        return true;
     }
 
     boolean parseUploadCommissionContract(String userId, Document doc, Map<String, Object> result, String type) throws JSONException {
@@ -371,7 +405,6 @@ public class TestJCEController {
 
 
         //更新工作流状态
-
         String activitiUrl = getDomain() + "/workflow/completeForm";
         JSONObject activitiJsonObject = new JSONObject();
 
