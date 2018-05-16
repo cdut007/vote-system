@@ -406,6 +406,15 @@
                                }else if(res.type == '指定项目经理'){
                                    layer.msg("指定项目经理成功!");
                                    reloadTaskTable();
+                               }else if(res.type == '指定待办人'){
+                                   layer.msg("指定待办人成功!");
+                                   reloadTaskTable();
+                               }else if(res.type == '指定报名审核专员'){
+                                   layer.msg("指定报名审核专员成功!");
+                                   reloadTaskTable();
+                               }else if(res.type == '项目管理'){
+                                   layer.msg("项目管理成功!");
+                                   reloadTaskTable();
                                }else{
                                    reloadTaskTable();
                                }
