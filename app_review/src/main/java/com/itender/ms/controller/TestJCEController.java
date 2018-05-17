@@ -22,6 +22,10 @@ import fr.opensagres.xdocreport.itext.extension.font.IFontProvider;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.poi.xwpf.converter.pdf.PdfConverter;
 import org.apache.poi.xwpf.converter.pdf.PdfOptions;
 import org.apache.poi.xwpf.usermodel.*;
@@ -37,9 +41,11 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -52,12 +58,17 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.net.ssl.SSLContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.io.*;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -70,8 +81,34 @@ public class TestJCEController {
     private static final Logger logger = LoggerFactory.getLogger(TestJCEController.class);
     @Autowired
     private HttpHelper httpHelper;
-    private String domain = "http://47.93.99.57";//"http://192.168.99.44:8080";
+    private String domain = "https://stage.jcebid.com";//"http://192.168.99.44:8080";
     private HashMap<String, String> sessionIdMap = new HashMap<>();
+
+
+    public RestTemplate restTemplateRequestFactory() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+        TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
+
+        SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom()
+                .loadTrustMaterial(null, acceptingTrustStrategy)
+                .build();
+
+        SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
+
+        CloseableHttpClient httpClient = HttpClients.custom()
+                .setSSLSocketFactory(csf)
+                .build();
+
+        HttpComponentsClientHttpRequestFactory requestFactory =
+                new HttpComponentsClientHttpRequestFactory();
+
+        requestFactory.setHttpClient(httpClient);
+
+        RestTemplate client = new RestTemplate();
+        client.setRequestFactory(requestFactory);
+
+        return client;
+    }
+
 
     public static boolean isLinux(String OS) {
         return OS.indexOf("linux") >= 0;
@@ -795,7 +832,17 @@ public class TestJCEController {
 
 
     public ResponseEntity clientFileForm(String sessionId, String url, String filePath, JSONObject jsonObject) {
-        RestTemplate client = new RestTemplate();
+        RestTemplate client = null;
+        try {
+            client = restTemplateRequestFactory();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
+
         HttpHeaders headers = new HttpHeaders();
         headers.set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko");
         //  请勿轻易改变此提交方式，大部分的情况下，提交方式都是表单提交
@@ -839,7 +886,17 @@ public class TestJCEController {
 
 
     public ResponseEntity clientForm(String sessionId, String url, HttpMethod method, JSONObject jsonObject) {
-        RestTemplate client = new RestTemplate();
+        RestTemplate client = null;
+        try {
+            client = restTemplateRequestFactory();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
+
         HttpHeaders headers = new HttpHeaders();
         headers.set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko");
         //  请勿轻易改变此提交方式，大部分的情况下，提交方式都是表单提交
@@ -877,7 +934,16 @@ public class TestJCEController {
 
 
     public String client(String sessionId, String url, HttpMethod method, JSONObject jsonObject) {
-        RestTemplate client = new RestTemplate();
+        RestTemplate client = null;
+        try {
+            client = restTemplateRequestFactory();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
         HttpHeaders headers = new HttpHeaders();
         headers.set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko");
         //  请勿轻易改变此提交方式，大部分的情况下，提交方式都是表单提交

@@ -71,7 +71,7 @@
 
                 <select id="domain_item" name="domain" lay-verify="required" lay-filter="domain_select">
                     <option value="">请选择环境</option>
-                    <option value='http://47.93.99.57'>57环境</option>
+                    <option value='https://stage.jcebid.com'>57环境</option>
                     <option value='http://47.94.241.88'>88环境</option>
                     <option value='http://127.0.0.1:8080'>本地环境</option>
                 </select>
