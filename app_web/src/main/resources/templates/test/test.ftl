@@ -142,7 +142,12 @@
     {{d.LAY_INDEX}}
 </script>
 <script type="text/html" id="taskTableTool">
+    {{#  if(!d.assignee){ }}
+    <a class="layui-btn  layui-btn-xs layui-btn-danger" lay-event="review">点击签收</a>
+    {{#  } else { }}
     <a class="layui-btn layui-btn-xs btn-edit" lay-event="review">点击办理</a>
+
+    {{#  } }}
 </script>
 
 <script type="text/html" id="createTimeLabel">
@@ -347,6 +352,11 @@
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             var taskId = data.id;
+            var assignId = data.assignee;
+
+            if(!assignId){
+                assignId = '';
+            }
 
             if (layEvent === 'review') { //点击办理
 
@@ -355,7 +365,7 @@
                 });
 
                 $.ajax({
-                    url: '/test/workflow/customTaskForm?taskId='+taskId+"&userId="+userId,
+                    url: '/test/workflow/customTaskForm?taskId='+taskId+"&userId="+userId+"&assignee="+assignId,
                     type:"GET",
                     cache:false,
                     success: function (res) {
@@ -413,7 +423,10 @@
                                    layer.msg("指定报名审核专员成功!");
                                    reloadTaskTable();
                                }else if(res.type == '项目管理'){
-                                   layer.msg("项目管理成功!");
+                                   layer.msg("项目管理操作成功!");
+                                   reloadTaskTable();
+                               }else if(res.type == '招标/资格预审公告审核'){
+                                   layer.msg("招标/资格预审公告审核成功!");
                                    reloadTaskTable();
                                }else{
                                    reloadTaskTable();
