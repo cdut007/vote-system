@@ -86,6 +86,16 @@
 
                     </div>
 
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button id="join" type="submit" class="layui-btn layui-btn-default layui-btn-block" lay-submit lay-filter="join" style="width: 100%">
+                        投标人报名
+                    </button>
+                </div>
+
+            </div>
+
+
 
             <div class="layui-form-item">
                 <div class="layui-input-block">
@@ -99,7 +109,7 @@
 
             <div class="layui-form-item">
                 <div class="layui-input-block">
-                    <button id="createProject" type="submit" class="layui-btn layui-btn-default layui-btn-block" lay-submit lay-filter="login" style="width: 100%">
+                    <button id="createProject" type="submit" class="layui-btn layui-btn-default layui-btn-block" lay-submit lay-filter="create" style="width: 100%">
                         新建項目
                     </button>
                 </div>
@@ -133,6 +143,21 @@
 
         <button id="online_organizationA"  class="layui-btn layui-btn-default layui-btn-block" style="width: 100%">
             在线提交
+        </button>
+    </div>
+</div>
+
+
+<div id="noticeJoin"  style="display: none">
+    <form class="layui-form" action="">
+        <select id="notice_item" lay-verify="required" lay-filter="notice_select">
+            <option value="">请选择代理机构</option>
+        </select>
+    </form>
+    <div class="layui-input-block">
+
+        <button id="online_notice"  class="layui-btn layui-btn-default layui-btn-block" style="width: 100%">
+            报名
         </button>
     </div>
 </div>
@@ -189,6 +214,7 @@
         var account;
         var userId;
         var organizationA;
+        var noticeJoin;
         form.render();
         $("#login").show();
         $("#logout").hide();
@@ -198,7 +224,12 @@
 
             return false;
         });
+        form.on('select(notice_select)', function(data){
 
+            noticeJoin = data.value;
+
+            return false;
+        });
         form.on('select(domain_select)', function(data){
             domain = data.value;
 
@@ -211,6 +242,97 @@
             return false;
         });
 
+        $("#join").click(function () {
+            $.ajax({
+                url: "/test/getTenderProjectList",
+                type: "POST",
+                dataType: "json",
+                data: {},
+                success: function (res) {
+                    var obj =res.data;
+                    var objLength = obj.length;
+                    if(objLength>0){
+
+                        $('#notice_item').empty();
+                        $("#notice_item").append('<option value="">请选择报名</option>');
+
+                        $(obj).each(function (i) {
+
+                            $("#notice_item").append('<option value="' + obj[i].noticeId + '">' + obj[i].title + '</option>');
+
+                        });
+
+
+                    }else{
+
+                        $('#notice_item').find('option').remove();
+                        $("#notice_item").append('<option value="">请选择报名</option>');
+
+
+                    }
+
+                    bindNoticeTenderCommit(obj);
+
+                    layer.open({
+                        title: '选择招标报名',
+                        type: 1,
+                        area: ['500px', '300px']
+                        ,content: $('#noticeJoin')
+                        ,
+                        success: function() {
+                            form.render()
+
+
+                        }
+                    });
+
+                },
+                error: function (xmlHttpReq, error, ex) {
+                    layer.close(index);
+                    alert("获取招标公告失败!");
+                }
+            })
+        });
+
+        function bindNoticeTenderCommit(data) {
+            $("#online_notice").click(function() {
+                if (!noticeJoin) {
+                    layer.msg("请选择报名!");
+                    return;
+                }
+
+                // var orgName = '';
+                // for (var i = 0; i < data.length; i++) {
+                //     if(data[i].noticeId == noticeJoin){
+                //         orgName = data[i].title;
+                //         break
+                //     }
+                // }
+
+                $.ajax({
+                    url: "/test/tenderApplicationForm",
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        noticeId: noticeJoin
+                        ,userId:userId
+                    },
+                    success: function(res) {
+                        if (res != null) {
+                            if (res.status) {
+                                alert("选择报名提交成功!");
+                                reloadTaskTable();
+                            } else {
+                                layer.msg("选择报名提交失敗!");
+                            }
+                        }
+                    },
+                    error: function(xmlHttpReq, error, ex) {
+                        layer.msg("选择报名失敗!");
+                    }
+                })
+            });
+        }
 
         $("#login").click(function () {
 
@@ -427,6 +549,15 @@
                                    reloadTaskTable();
                                }else if(res.type == '招标/资格预审公告审核'){
                                    layer.msg("招标/资格预审公告审核成功!");
+                                   reloadTaskTable();
+                               }else if(res.type == '招标文件项目经理审核'){
+                                   layer.msg("招标文件项目经理审核成功!");
+                                   reloadTaskTable();
+                               }else if(res.type == '招标文件代理机构审核'){
+                                   layer.msg("招标文件代理机构审核成功!");
+                                   reloadTaskTable();
+                               }else if(res.type == '专家抽取申请信息'){
+                                   layer.msg("专家抽取申请信息成功!");
                                    reloadTaskTable();
                                }else{
                                    reloadTaskTable();
