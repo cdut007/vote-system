@@ -559,6 +559,21 @@
                                }else if(res.type == '专家抽取申请信息'){
                                    layer.msg("专家抽取申请信息成功!");
                                    reloadTaskTable();
+                               }else if(res.type == '报名申请'){
+                                   layer.msg("报名申请审核成功!");
+                                   reloadTaskTable();
+                               }else if(res.type == '投标文件上传'){
+                                   layer.msg("投标文件上传成功!");
+                                   reloadTaskTable();
+                               }else if(res.type == '开标现场'){
+                                   layer.msg("投标人签到成功!");
+                                   reloadTaskTable();
+                               }else if(res.type == '专家签到'){
+                                   layer.msg("专家签到成功!");
+                                   reloadTaskTable();
+                               }else if(res.type == '投标文件上传回执'){
+                                   layer.msg("投标文件上传回执成功!");
+                                   reloadTaskTable();
                                }else{
                                    reloadTaskTable();
                                }
