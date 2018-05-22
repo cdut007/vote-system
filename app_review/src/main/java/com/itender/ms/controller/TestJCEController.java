@@ -913,6 +913,30 @@ public class TestJCEController {
 
                 }
 
+                String expertApplyUrl = getDomain() + "/expertApplication/loadExpertApplyContent";
+                JSONObject ex = new JSONObject();
+                ex.put("expertApplyId",reviewJsonObject.get("expertApplyId"));
+                ResponseEntity taskResultInfo = clientForm(getUserSessionCache(userId), expertApplyUrl, HttpMethod.POST, ex);
+                if (taskResultInfo.getStatusCodeValue() != 200) {
+
+                    result.put("status", false);
+                    result.put("msg", "审核失败!");
+                    return false;
+
+                }
+                expertApplyUrl = getDomain() + "/expertApplication/expertApplyArchive";
+                ex.put("expertApplyContentHtml",taskResultInfo.getBody());
+                taskResultInfo = clientForm(getUserSessionCache(userId), expertApplyUrl, HttpMethod.POST, ex);
+                if (taskResultInfo.getStatusCodeValue() != 200) {
+
+                    result.put("status", false);
+                    result.put("msg", "审核失败!");
+                    return false;
+
+                }
+
+
+
             }else if (type.equals("投标文件上传回执")){
                 uploadUrl = getDomain() + "/tenderApply/saveBidReceipt";
 
