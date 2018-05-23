@@ -1,24 +1,9 @@
 package com.itender.ms.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.databind.JsonSerializable;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.pagehelper.PageInfo;
 import com.itender.ms.convert.LayuiTableData;
-import com.itender.ms.convert.PageDataConvert;
-import com.itender.ms.domain.*;
-import com.itender.ms.enums.ReviewSignType;
-import com.itender.ms.enums.ReviewType;
-import com.itender.ms.enums.SignResult;
 import com.itender.ms.exception.APIException;
-import com.itender.ms.service.ItenderReviewService;
-import com.itender.ms.service.ItenderUserService;
-import com.itender.ms.service.impl.SocketIoService;
-import com.itender.ms.util.CommonUtility;
 import com.itender.ms.util.HttpHelper;
-import com.itender.ms.util.ViewUtil;
-import com.itextpdf.text.pdf.BaseFont;
-import fr.opensagres.xdocreport.itext.extension.font.IFontProvider;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -27,10 +12,6 @@ import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
-import org.apache.poi.xwpf.converter.pdf.PdfConverter;
-import org.apache.poi.xwpf.converter.pdf.PdfOptions;
-import org.apache.poi.xwpf.usermodel.*;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,8 +23,6 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -55,8 +34,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.net.ssl.SSLContext;
@@ -666,6 +643,15 @@ public class TestJCEController {
                             break;
                         } else if (text.contains("指定评标委员会组长")) {
                             parseProjectReview(taskId, request.getParameter("userId"), doc, result, "指定评标委员会组长");
+                            break;
+                        } else if (text.contains("初步评审")) {
+                            if("初步评审".equals(taskName)){
+                                //第一信封文件解密
+                                tenderDecrptFile(taskId, request.getParameter("userId"), doc, result, "初步评审");
+                            }else{
+
+                            }
+
                             break;
                         }
                     }

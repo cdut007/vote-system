@@ -1,6 +1,5 @@
 package com.itender.config;
 
-import com.itender.ms.directive.ResourceCheckDirective;
 import freemarker.template.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,8 +18,4 @@ public class FreeMarkerConfig {
     private Configuration freemarkerConfiguration;
 
 
-    @PostConstruct
-    public void initConfig() {
-        freemarkerConfiguration.setSharedVariable("resource_check", new ResourceCheckDirective());
-    }
 }

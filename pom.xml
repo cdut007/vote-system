@@ -10,15 +10,10 @@
     <version>0.0.1-SNAPSHOT</version>
     <modules>
         <module>app_web</module>
-        <module>app_device</module>
-        <module>app_log</module>
-        <module>app_room</module>
+
         <module>app_review</module>
         <module>app_base</module>
         <module>app_test</module>
-        <module>app_user</module>
-        <module>app_dashboard</module>
-        <module>app_supervision</module>
     </modules>
 
     <parent>

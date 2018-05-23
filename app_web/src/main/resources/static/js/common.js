@@ -16,25 +16,7 @@ layui.config({
     base:"/js/modules/",
     version: false
 }).extend({
-    metaTemplate:"meta_template",
-    invitationDocuments:"invitation_documents",
-    renderHtml:"render_html",
-    itenderProject:"itender_project",
-    formaterUtil:"formater_util",
-    tableEditor:"table_editor",
-    itenderUser:"itender_user",
-    itenderLog:"itender_log",
-    itenderRoom:"itender_room",
-    itenderBook:"itender_book",
-    itenderDevice:"itender_device",
-    itenderRole:"itender_role",
-    itenderReview:"itender_review",
-    itenderPrivilege:"itender_privilege",
-    multipleSelect:"multipleSelect",
-    documentTree:"document_tree",
-    formEditorCheckbox:"form_editor_checkbox",
-    itenderIndustry:"itender_industry",
-    itenderSupervision:"itender_supervision"
+    metaTemplate:"meta_template"
 })
 
 layui.use('layer', function(){

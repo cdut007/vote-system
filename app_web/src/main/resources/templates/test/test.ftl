@@ -271,7 +271,7 @@
         return format;
     };
 
-    layui.use(['form','layer','table','itenderUser','laydate'], function () {
+    layui.use(['form','layer','table','laydate'], function () {
         var form = layui.form;
         var itenderUser = layui.itenderUser;
         var layer = layui.layer;
