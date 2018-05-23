@@ -10,10 +10,10 @@ server:
 
 #数据库IP
 db:
-  ip: 127.0.0.1 #pro 47.94.142.243 ,stage 47.94.241.88
-  name: itender_supervise
-  username: root  #pro root , stage  dev
-  password: Ycp7WyjzNA
+  ip: 39.106.4.105
+  name: orcl
+  username: tender_57
+  password: live_tendre12
 
 
 httpRequest:
