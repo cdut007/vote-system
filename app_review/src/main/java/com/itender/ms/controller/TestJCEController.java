@@ -84,7 +84,7 @@ public class TestJCEController {
     private HttpHelper httpHelper;
     private String domain = "https://stage.jcebid.com";//"http://192.168.99.44:8080";
     private HashMap<String, String> sessionIdMap = new HashMap<>();
-
+    private HashMap<String, String> userDataMap = new HashMap<>();
 
     String getProjectId() {
         //666666 项目固定
@@ -252,7 +252,7 @@ public class TestJCEController {
             for (int i = 0; i < jsonArray.length(); i++) {
                 try {
 
-                    jsonObjectList.add(JSON.parse(jsonArray.getJSONObject(i).toString()));
+                    jsonObjectList.add(JSON.parse(jsonArray.get(i).toString()));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -478,6 +478,42 @@ public class TestJCEController {
 
     }
 
+    @ApiOperation(value = "pagingBidOpeningData", notes = "pagingBidOpeningData")
+    @RequestMapping(value = "/pagingBidOpeningData", method = RequestMethod.POST)
+    public ResponseEntity<LayuiTableData> pagingBidOpeningData(HttpServletRequest request
+    ) throws APIException {
+        Map<String, Object> result = new HashMap<>();
+//api url地址
+        String url = getDomain() + "/bidOpen/pagingBidOpeningData";
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+
+            jsonObject.put("page", "1");
+            jsonObject.put("pageSize", "10");
+
+            ResponseEntity resultInfo = clientForm(getUserSessionCache(request.getParameter("userId")), url, HttpMethod.POST, jsonObject);
+            if (resultInfo.getStatusCodeValue() == 200) {
+                //parse 關鍵字
+                String json = (String) resultInfo.getBody();
+                JSONObject resultData = new JSONObject(json);
+
+                result.put("status", resultData.optBoolean("success"));
+                result.put("msg", resultData.optString("msg"));
+                return ResponseEntity.ok(convertToLayuiData(resultData, 200, "success"));
+            } else {
+                result.put("status", false);
+                result.put("msg", "获取失敗!");
+                return ResponseEntity.ok(convertToLayuiData(new JSONObject("{}"), 200, "success"));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.ok(convertToLayuiData(jsonObject, 200, "success"));
+    }
+
+
 
     @ApiOperation(value = "获取投标报名项目列表", notes = "获取投标报名项目列表")
     @RequestMapping(value = "/getTenderProjectList", method = RequestMethod.POST)
@@ -535,6 +571,7 @@ public class TestJCEController {
             jsonObject.put("token", "");
             jsonObject.put("createByAgency", " false");
             String assignee = request.getParameter("assignee");
+            String taskName = request.getParameter("taskName");
             if (StringUtils.isEmpty(assignee)) {
                 String url = getDomain() + "/workflow/claim?taskId=" + taskId;
                 ResponseEntity resultInfo = clientForm(getUserSessionCache(request.getParameter("userId")), url, HttpMethod.GET, jsonObject);
@@ -592,7 +629,7 @@ public class TestJCEController {
                             break;
                         } else if (text.contains("项目管理")) {
                             //
-                            parseProjectPublish(request.getParameter("userId"), taskId, doc, result, "项目管理");
+                            parseProjectPublish(request,request.getParameter("userId"), taskId, doc, result, "项目管理");
                             break;
                         } else if (text.contains("招标/资格预审公告审核")) {
                             parseProjectReview(taskId, request.getParameter("userId"), doc, result, "招标/资格预审公告审核");
@@ -613,13 +650,22 @@ public class TestJCEController {
                             uploadTenderBidFile(request.getParameter("userId"), taskId, doc, result, "投标文件上传");
                             break;
                         } else if (text.contains("开标现场")) {
-                            parseProjectReview(taskId, request.getParameter("userId"), doc, result, "开标现场");
+                            if("第一信封文件解密".equals(taskName)){
+                                //第一信封文件解密
+                                tenderDecrptFile(taskId, request.getParameter("userId"), doc, result, "第一信封文件解密");
+                            }else{
+                                parseProjectReview(taskId, request.getParameter("userId"), doc, result, "开标现场");
+                            }
+
                             break;
-                        } else if(text.contains("专家签到")){
+                        } else if (text.contains("专家签到")) {
                             exportSign(request.getParameter("userId"), taskId, doc, result, "专家签到");
                             break;
-                        }else if (text.contains("投标文件上传回执")){
+                        } else if (text.contains("投标文件上传回执")) {
                             parseProjectReview(taskId, request.getParameter("userId"), doc, result, "投标文件上传回执");
+                            break;
+                        } else if (text.contains("指定评标委员会组长")) {
+                            parseProjectReview(taskId, request.getParameter("userId"), doc, result, "指定评标委员会组长");
                             break;
                         }
                     }
@@ -629,7 +675,12 @@ public class TestJCEController {
 
                     } else if ("招标文件代理机构审核".equals(title)) {
                         parseProjectReview(taskId, request.getParameter("userId"), doc, result, "招标文件代理机构审核");
+                    } else if("基准价系数抽取".equals(taskName)){
+                        //抽系数
+                        parseChooseEvaluation(taskId, request.getParameter("userId"), doc, result, "基准价系数抽取");
                     }
+
+
                 }
 
 
@@ -651,6 +702,8 @@ public class TestJCEController {
     }
 
 
+
+
     String getFileDirByName(String name) {
         String root = "C:\\\\";
         String os = System.getProperty("os.name").toLowerCase();
@@ -665,25 +718,202 @@ public class TestJCEController {
     }
 
 
-    private  boolean exportSign(String userId, String taskId, Document doc, Map<String, Object> result, String type) throws JSONException {
+    private  boolean tenderDecrptFile(String taskId, String userId, Document doc, Map<String,Object> result, String type) throws JSONException{
+
+        String listBidFileUrl = getDomain() + "/bidFile/listBidFile";
+        JSONObject listBidFileJsonObject = new JSONObject();
+        String expertApplyId = doc.getElementsByAttributeValue("name","expertApplyId").first().attr("value");
+        listBidFileJsonObject.put("expertApplyId",expertApplyId);
+        ResponseEntity listBidFileInfo = clientForm(getUserSessionCache(userId), listBidFileUrl, HttpMethod.POST, listBidFileJsonObject);
+        if (listBidFileInfo.getStatusCodeValue() != 200) {
+
+            result.put("status", false);
+            result.put("msg", "处理失败!");
+
+            return false;
+
+        }
+
+        JSONArray resultBidFilesData = new JSONArray((String) listBidFileInfo.getBody());
+        JSONObject data = resultBidFilesData.getJSONObject(0);
+        //        tenderItemId: b07e47e3-9e7f-4822-adf3-a327abba605d
+//        fjid00: 30d578bd-8e74-46e9-91a3-557054f2acfc
+//        projectItemId: 5b3e93d2-6292-423d-8f6d-4e03f0e8ef79
+//        expertApplyId: e2765c84-991f-4978-8358-7fcd3d9ae451
+        result.put("type", type);
+        String EvaluationUrl = getDomain() + "/getDigitalEnvelope";
+        JSONObject mEvaluationJsonObject = new JSONObject();
+
+        mEvaluationJsonObject.put("expertApplyId", expertApplyId);
+        mEvaluationJsonObject.put("projectItemId", data.optString("projectItemId"));
+        mEvaluationJsonObject.put("fjid00",data.optString("fjid00"));
+        mEvaluationJsonObject.put("tenderItemId",data.optString("tenderItemId"));
+
+        ResponseEntity docmentIdInfo = clientForm(getUserSessionCache(userId), EvaluationUrl, HttpMethod.POST, mEvaluationJsonObject);
+        if (docmentIdInfo.getStatusCodeValue() != 200) {
+
+            result.put("status", false);
+            result.put("msg", "处理失败!");
+
+            return false;
+
+        }
+
+        String uploadJson = (String) docmentIdInfo.getBody();
+
+        if (uploadJson != null && uploadJson.contains("系统内部错误，请联系管理员")) {
+            result.put("status", false);
+            result.put("msg", "审核失败!");
+            return false;
+        }
+
+        JSONObject resultUploadData = new JSONObject(uploadJson);
+        if (!resultUploadData.optBoolean("success")) {
+            result.put("status", false);
+            result.put("msg", resultUploadData.optString("msg"));
+            return false;
+        }
+
+
+        //解密
+        EvaluationUrl = getDomain() + "/bidFile/decrypt";
+
+        mEvaluationJsonObject.put("orig", "1234556677");
+
+
+         docmentIdInfo = clientForm(getUserSessionCache(userId), EvaluationUrl, HttpMethod.POST, mEvaluationJsonObject);
+        if (docmentIdInfo.getStatusCodeValue() != 200) {
+
+            result.put("status", false);
+            result.put("msg", "处理失败!");
+
+            return false;
+
+        }
+
+
+
+        result.put("status", true);
+
+        return true;
+
+    }
+
+    private boolean parseChooseEvaluation(String taskId, String userId, Document doc, Map<String,Object> result, String type) throws JSONException{
+        result.put("type", type);
+        String EvaluationUrl = getDomain() + "/recruitFileData/retriveEvaluationBidFiles";
+        JSONObject mEvaluationJsonObject = new JSONObject();
+
+        mEvaluationJsonObject.put("expertApplyId", doc.getElementById("expertApplyId").attr("value"));
+        mEvaluationJsonObject.put("projectItemId", doc.getElementById("projectItemId").attr("value"));
+        mEvaluationJsonObject.put("downRate","3");
+
+        ResponseEntity docmentIdInfo = clientForm(getUserSessionCache(userId), EvaluationUrl, HttpMethod.POST, mEvaluationJsonObject);
+        if (docmentIdInfo.getStatusCodeValue() != 200) {
+
+            result.put("status", false);
+            result.put("msg", "处理失败!");
+
+            return false;
+
+        }
+
+        String uploadJson = (String) docmentIdInfo.getBody();
+
+        if (uploadJson != null && uploadJson.contains("系统内部错误，请联系管理员")) {
+            result.put("status", false);
+            result.put("msg", "审核失败!");
+            return false;
+        }
+
+//        JSONObject resultUploadData = new JSONObject(uploadJson);
+//        if (!resultUploadData.optBoolean("success")) {
+//            result.put("status", false);
+//            result.put("msg", "抽系数失败!");
+//            return false;
+//        }
+
+        //更新工作流状态
+        String activitiUrl = getDomain() + "/recruitFileData/save_benchmark_fj";
+        mEvaluationJsonObject.put("benchmarkId", doc.getElementById("benchmarkId").attr("value"));
+        mEvaluationJsonObject.put("id", doc.getElementById("id").attr("value"));
+        mEvaluationJsonObject.put("FWSZ_BMK_3_DOWN_RATIO", "3");
+        mEvaluationJsonObject.put("FWSZ_BMK_1_DOWN_RATIO", "--");
+        mEvaluationJsonObject.put("FWSZ_BMK_2_DOWN_RATIO", "--");
+        mEvaluationJsonObject.put("FWSZ_BMK_2_CONTROL_PRICE_RIGHT", "--");
+        mEvaluationJsonObject.put("FWSZ_BMK_4_WEIGHT", "--");
+        mEvaluationJsonObject.put("FWSZ_BMK_5_DOWN_RATIO", "--");
+
+        ResponseEntity taskResultInfo = clientForm(getUserSessionCache(userId), activitiUrl, HttpMethod.POST, mEvaluationJsonObject);
+        if (taskResultInfo.getStatusCodeValue() != 200) {
+
+            result.put("status", false);
+            result.put("msg", "处理失败!");
+            return false;
+
+        }
+
+        uploadJson = (String) taskResultInfo.getBody();
+
+        if (uploadJson != null && uploadJson.contains("系统内部错误，请联系管理员")) {
+            result.put("status", false);
+            result.put("msg", "审核失败!");
+            return false;
+        }
+
+
+        JSONObject resultUploadData = new JSONObject(uploadJson);
+        if (!resultUploadData.optBoolean("success")) {
+            result.put("status", false);
+            result.put("msg", resultUploadData.optString("msg"));
+            return false;
+        }
+
+
+
+
+        //更新工作流状态
+         activitiUrl = getDomain() + "/workflow/completeForm";
+        JSONObject activitiJsonObject = new JSONObject();
+
+
+        activitiJsonObject.put("taskId", taskId);
+        activitiJsonObject.put("message", "");
+
+         taskResultInfo = clientForm(getUserSessionCache(userId), activitiUrl, HttpMethod.POST, activitiJsonObject);
+        if (taskResultInfo.getStatusCodeValue() != 302) {
+
+            result.put("status", false);
+            result.put("msg", "处理失败!");
+            return false;
+
+        }
+
+        result.put("status", true);
+
+        return true;
+
+    }
+    private boolean exportSign(String userId, String taskId, Document doc, Map<String, Object> result, String type) throws JSONException {
         result.put("type", type);
         String exportUrl = getDomain() + "/expertPromise/expertPromiseSave";
         JSONObject expoertSignJsonObject = new JSONObject();
         File signAttachFile = new File(getFileDirByName("attach_files") + "test_sign.aip");
         expoertSignJsonObject.put("name", signAttachFile.getName());
         expoertSignJsonObject.put("taskId", taskId);
-        expoertSignJsonObject.put("projectInstanceId", doc.getElementsByAttributeValue("name","projectInstanceId").first().attr("value"));
-        expoertSignJsonObject.put("projectInstanceName", doc.getElementsByAttributeValue("name","projectInstanceName").first().attr("value"));
+        expoertSignJsonObject.put("projectInstanceId", doc.getElementsByAttributeValue("name", "projectInstanceId").first().attr("value"));
+        expoertSignJsonObject.put("projectInstanceName", doc.getElementsByAttributeValue("name", "projectInstanceName").first().attr("value"));
         expoertSignJsonObject.put("userType", "1");
-        String expertApplyId = doc.getElementsByAttributeValue("name","expertApplyId").first().attr("value");
+        String expertApplyId = doc.getElementsByAttributeValue("name", "expertApplyId").first().attr("value");
         expoertSignJsonObject.put("expertApplyId", expertApplyId);
-        String getExportIdUrl = getDomain() + "/expertPromise/expertPromise?expertApplyId="+expoertSignJsonObject.get("expertApplyId")+"&taskId="+taskId;
+        String getExportIdUrl = getDomain() + "/expertPromise/expertPromise?expertApplyId=" + expoertSignJsonObject.get("expertApplyId") + "&taskId=" + taskId;
 
         ResponseEntity docmentIdInfo = clientForm(getUserSessionCache(userId), getExportIdUrl, HttpMethod.GET, new JSONObject());
         if (docmentIdInfo.getStatusCodeValue() != 200) {
 
             result.put("status", false);
             result.put("msg", "处理失败!");
+
             return false;
 
         }
@@ -741,7 +971,7 @@ public class TestJCEController {
             return false;
         }
 
-         uploadJson = (String) uploadResultInfo.getBody();
+        uploadJson = (String) uploadResultInfo.getBody();
 
         if (uploadJson != null && uploadJson.contains("系统内部错误，请联系管理员")) {
             result.put("status", false);
@@ -752,7 +982,6 @@ public class TestJCEController {
         result.put("status", true);
 
         return true;
-
 
 
     }
@@ -915,7 +1144,7 @@ public class TestJCEController {
 
                 String expertApplyUrl = getDomain() + "/expertApplication/loadExpertApplyContent";
                 JSONObject ex = new JSONObject();
-                ex.put("expertApplyId",reviewJsonObject.get("expertApplyId"));
+                ex.put("expertApplyId", reviewJsonObject.get("expertApplyId"));
                 ResponseEntity taskResultInfo = clientForm(getUserSessionCache(userId), expertApplyUrl, HttpMethod.POST, ex);
                 if (taskResultInfo.getStatusCodeValue() != 200) {
 
@@ -925,7 +1154,7 @@ public class TestJCEController {
 
                 }
                 expertApplyUrl = getDomain() + "/expertApplication/expertApplyArchive";
-                ex.put("expertApplyContentHtml",taskResultInfo.getBody());
+                ex.put("expertApplyContentHtml", taskResultInfo.getBody());
                 taskResultInfo = clientForm(getUserSessionCache(userId), expertApplyUrl, HttpMethod.POST, ex);
                 if (taskResultInfo.getStatusCodeValue() != 200) {
 
@@ -936,11 +1165,10 @@ public class TestJCEController {
                 }
 
 
-
-            }else if (type.equals("投标文件上传回执")){
+            } else if (type.equals("投标文件上传回执")) {
                 uploadUrl = getDomain() + "/tenderApply/saveBidReceipt";
 
-                reviewJsonObject.put("id", doc.getElementsByAttributeValue("name","id").first().attr("value"));
+                reviewJsonObject.put("id", doc.getElementsByAttributeValue("name", "id").first().attr("value"));
                 completeTask = true;
             }
 
@@ -1001,12 +1229,26 @@ public class TestJCEController {
                 reviewJsonObject.put("noticeId", doc.getElementById("noticeId").attr("value"));
 
 
-            }else if (type.equals("开标现场")){
-                reviewJsonObject.put("projectInstanceId", doc.getElementsByAttributeValue("name","projectInstanceId").first().attr("value"));
-                reviewJsonObject.put("projectInstanceName",  doc.getElementsByAttributeValue("name","projectInstanceName").first().attr("value"));
-                reviewJsonObject.put("expertApplyId",  doc.getElementsByAttributeValue("name","expertApplyId").first().attr("value"));
+            } else if (type.equals("开标现场")) {
+                reviewJsonObject.put("projectInstanceId", doc.getElementsByAttributeValue("name", "projectInstanceId").first().attr("value"));
+                reviewJsonObject.put("projectInstanceName", doc.getElementsByAttributeValue("name", "projectInstanceName").first().attr("value"));
+                reviewJsonObject.put("expertApplyId", doc.getElementsByAttributeValue("name", "expertApplyId").first().attr("value"));
                 reviewJsonObject.put("userType", "3");
 
+            } else if(type.equals("指定评标委员会组长")){
+                String exportGroupSelection =  getDomain() +"/expertGroup/saveHeader";
+                String projectInstanceId = doc.getElementsByAttributeValue("name","projectInstanceId").first().attr("value");
+                JSONObject applyObject = new JSONObject();
+                applyObject.put("projectInstanceId", projectInstanceId);
+                applyObject.put("id",doc.getElementsByAttributeValue("name","id").first().attr("value"));
+                applyObject.put("zzzj00", "a97f6f0c-ffc1-4833-b4ee-fa78b7918bb2");//范俊明固定专家组长
+                ResponseEntity applyResultInfo = clientForm(getUserSessionCache(userId), exportGroupSelection, HttpMethod.POST, applyObject);
+                if (applyResultInfo.getStatusCodeValue() != 200) {
+
+                    result.put("status", false);
+                    result.put("msg", "审核失败!");
+                    return false;
+                }
             }
 
 
@@ -1029,7 +1271,7 @@ public class TestJCEController {
 
     }
 
-    boolean parseProjectPublish(String userId, String taskId, Document doc, Map<String, Object> result, String type) throws JSONException {
+    boolean parseProjectPublish(HttpServletRequest request, String userId, String taskId, Document doc, Map<String, Object> result, String type) throws JSONException {
         result.put("type", type);
 
         Element projectInstance = doc.getElementById("id");
@@ -1059,7 +1301,6 @@ public class TestJCEController {
         //查询招标文件是否已经通过
         String projectStatusCheckUrl = getDomain() + "/recruitFile/pagingRecruitFileData";
         JSONObject projectStatusJsonObject = new JSONObject();
-        JSONArray projectStatusDatas = new JSONArray();
         projectStatusJsonObject.put("projectInstanceId", projectInstanceId);
         projectStatusJsonObject.put("page", "1");
         projectStatusJsonObject.put("pageSize", "10");
@@ -1076,6 +1317,14 @@ public class TestJCEController {
                     if (reviewStatus == 9) {
                         //抽专家
                         parseExpert(userId, taskId, doc, result, projectInstanceId, projectItemDatas.getJSONObject(0).optString("id"));
+
+                        String projectExpertGroupSelectionUrl = getDomain() + "/bidOpen/startExpertGroupSelection";
+                        JSONObject projectStatusDatas = new JSONObject();
+                        projectStatusDatas.put("recruitId", datas.getJSONObject(0).optString("id"));
+                        ResponseEntity projectExpertGroupSelectionJsonInfo = clientForm(getUserSessionCache(userId), projectExpertGroupSelectionUrl, HttpMethod.POST, projectStatusDatas);
+                        if (projectExpertGroupSelectionJsonInfo.getStatusCodeValue() == 200) {
+
+                        }
                         return true;
                     }
                     return false;
@@ -1252,11 +1501,25 @@ public class TestJCEController {
         noticeJsonObject.put("ggfbsj", getDate(System.currentTimeMillis()));//公告发布时间
         String time1, time2, time3, time4;
         String time;
-        noticeJsonObject.put("tenderNoticeData.applyDateBegin", time1 = getDate(System.currentTimeMillis() + 5 * 60 * 1000));//招标文件获取时间
-        noticeJsonObject.put("tenderNoticeData.applyDateEnd", time2 = getDate(System.currentTimeMillis() + 40 * 60 * 1000));//招标文件获取截止时间
-        noticeJsonObject.put("tenderNoticeData.bidDeadline", time3 = getDate(System.currentTimeMillis() + 50 * 60 * 1000));//投标文件递交截止时间
-        noticeJsonObject.put("tenderNoticeData.bidOpenDate", time4 = getDate(System.currentTimeMillis() + 60 * 60 * 1000));//开标时间
 
+        noticeJsonObject.put("tenderNoticeData.applyDateBegin", time1=getDate(System.currentTimeMillis() + 5 * 60 * 1000));//招标文件获取时间
+        noticeJsonObject.put("tenderNoticeData.applyDateEnd", time2=getDate(System.currentTimeMillis() + 40 * 60 * 1000));//招标文件获取截止时间
+        noticeJsonObject.put("tenderNoticeData.bidDeadline", time3=getDate(System.currentTimeMillis() + 50 * 60 * 1000));//投标文件递交截止时间
+        noticeJsonObject.put("tenderNoticeData.bidOpenDate", time4=getDate(System.currentTimeMillis() + 60 * 60 * 1000));//开标时间
+
+        String jsonDate = userDataMap.get(userId);
+        if(!StringUtils.isEmpty(jsonDate)){
+            try{
+                JSONObject dateJson = new JSONObject(jsonDate);
+                noticeJsonObject.put("tenderNoticeData.applyDateBegin", time1=dateJson.optString("tenderNoticeData.applyDateBegin"));//招标文件获取时间
+                noticeJsonObject.put("tenderNoticeData.applyDateEnd", time2=dateJson.optString("tenderNoticeData.applyDateEnd"));//招标文件获取截止时间
+                noticeJsonObject.put("tenderNoticeData.bidDeadline",  time3=dateJson.optString("tenderNoticeData.bidDeadline"));//投标文件递交截止时间
+                noticeJsonObject.put("tenderNoticeData.bidOpenDate",  time4=dateJson.optString("tenderNoticeData.bidOpenDate"));//开标时间
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
         time = "招标文件开始获取时间：" + time1 + ";招标文件获取截止时间：" + time2 + ";投标文件递交截止时间:" + time3 + ";开标时间：" + time4;
         noticeJsonObject.put("ggjssj", getDate(System.currentTimeMillis() + 60 * 60 * 1000));//公告结束时间
         noticeJsonObject.put("attachmentRequirementList[0].content", "test");
@@ -1322,10 +1585,23 @@ public class TestJCEController {
         tenderPoject.put("advanceTenderFileId", result.get("docId"));
 
         tenderPoject.put("tenderNoticeData.applyDateBegin", getDate(System.currentTimeMillis() + 5 * 60 * 1000));//招标文件获取时间
-
         tenderPoject.put("tenderNoticeData.applyDateEnd", getDate(System.currentTimeMillis() + 40 * 60 * 1000));//招标文件获取截止时间
         tenderPoject.put("tenderNoticeData.bidDeadline", getDate(System.currentTimeMillis() + 50 * 60 * 1000));//投标文件递交截止时间
         tenderPoject.put("tenderNoticeData.bidOpenDate", getDate(System.currentTimeMillis() + 60 * 60 * 1000));//开标时间
+
+        String jsonDate = userDataMap.get(userId);
+        if(!StringUtils.isEmpty(jsonDate)){
+            try{
+                JSONObject date = new JSONObject(jsonDate);
+                tenderPoject.put("tenderNoticeData.applyDateBegin", date.optString("tenderNoticeData.applyDateBegin"));//招标文件获取时间
+                tenderPoject.put("tenderNoticeData.applyDateEnd", date.optString("tenderNoticeData.applyDateEnd"));//招标文件获取截止时间
+                tenderPoject.put("tenderNoticeData.bidDeadline",  date.optString("tenderNoticeData.bidDeadline"));//投标文件递交截止时间
+                tenderPoject.put("tenderNoticeData.bidOpenDate",  date.optString("tenderNoticeData.bidOpenDate"));//开标时间
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
 
         tenderPoject.put("recruitFileData.bidValidity", "90");
         tenderPoject.put("clarifytime", getDate(System.currentTimeMillis()));
@@ -1842,6 +2118,39 @@ public class TestJCEController {
         return ResponseEntity.ok(convertToLayuiData(jsonObject, 200, "success"));
     }
 
+
+    @ApiOperation(value = "解密項目", notes = "用于解密項目")
+    @RequestMapping(value = "/openDecrypt", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> openDecrypt(HttpServletRequest request
+    ) throws APIException {
+        Map<String, Object> result = new HashMap<>();
+//api url地址
+        String url = getDomain() + "/sign/openDecrypt1";
+        JSONObject jsonObject = new JSONObject();
+
+        try {
+
+            jsonObject.put("expertApplyId", request.getParameter("expertApplyId"));
+
+            ResponseEntity resultInfo = clientForm(getUserSessionCache(request.getParameter("userId")), url, HttpMethod.POST, jsonObject);
+            if (resultInfo.getStatusCodeValue() == 200) {
+                //parse 關鍵字
+                String json = (String) resultInfo.getBody();
+                JSONObject resultData = new JSONObject(json);
+                result.put("status", resultData.optBoolean("success"));
+                result.put("msg", resultData.optString("msg"));
+            } else {
+                result.put("status", false);
+                result.put("msg", "解密項目失敗!");
+                return ResponseEntity.ok(result);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.ok(result);
+    }
+
     @ApiOperation(value = "創建項目", notes = "用于創建項目")
     @RequestMapping(value = "/createProject", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createProject(HttpServletRequest request
@@ -1862,7 +2171,7 @@ public class TestJCEController {
             jsonObject.put("token", "");
             jsonObject.put("createByAgency", " false");
             jsonObject.put("projectId", getProjectId());
-            jsonObject.put("zbxmmc", "程序自動測試，请勿操作test***" + currentDate);
+            jsonObject.put("zbxmmc", request.getParameter("projectName"));
             jsonObject.put("organProjectCode", "");
             jsonObject.put("projectInstanceType", "A01");
             jsonObject.put("zbzrr0", "james");
@@ -1877,6 +2186,14 @@ public class TestJCEController {
             jsonObject.put("jdbmdm", "");
             jsonObject.put("jdbmfzr", "james");
             jsonObject.put("jdbmdh", "18688173429");
+
+            JSONObject dateJson = new JSONObject();
+            dateJson.put("tenderNoticeData.applyDateBegin", getDate(Long.parseLong(request.getParameter("applyDateBegin"))));//招标文件获取时间
+            dateJson.put("tenderNoticeData.applyDateEnd",  getDate(Long.parseLong(request.getParameter("applyDateEnd"))));//招标文件获取截止时间
+            dateJson.put("tenderNoticeData.bidDeadline", getDate(Long.parseLong(request.getParameter("bidDeadline"))));//投标文件递交截止时间
+            dateJson.put("tenderNoticeData.bidOpenDate", getDate(Long.parseLong(request.getParameter("bidOpenDate"))));//开标时间
+            userDataMap.put(request.getParameter("userId"),dateJson.toString());
+
             ResponseEntity resultInfo = clientForm(getUserSessionCache(request.getParameter("userId")), url, HttpMethod.POST, jsonObject);
             if (resultInfo.getStatusCodeValue() == 200) {
                 //parse 關鍵字

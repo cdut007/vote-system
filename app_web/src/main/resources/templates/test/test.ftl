@@ -115,6 +115,14 @@
                 </div>
             </div>
 
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button id="decrptProject" type="submit" class="layui-btn layui-btn-default layui-btn-block" lay-submit lay-filter="decrpt" style="width: 100%">
+                        一键解密开标
+                    </button>
+                </div>
+            </div>
+
         </div>
 
 
@@ -163,6 +171,64 @@
 </div>
 
 
+<div id="decrptPro"  style="display: none">
+    <form class="layui-form" action="">
+        <select id="project_item" lay-verify="required" lay-filter="project_select">
+            <option value="">请选择开标解密项目</option>
+        </select>
+    </form>
+    <div class="layui-input-block">
+
+        <button id="online_decrpt"  class="layui-btn layui-btn-default layui-btn-block" style="width: 100%">
+            一键解密
+        </button>
+    </div>
+</div>
+
+
+<div id="createPro"  style="display: none">
+
+    <div class="layui-inline">
+        <label class="layui-form-label">项目名称</label>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input" id="projectName" placeholder="输入项目名称...">
+        </div>
+
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">招标文件获取时间</label>
+        <div class="layui-input-inline">
+            <input lay-verify="required"  type="text" class="layui-input date " id="applyDateBegin" placeholder="">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">招标文件获取截止时间</label>
+        <div class="layui-input-inline">
+            <input lay-verify="required"  type="text" class="layui-input date " id="applyDateEnd" placeholder="">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">投标文件递交截止时间</label>
+        <div class="layui-input-inline">
+            <input lay-verify="required"  type="text" class="layui-input date " id="bidDeadline" placeholder="">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">开标时间</label>
+        <div class="layui-input-inline">
+            <input lay-verify="required"  type="text" class="layui-input date " id="bidOpenDate" placeholder="">
+        </div>
+    </div>
+
+    <div class="layui-input-block">
+
+        <button id="online_create"  class="layui-btn layui-btn-default layui-btn-block" style="width: 100%">
+            创建
+        </button>
+    </div>
+</div>
+
+
 <script type="text/html" id="indexTpl">
     {{d.LAY_INDEX}}
 </script>
@@ -205,7 +271,7 @@
         return format;
     };
 
-    layui.use(['form','layer','table','itenderUser'], function () {
+    layui.use(['form','layer','table','itenderUser','laydate'], function () {
         var form = layui.form;
         var itenderUser = layui.itenderUser;
         var layer = layui.layer;
@@ -215,9 +281,61 @@
         var userId;
         var organizationA;
         var noticeJoin;
+        var decrptProject;
+        var applyDateBegin,applyDateEnd,bidDeadline,bidOpenDate;
         form.render();
         $("#login").show();
         $("#logout").hide();
+
+
+        layui.laydate.render({
+            elem: '#applyDateBegin'
+            ,type: 'datetime'
+            ,done: function(value, date){
+                var time = Date.parse(value.replace(/-/g,"/"));
+
+                applyDateBegin = time;
+
+                //{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+            }
+        });
+
+        layui.laydate.render({
+            elem: '#applyDateEnd'
+            ,type: 'datetime'
+            ,done: function(value, date){
+                var time = Date.parse(value.replace(/-/g,"/"));
+
+                applyDateEnd = time;
+
+                //{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+            }
+        });
+
+        layui.laydate.render({
+            elem: '#bidOpenDate'
+            ,type: 'datetime'
+            ,done: function(value, date){
+                var time = Date.parse(value.replace(/-/g,"/"));
+
+                bidOpenDate = time;
+
+                //{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+            }
+        });
+
+        layui.laydate.render({
+            elem: '#bidDeadline'
+            ,type: 'datetime'
+            ,done: function(value, date){
+                var time = Date.parse(value.replace(/-/g,"/"));
+
+                bidDeadline = time;
+
+                //{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+            }
+        });
+
         form.on('select(organization_select)', function(data){
 
             organizationA = data.value;
@@ -230,6 +348,14 @@
 
             return false;
         });
+        form.on('select(project_select)', function(data){
+
+            decrptProject = data.value;
+
+            return false;
+        });
+
+
         form.on('select(domain_select)', function(data){
             domain = data.value;
 
@@ -293,6 +419,9 @@
                 }
             })
         });
+
+
+
 
         function bindNoticeTenderCommit(data) {
             $("#online_notice").click(function() {
@@ -380,31 +509,162 @@
            })
        });
 
-        $("#createProject").click(function () {
+        $("#decrptProject").click(function () {
             var index = layer.load(1, {
                 shade: [0.1,'#fff'] //0.1透明度的白色背景
             });
             $.ajax({
-                url: "/test/createProject",
+                url: "/test/pagingBidOpeningData",
                 type: "POST",
                 dataType: "json",
                 data: {userId:userId},
                 success: function (res) {
                     layer.close(index);
                     if(res!=null){
-                        if(res.status){
-                            alert("創建成功!");
-                            reloadTaskTable();
+                        if(res.data && res.data.length>0){
+                            var obj =res.data;
+                            var objLength = obj.length;
+                            if(objLength>0){
+
+                                $('#project_item').empty();
+                                $("#project_item").append('<option value="">请选择一键解密项目</option>');
+
+                                $(obj).each(function (i) {
+                                        var item = obj[i];
+                                    $("#project_item").append('<option value="' + item[item.length-1] + '">' + item[0] + '</option>');
+
+                                });
+
+
+                            }else{
+
+                                $('#project_item').find('option').remove();
+                                $("#project_item").append('<option value="">请选择一键解密项目</option>');
+
+
+                            }
+
+                            bindDecrptProjectCommit(obj);
+
+                            layer.open({
+                                title: '选择解密项目',
+                                type: 1,
+                                area: ['500px', '300px']
+                                ,content: $('#decrptPro')
+                                ,
+                                success: function() {
+                                    form.render()
+
+
+                                }
+                            });
                         }else{
-                            alert("創建失敗!"+ res.msg);
+                            alert("一键开标解密失败!"+ res.msg);
                         }
                     }
                 },
                 error: function (xmlHttpReq, error, ex) {
                     layer.close(index);
-                    alert("創建失敗!");
+                    alert("一键开标解密失败!");
                 }
             })
+        })
+
+        function bindDecrptProjectCommit(data) {
+            $("#online_decrpt").click(function() {
+                if (!decrptProject) {
+                    layer.msg("请选择解密项目!");
+                    return;
+                }
+
+                $.ajax({
+                    url: "/test/openDecrypt",
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        expertApplyId: decrptProject
+                        ,userId:userId
+                    },
+                    success: function(res) {
+                        if (res != null) {
+                            if (res.status) {
+                                alert("选择解密项目成功!");
+                                reloadTaskTable();
+                            } else {
+                                layer.msg("选择解密项目失敗!");
+                            }
+                        }
+                    },
+                    error: function(xmlHttpReq, error, ex) {
+                        layer.msg("选择解密项目失敗!");
+                    }
+                })
+            });
+        }
+        $("#createProject").click(function () {
+
+
+
+            layer.open({
+                title: '选择解密项目',
+                type: 1,
+                area: ['500px', '450px']
+                ,content: $('#createPro')
+                ,
+                success: function() {
+                    form.render()
+
+
+                }
+            });
+
+            $("#online_create").click(function() {
+
+
+                var projectName =  $("#projectName").val();
+
+                if(!projectName){
+                    layer.msg("输入项目名称!");
+                    return;
+                }
+
+                if(!applyDateBegin||!applyDateEnd||!bidDeadline||!bidOpenDate){
+                    layer.msg("选择时间!");
+                    return;
+                }
+
+
+
+                var index = layer.load(1, {
+                    shade: [0.1,'#fff'] //0.1透明度的白色背景
+                });
+
+
+                $.ajax({
+                    url: "/test/createProject",
+                    type: "POST",
+                    dataType: "json",
+                    data: {userId:userId,projectName:projectName,applyDateBegin:applyDateBegin,
+                        applyDateEnd:applyDateEnd,bidDeadline:bidDeadline,bidOpenDate:bidOpenDate},
+                    success: function (res) {
+                        layer.close(index);
+                        if(res!=null){
+                            if(res.status){
+                                alert("創建成功!");
+                                reloadTaskTable();
+                            }else{
+                                alert("創建失敗!"+ res.msg);
+                            }
+                        }
+                    },
+                    error: function (xmlHttpReq, error, ex) {
+                        layer.close(index);
+                        alert("創建失敗!");
+                    }
+                })
+            });
+
+
         });
 
 
@@ -487,7 +747,7 @@
                 });
 
                 $.ajax({
-                    url: '/test/workflow/customTaskForm?taskId='+taskId+"&userId="+userId+"&assignee="+assignId,
+                    url: '/test/workflow/customTaskForm?taskId='+taskId+"&userId="+userId+"&assignee="+assignId+"&taskName="+data.name,
                     type:"GET",
                     cache:false,
                     success: function (res) {
@@ -573,6 +833,15 @@
                                    reloadTaskTable();
                                }else if(res.type == '投标文件上传回执'){
                                    layer.msg("投标文件上传回执成功!");
+                                   reloadTaskTable();
+                               }else if(res.type == '指定评标委员会组长'){
+                                   layer.msg("指定评标委员会组长成功!");
+                                   reloadTaskTable();
+                               }else if(res.type == '基准价系数抽取'){
+                                   layer.msg("基准价系数抽取成功!");
+                                   reloadTaskTable();
+                               }else if(res.type == '第一信封文件解密'){
+                                   layer.msg("第一信封文件解密成功!");
                                    reloadTaskTable();
                                }else{
                                    reloadTaskTable();
