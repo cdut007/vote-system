@@ -283,6 +283,8 @@
         var noticeJoin;
         var decrptProject;
         var applyDateBegin,applyDateEnd,bidDeadline,bidOpenDate;
+        var auto = false;
+        var currentStep=0;
         form.render();
         $("#login").show();
         $("#logout").hide();
@@ -290,6 +292,7 @@
 
         layui.laydate.render({
             elem: '#applyDateBegin'
+            ,value: new Date()
             ,type: 'datetime'
             ,done: function(value, date){
                 var time = Date.parse(value.replace(/-/g,"/"));
@@ -302,6 +305,7 @@
 
         layui.laydate.render({
             elem: '#applyDateEnd'
+            ,value: new Date()
             ,type: 'datetime'
             ,done: function(value, date){
                 var time = Date.parse(value.replace(/-/g,"/"));
@@ -314,6 +318,7 @@
 
         layui.laydate.render({
             elem: '#bidOpenDate'
+            ,value: new Date()
             ,type: 'datetime'
             ,done: function(value, date){
                 var time = Date.parse(value.replace(/-/g,"/"));
@@ -326,6 +331,7 @@
 
         layui.laydate.render({
             elem: '#bidDeadline'
+            ,value: new Date()
             ,type: 'datetime'
             ,done: function(value, date){
                 var time = Date.parse(value.replace(/-/g,"/"));

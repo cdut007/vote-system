@@ -7,6 +7,8 @@ import com.itender.ms.util.HttpHelper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -128,6 +130,45 @@ public class TestJCEController {
     public static boolean isWindows(String OS) {
         return OS.indexOf("windows") >= 0;
     }
+
+//    void test(String){
+//        IUser user = TBUser.getCurrentUser();
+//        TaskQuery query = this.taskService.createTaskQuery().taskCandidateOrAssigned(user.getId());
+//        if (org.apache.commons.lang3.StringUtils.isNotBlank(keywords)) {
+//            String keywordsLike = '%' + keywords + '%';
+//            query.or().taskNameLikeIgnoreCase(keywordsLike).taskDescriptionLikeIgnoreCase(keywordsLike).endOr();
+//        }
+//        query.orderByTaskCreateTime().desc();
+//        page.setTotal(query.count());
+//        //page.setRows(query.listPage((page.getPage() - 1) * page.getPageSize(), (page.getPage() - 1) * page.getPageSize() + page.getPageSize()));
+//        List<Task> q = query.listPage((page.getPage() - 1) * page.getPageSize(), (page.getPage() - 1) * page.getPageSize() + page.getPageSize());
+//
+//        // TODO 资格预审相关的任务名称手动设置
+//        for(int i=0; i<q.size(); i++){
+//            Task t = q.get(i);
+//            String description = t.getDescription();
+//            if(description!=null){
+//
+//                if(description.indexOf("资格预审合议")>0){
+//                    t.setName("资格预审结果合议");
+//                }
+//                if(description.indexOf("资格预审合议结果确认")>0){
+//                    t.setName("资格预审结果确认");
+//                }
+//                if(description.indexOf("资格预审")>0 && description.indexOf("合议")==-1 && description.indexOf("上传")==-1){
+//                    t.setName("资格预审");
+//                }
+//            }
+//        }
+//
+//        if(q.size()>page.getPageSize()){
+//            List<Task> rows = q.subList(0, page.getPageSize());
+//            page.setRows(rows);
+//        }
+//        else{
+//            page.setRows(q);
+//        }
+//    }
 
     static void parseChooseOrganizationA(Document doc, Map<String, Object> result, String type) {
         result.put("type", type);
