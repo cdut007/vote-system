@@ -1,0 +1,2 @@
+var s ="<object id='m_ISign' classid='CLSID:D85C89BE-263C-472D-9B6B-5264CD85B36D' style='position:absolute;width:0px;height:0px;left:0px;top:0px;' codebase='/resources/kinggrid/iSignatureForm.ocx#version=1,0,0,0'></object>";
+document.write(s);

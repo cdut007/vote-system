@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 3.0//EN" "http://getahead.org/dwr//dwr30.dtd">
+<dwr>
+	<allow>
+		<convert converter="bean" match="java.lang.StackTraceElement" />
+		<convert converter="exception" match="java.lang.Exception" />
+		<convert converter="bean" match="com.mhb.base.entity.TBUser">
+			<param name="include" value="id,userName,isLogin" />
+		</convert>
+		<convert converter="bean" match="com.mhb.im.entity.TBMessage">
+			<param name="include" value="id,senderId,fromUserName,receiverId,toUserName,sendTime,content,type,projectInstanceId,signData"></param>
+		</convert>
+		<create creator="spring" javascript="chatManagerService">
+			<param name="beanName" value="chatManagerService" />
+		</create>
+	</allow>
+	<signatures>
+	<![CDATA[ 
+	import java.util.Map; 
+	import com.mhb.im.service.impl.ChatManagerService; 
+	ChatManagerService.createScriptSession(Map<String,String>); 
+	]]>
+	</signatures>
+</dwr>

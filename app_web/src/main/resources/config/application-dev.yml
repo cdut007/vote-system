@@ -9,11 +9,12 @@ server:
 
 
 #数据库IP
+#数据库IP
 db:
-  ip: 39.107.127.11
-  name: itender_supervise
-  username: root
-  password: Ycp7WyjzNA
+  ip: 39.106.4.105
+  name: orcl
+  username: tender_test
+  password: test_df278f
 
     #http对接地址
 httpRequest:

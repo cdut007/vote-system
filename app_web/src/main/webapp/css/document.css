@@ -1,0 +1,553 @@
+/**公共样式***/
+ul, li {
+	marign: 0px;
+	padding: 0px;
+}
+
+.none {
+	display: none;
+}
+
+*.searchResult {
+	font-weight: bold;
+	background-color: yellow;
+}
+
+/*文档全局*/
+div.my_word_document {
+	border: 1px solid #000;
+	overflow: hidden;
+	clear: both;
+	width: 800px;
+	margin: 20px auto;
+	position: relative;
+	background-color: #ffffff;
+	color: #000000;
+}
+
+/*左边距*/
+div.my_word_document>div.my_word_west {
+	width: 80px;
+	height: 1131px;
+	float: left;
+}
+/*右边距*/
+div.my_word_document>div.my_word_east {
+	width: 80px;
+	height: 1131px;
+	float: left;
+}
+/*中心区域*/
+div.my_word_document>div.my_word_center {
+	width: 640px;
+	float: left;
+}
+
+/*页眉页脚*/
+div.my_word_document>div.my_word_center>div.my_word_north {
+	width: 640px;
+	height: 60px;
+}
+
+div.my_word_document>div.my_word_center>div.my_word_south {
+	width: 640px;
+	height: 60px;
+}
+
+/*封面*/
+div.my_word_document>div.my_word_center>div.my_word_cover {
+	padding-top: 160px;
+	padding-right: 100px;
+	padding-bottom: 160px;
+	padding-left: 100px;
+}
+/*封面大标题*/
+div.my_word_document>div.my_word_center>div.my_word_cover>h1 {
+	text-align: center;
+	font-size: 60px;
+	font-weight: 900;
+	line-height: 3.6em;
+	margin-top: 36px;
+	margin-bottom: 36px;
+}
+/*封面小标题*/
+div.my_word_document>div.my_word_center>div.my_word_cover>h2 {
+	text-decoration: none;
+	border: none;
+	text-align: left;
+	font-weight: bold;
+	font-size: 22px;
+	margin: 40px auto;
+}
+
+/*目录*/
+div.my_word_document>div.my_word_center>div.my_word_catalogue {
+	margin-top: 200px;
+	margin-bottom: 200px;
+}
+/*目录标题*/
+div.my_word_document>div.my_word_center>div.my_word_catalogue>h1 {
+	text-align: center;
+	font-weight: 800;
+	border: none;
+	font-size: 26px;
+	line-height: 1.2em;
+	margin: 22px auto;
+}
+
+div.my_word_document>div.my_word_center>div.my_word_catalogue li {
+	list-style-type: none;
+}
+
+div.my_word_document>div.my_word_center>div.my_word_catalogue li>div {
+	background-image: url('wire.png');
+	background-repeat: repeat-x;
+	background-position: center;
+}
+
+div.my_word_document>div.my_word_center>div.my_word_catalogue li>div>a {
+	line-height: 30px;
+	font-family: FangSong_GB2312;
+	font-size: 15px;
+	font-weight: 500;
+	cursor: pointer;
+}
+
+/*段落 正文
+ div.my_word_document>div.my_word_center>div.my_word_body p {
+ padding-left: 6px;
+ padding-right: 6px;
+ padding-top: 2px;
+ padding-bottom: 2px;
+}
+div.my_word_document>div.my_word_center>div.my_word_body p.hover{
+	background:#c2d5f2;
+}
+斜体
+div.my_word_document>div.my_word_center>div.my_word_body p span.i {
+ font-style: italic;
+}
+下划线
+div.my_word_document>div.my_word_center>div.my_word_body p span.u {
+ text-decoration: underline;
+}
+粗体
+div.my_word_document>div.my_word_center>div.my_word_body p span.b {
+ font-weight: bold;
+}
+
+文本样式
+div.my_word_document>div.my_word_center>div.my_word_body .content>p {
+ font-family: FangSong_GB2312;
+ width: 100%;
+ font-size: 15px;
+ line-height: 1.6em;
+ margin: 5px auto;
+ font-size: 15px;
+ overflow: hidden;
+ white-space: pre; CSS2
+ white-space: -moz-pre-wrap; Mozilla
+ white-space: -hp-pre-wrap; HP printers
+ white-space: -o-pre-wrap; Opera 7
+ white-space: -pre-wrap; Opera 4-6
+ white-space: pre-wrap; CSS 2.1
+ white-space: pre-line; CSS 3 (and 2.1 as well, actually)
+ word-wrap: break-word; IE
+}
+一级标题样式
+div.my_word_document>div.my_word_center>div.my_word_body .h1 {
+ text-align: center;
+ border: none;
+ background-color: none;
+ font-weight: 900;
+ font-size: 36px;
+ line-height: 2em;
+ margin: 36px auto;
+}
+二级标题样式
+div.my_word_document>div.my_word_center>div.my_word_body .h2 {
+ font-weight: 800;
+ text-align: center;
+ border: none;
+ background-color: none;
+ font-size: 26px;
+ line-height: 1.2em;
+ margin: 26px auto;
+}
+三级标题样式
+div.my_word_document>div.my_word_center>div.my_word_body .h3 {
+ border: none;
+ background-color: none;
+ font-weight: 700;
+ text-align: left;
+ font-size: 20px;
+ margin: 20px auto;
+}
+四级标题样式
+div.my_word_document>div.my_word_center>div.my_word_body .h4 {
+ font-weight: 700;
+ border: none;
+ text-align: left;
+ background-color: none;
+ font-size: 18px;
+ margin: 18px auto;
+}
+内容表格样式
+div.my_word_document>div.my_word_center>div.my_word_body p>table {
+ display:table;
+ width: 640px;
+ border-collapse: collapse;
+ border-spacing: 0;
+}
+标题单元格
+div.my_word_document>div.my_word_center>div.my_word_body p>table th {
+ text-align: center;
+ font-weight: bold;
+}
+内容单元格样式
+div.my_word_document>div.my_word_center>div.my_word_body p>table td,div.my_word_document>div.my_word_center>div.my_word_body p>table th {
+ border: 1px solid #444;
+ height: 27px;
+ min-width: 15px;
+ text-indent: 0px;
+ table-layout: fixed;
+ word-wrap: break-word;
+ word-break: break-all;
+}
+
+div.my_word_document>div.my_word_center>div.my_word_body p>table td.hover,div.my_word_document>div.my_word_center>div.my_word_body p>table th.hover {
+ background:#c6c6c6;
+} */
+
+/*列表 正文*/
+div.my_word_document>div.my_word_center>div.my_word_body li {
+	list-style-type: none;
+}
+
+div.my_word_document>div.my_word_center>div.my_word_body pre {
+	padding-left: 6px;
+	padding-right: 6px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+div.my_word_document>div.my_word_center>div.my_word_body pre.hover {
+	background: #c2d5f2;
+}
+/*斜体*/
+div.my_word_document>div.my_word_center>div.my_word_body pre span.i {
+	font-style: italic;
+}
+/*下划线*/
+div.my_word_document>div.my_word_center>div.my_word_body pre span.u {
+	text-decoration: underline;
+}
+/*粗体*/
+div.my_word_document>div.my_word_center>div.my_word_body pre span.b {
+	font-weight: bold;
+}
+
+/*文本样式*/
+div.my_word_document>div.my_word_center>div.my_word_body .content>pre {
+	font-family: FangSong_GB2312;
+	width: 100%;
+	font-size: 15px;
+	line-height: 1.6em;
+	margin: 5px auto;
+	font-size: 15px;
+	overflow: hidden;
+	white-space: pre; /* CSS2 */
+	white-space: -moz-pre-wrap; /* Mozilla */
+	white-space: -hp-pre-wrap; /* HP printers */
+	white-space: -o-pre-wrap; /* Opera 7 */
+	white-space: -pre-wrap; /* Opera 4-6 */
+	white-space: pre-wrap; /* CSS 2.1 */
+	white-space: pre-line; /* CSS 3 (and 2.1 as well, actually) */
+	word-wrap: break-word; /* IE */
+}
+/*一级标题样式*/
+div.my_word_document>div.my_word_center>div.my_word_body .h1>pre {
+	text-align: center;
+	border: none;
+	background-color: none;
+	font-weight: 900;
+	font-size: 36px;
+	line-height: 2em;
+	margin: 36px auto;
+}
+/*二级标题样式*/
+div.my_word_document>div.my_word_center>div.my_word_body .h2>pre {
+	font-weight: 800;
+	text-align: center;
+	border: none;
+	background-color: none;
+	font-size: 26px;
+	line-height: 1.2em;
+	margin: 26px auto;
+}
+/*三级标题样式*/
+div.my_word_document>div.my_word_center>div.my_word_body .h3>pre {
+	border: none;
+	background-color: none;
+	font-weight: 700;
+	text-align: left;
+	font-size: 20px;
+	margin: 20px auto;
+}
+/*四级标题样式*/
+div.my_word_document>div.my_word_center>div.my_word_body .h4>pre {
+	font-weight: 700;
+	border: none;
+	text-align: left;
+	background-color: none;
+	font-size: 18px;
+	margin: 18px auto;
+}
+/*内容表格样式*/
+div.my_word_document>div.my_word_center>div.my_word_body pre>table {
+	display: table;
+	width: 640px;
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+/*标题单元格*/
+div.my_word_document>div.my_word_center>div.my_word_body pre>table th {
+	text-align: center;
+	font-weight: bold;
+}
+/*内容单元格样式*/
+div.my_word_document>div.my_word_center>div.my_word_body pre>table td,
+	div.my_word_document>div.my_word_center>div.my_word_body pre>table th {
+	border: 1px solid #444;
+	height: 27px;
+	min-width: 15px;
+	text-indent: 0px;
+	table-layout: fixed;
+	word-wrap: break-word;
+	word-break: break-all;
+}
+
+div.my_word_document>div.my_word_center>div.my_word_body pre>table td.hover,
+	div.my_word_document>div.my_word_center>div.my_word_body pre>table th.hover
+	{
+	background: #c6c6c6;
+}
+
+/*批注全局*/
+div.my_word_document>div.my_word_comment {
+	position: absolute;
+	border-left: 1px solid #000;
+	background-color: #ffffff;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: 250px;
+}
+/*批注*/
+div.my_word_document>div.my_word_comment>div.tooltip {
+	left: 20px;
+	right: 20px;
+	z-index: 9014;
+	display: block;
+	padding: 5px;
+}
+
+/*批注内容*/
+div.my_word_document>div.my_word_comment>div.tooltip>div.tooltip-content
+	{
+	font-size: 14px;
+	line-height: 1.5em;
+	font-weight: 900;
+	min-height: 20px;
+}
+
+div.my_word_document>div.my_word_comment>.tooltip-right .tooltip-arrow {
+	top: 10px;
+}
+
+div.my_word_document>div.my_word_comment>.tooltip-right .tooltip-arrow-outer
+	{
+	top: 10px;
+}
+/*数据区样式*/
+div.my_word_document>div.my_word_properties {
+	display: none;
+}
+/*其他*/
+div.my_word_document .editable {
+	background-color: #ffe7e7
+}
+
+div.my_word_document a {
+	color: #000000;
+	text-decoration: none;
+	background-color: #ffffff;
+}
+
+div.my_word_document a:hover {
+	text-decoration: none;
+}
+
+/*导航区域*/
+.navigationbar .layout-panel .panel-body {
+	background-color: #f1f1f1;
+	position: relative;
+	overflow: auto;
+	padding: 10px;
+	border-width: 0;
+}
+/*阅读区域*/
+.viewports.panel-body {
+	overflow: auto;
+}
+
+.viewport.panel-body {
+	/*background-color: #f1f1f1;*/
+	position: relative;
+}
+/*工具栏*/
+.toolbar.panel-body {
+	padding: 5px;
+	background-color: #fafafa;
+}
+
+.toolbar .l-btn:hover {
+	text-decoration: none;
+}
+/*状态栏*/
+.statusbar .layout-panel .panel-body {
+	border-width: 0;
+	background-color: #c70000;
+	overflow: hidden;
+	padding: 0;
+}
+
+/*插入表格*/
+table.hover_table {
+	background-color: #ffffff;
+	empty-cells: show;
+	border: none;
+}
+
+table.hover_table>thead>tr>th {
+	padding: 2px;
+	height: 25px;
+	font-weight: 900;
+	background: #f1f1f1
+}
+
+table.hover_table>tbody>tr>td {
+	padding: 2px;
+	border: none;
+}
+
+table.hover_table>tbody>tr>td>div {
+	border: 1px solid #444;
+	width: 15px;
+	height: 15px;
+}
+
+table.hover_table>tbody>tr>td>div>div {
+	width: 13px;
+	height: 13px;
+	margin: 1px 1px;
+	background-color: #ffffff;
+	border: none;
+}
+
+table.hover_table>tbody>tr>td>div.hover {
+	border: 1px solid #ef4810;
+	background-color: #ffe294;
+}
+
+div.table_wrap {
+	position: relavite;
+	border: none;
+}
+
+div.table_selection {
+	width: 13px;
+	height: 13px;
+	z-index: 100;
+	margin-left: -12px;
+	margin-top: -12px;
+	position: absolute;
+	background-image: url('selection.png');
+}
+
+/*放缩框*/
+div.sizing_box {
+	display: inline-block;
+	text-indent: 0px;
+	border: 1px dashed #000000;
+	position: relative;
+}
+
+/*放缩框焦点*/
+div.sizing_box>div.t-l, div.sizing_box>div.t-c, div.sizing_box>div.t-r,
+	div.sizing_box>div.b-l, div.sizing_box>div.b-c, div.sizing_box>div.b-r,
+	div.sizing_box>div.c-l, div.sizing_box>div.c-r {
+	position: absolute;
+	width: 8px;
+	height: 8px;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #000000;
+	background-color: #ffffff;
+	z-index: 10000;
+}
+
+div.sizing_box>div.shelter {
+	position: absolute;
+	text-indent: 0px;
+	z-index: 1;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+div.sizing_box>div.t-l {
+	cursor: se-resize;
+	top: -1px;
+	left: -1px;
+}
+
+div.sizing_box>div.t-c {
+	cursor: s-resize;
+	top: -1px;
+}
+
+div.sizing_box>div.t-r {
+	cursor: sw-resize;
+	top: -1px;
+	right: -1px;
+}
+
+div.sizing_box>div.b-l {
+	cursor: ne-resize;
+	bottom: -1;
+	left: -1px;
+	bottom: -1px;
+}
+
+div.sizing_box>div.b-c {
+	cursor: s-resize;
+	bottom: -1px;
+}
+
+div.sizing_box>div.b-r {
+	cursor: nw-resize;
+	bottom: -1px;
+	right: -1px;
+}
+
+div.sizing_box>div.c-l {
+	cursor: e-resize;
+	left: -1px;
+}
+
+div.sizing_box>div.c-r {
+	cursor: w-resize;
+	right: -1px;
+}

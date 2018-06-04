@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.activiti.org/test" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" expressionLanguage="http://www.w3.org/1999/XPath" id="m1527229152855" name="" targetNamespace="http://www.activiti.org/test" typeLanguage="http://www.w3.org/2001/XMLSchema">
+  <signal id="cancelTenderApplySignal" name="cancelTenderApplySignal"/>
+  <process id="tender_apply" isClosed="false" isExecutable="true" name="投标报名流程" processType="None">
+    <extensionElements>
+      <activiti:executionListener event="start" expression="${tenderApplyStartListener.execute(execution)}"/>
+    </extensionElements>
+    <subProcess activiti:exclusive="true" id="subprocess1" name="Sub Process" triggeredByEvent="false">
+      <userTask activiti:candidateUsers="${usersId}" activiti:exclusive="true" activiti:formKey="tender/tenderApplyReview" id="usertask1" name="报名审核">
+        <documentation id="usertask1_D_1"><![CDATA[${organBName} 申请报名 ${projectInstanceName} 的 ${projectItemName}，请审核]]></documentation>
+        <extensionElements>
+          <activiti:formProperty expression="${execution.processBusinessKey}" id="tenderId" name="报名申请ID" type="string" writable="false"/>
+          <activiti:formProperty default="true" id="pass" name="是否通过" type="boolean"/>
+          <activiti:formProperty id="nopassReason" name="不通过原因" type="string"/>
+          <activiti:taskListener event="complete" expression="${tenderService.updateReviewStatusAndNopassReason(execution.processBusinessKey,pass,nopassReason)}"/>
+        </extensionElements>
+      </userTask>
+      <sequenceFlow id="flow25" sourceRef="usertask1" targetRef="exclusivegateway1"/>
+      <exclusiveGateway gatewayDirection="Unspecified" id="exclusivegateway1" name="Exclusive Gateway"/>
+      <sequenceFlow id="flow27" sourceRef="exclusivegateway1" targetRef="usertask4">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!pass}]]></conditionExpression>
+      </sequenceFlow>
+      <sequenceFlow id="flow28" sourceRef="exclusivegateway1" targetRef="callactivity1">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${pass}]]></conditionExpression>
+      </sequenceFlow>
+      <endEvent id="endevent3" name="End"/>
+      <callActivity activiti:exclusive="true" calledElement="send" id="callactivity1" name="投标">
+        <extensionElements>
+          <activiti:in source="tenderItemId" target="tenderItemId"/>
+          <activiti:in source="projectInstanceId" target="projectInstanceId"/>
+          <activiti:in source="projectInstanceName" target="projectInstanceName"/>
+          <activiti:in source="organBName" target="organBName"/>
+          <activiti:in source="applyUserId" target="applyUserId"/>
+          <activiti:in source="roleId" target="roleId"/>
+        </extensionElements>
+        <multiInstanceLoopCharacteristics activiti:collection="${tenderItemIdList}" activiti:elementVariable="tenderItemId" isSequential="false"/>
+      </callActivity>
+      <sequenceFlow id="flow29" sourceRef="callactivity1" targetRef="endevent4"/>
+      <endEvent id="endevent4" name="End"/>
+      <startEvent id="startevent3" name="Start"/>
+      <endEvent id="endevent6" name="End"/>
+      <sequenceFlow id="flow30" sourceRef="startevent3" targetRef="exclusivegateway2"/>
+      <userTask activiti:assignee="${userService.getPrincipalIdByOrganId(organId)}" activiti:exclusive="true" activiti:formKey="sign/apply_fail" id="usertask4" name="报名失败提醒">
+        <documentation id="usertask4_D_1"><![CDATA[申请报名 ${projectInstanceName} 的 ${projectItemName} 审核不通过]]></documentation>
+        <extensionElements>
+          <activiti:formProperty expression="${execution.processBusinessKey}" id="tenderId" name="报名申请ID" type="string" writable="false"/>
+        </extensionElements>
+      </userTask>
+      <sequenceFlow id="flow41" sourceRef="usertask4" targetRef="endevent3"/>
+      <exclusiveGateway gatewayDirection="Unspecified" id="exclusivegateway2" name="Exclusive Gateway"/>
+      <sequenceFlow id="flow42" sourceRef="exclusivegateway2" targetRef="usertask1">
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isAudit=='1'}]]></conditionExpression>
+      </sequenceFlow>
+      <sequenceFlow id="flow43" sourceRef="exclusivegateway2" targetRef="callactivity1">
+        <extensionElements>
+          <activiti:executionListener event="take" expression="${tenderService.updateReviewStatusAndNopassReason(execution.processBusinessKey,true,'')}"/>
+        </extensionElements>
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isAudit!='1'}]]></conditionExpression>
+      </sequenceFlow>
+    </subProcess>
+    <startEvent activiti:initiator="applyUserId" id="startevent2" name="投标报名申请"/>
+    <endEvent id="endevent5" name="End"/>
+    <sequenceFlow id="flow33" sourceRef="subprocess1" targetRef="endevent5"/>
+    <boundaryEvent attachedToRef="subprocess1" cancelActivity="true" id="boundarysignal1" name="撤销投标报名">
+      <signalEventDefinition id="boundarysignal1_ED_1" signalRef="cancelTenderApplySignal"/>
+    </boundaryEvent>
+    <userTask activiti:assignee="${dlrzj0}" activiti:exclusive="true" activiti:formKey="tender/cancelApplyView" id="usertask2" name="项目专员确认">
+      <documentation id="usertask2_D_1"><![CDATA[${organBName} 撤销投标,请审核]]></documentation>
+    </userTask>
+    <sequenceFlow id="flow35" sourceRef="boundarysignal1" targetRef="usertask2"/>
+    <sequenceFlow id="flow36" sourceRef="usertask3" targetRef="endevent7">
+      <extensionElements>
+        <activiti:executionListener event="take" expression="${tenderService.deleteUserTaskWinCancelTender(execution.processBusinessKey)}"/>
+      </extensionElements>
+    </sequenceFlow>
+    <endEvent id="endevent7" name="End"/>
+    <scriptTask activiti:autoStoreVariables="false" activiti:exclusive="true" id="scripttask4" name="初始化变量" scriptFormat="groovy">
+      <script><![CDATA[def tenderId=execution.processBusinessKey;
+def tender=baseService.get("com.mhb.tender.entity.TBTender",tenderId);
+def isAudit=baseService.get("com.mhb.notice.entity.TBTenderNotice",tender.getNoticeId()).getIsAudit();
+def projectInstanceId=tender.getProjectInstanceId();
+def organId=tender.getOrganId();
+def projectInstance=baseService.get("com.mhb.project.entity.TBProjectInstance",projectInstanceId);
+def projectInstanceName=tender.getProjectInstanceName();
+def projectItemName=tender.getProjectItemName();
+def organBName=tender.getOrganName();
+def usersId=userService.getSignUpUserIdByProjectInstance(projectInstanceId);
+execution.setVariable("isAudit",isAudit);
+execution.setVariable("usersId",usersId);
+/*def map=[roleName:"财务专员",organId:tender.organAId,deleteMark:"0"];
+out:println "查询财务专员"+map;
+def role=baseService.retrieveUniqueByHQL("select role from TBRole role where role.organId=:organId and role.roleName=:roleName and (role.deleteMark=:deleteMark or role.deleteMark is null)",map);
+execution.setVariable("roleId",role.id);*/
+execution.setVariable("dlrzj0",projectInstance.dlrzj0);
+execution.setVariable("projectManagerId",projectInstance.projectManagerId);
+execution.setVariable("projectItemName",projectItemName);
+execution.setVariable("projectInstanceId",projectInstanceId);
+execution.setVariable("projectInstanceName",projectInstanceName);
+execution.setVariable("organId",organId);
+execution.setVariable("organBName",organBName);
+def tenderItemIdList=[];
+for(def tenderItem in tender.getTenderItemList()){
+	tenderItemIdList.add(tenderItem.getId());
+}
+execution.setVariable("tenderItemIdList",tenderItemIdList);]]></script>
+    </scriptTask>
+    <sequenceFlow id="flow38" sourceRef="startevent2" targetRef="scripttask4"/>
+    <userTask activiti:assignee="${projectManagerId}" activiti:exclusive="true" activiti:formKey="tender/cancelApplyView" id="usertask3" name="项目经理确认">
+      <documentation id="usertask3_D_1"><![CDATA[${organBName} 撤销投标,请审核]]></documentation>
+    </userTask>
+    <sequenceFlow id="flow40" sourceRef="usertask2" targetRef="usertask3"/>
+    <sequenceFlow id="flow44" sourceRef="scripttask4" targetRef="subprocess1"/>
+  </process>
+  <bpmndi:BPMNDiagram documentation="background=#3C3F41;count=1;horizontalcount=1;orientation=0;width=842.4;height=1195.2;imageableWidth=832.4;imageableHeight=1185.2;imageableX=5.0;imageableY=5.0" id="Diagram-_1" name="New Diagram">
+    <bpmndi:BPMNPlane bpmnElement="tender_apply">
+      <bpmndi:BPMNShape bpmnElement="subprocess1" id="Shape-subprocess1" isExpanded="true">
+        <omgdc:Bounds height="571.0" width="487.0" x="234.0" y="70.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="571.0" width="487.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent2" id="Shape-startevent2">
+        <omgdc:Bounds height="32.0" width="32.0" x="60.0" y="248.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent5" id="Shape-endevent5">
+        <omgdc:Bounds height="32.0" width="32.0" x="920.0" y="288.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask2" id="Shape-usertask2">
+        <omgdc:Bounds height="55.0" width="105.0" x="286.0" y="700.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="55.0" width="105.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent7" id="Shape-endevent7">
+        <omgdc:Bounds height="32.0" width="32.0" x="720.0" y="710.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scripttask4" id="Shape-scripttask4">
+        <omgdc:Bounds height="55.0" width="105.0" x="26.0" y="328.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="55.0" width="105.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask3" id="Shape-usertask3">
+        <omgdc:Bounds height="55.0" width="105.0" x="540.0" y="700.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="55.0" width="105.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask1" id="Shape-usertask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="362.0" y="250.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="55.0" width="105.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="Shape-exclusivegateway1" isMarkerVisible="false">
+        <omgdc:Bounds height="32.0" width="32.0" x="394.0" y="357.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent3" id="Shape-endevent3">
+        <omgdc:Bounds height="32.0" width="32.0" x="634.0" y="360.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="callactivity1" id="Shape-callactivity1" isExpanded="false">
+        <omgdc:Bounds height="55.0" width="105.0" x="362.0" y="520.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="55.0" width="105.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent4" id="Shape-endevent4">
+        <omgdc:Bounds height="32.0" width="32.0" x="634.0" y="530.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent3" id="Shape-startevent3">
+        <omgdc:Bounds height="32.0" width="32.0" x="397.0" y="100.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent6" id="Shape-endevent6">
+        <omgdc:Bounds height="32.0" width="32.0" x="604.0" y="710.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask4" id="Shape-usertask4">
+        <omgdc:Bounds height="55.0" width="105.0" x="490.0" y="350.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="55.0" width="105.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="Shape-exclusivegateway2" isMarkerVisible="false">
+        <omgdc:Bounds height="32.0" width="32.0" x="394.0" y="170.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundarysignal1" id="Shape-boundarysignal1">
+        <omgdc:Bounds height="32.0" width="32.0" x="454.0" y="620.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="220.0" y="550.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow28" id="BPMNEdge_flow28" sourceElement="exclusivegateway1" targetElement="callactivity1">
+        <omgdi:waypoint x="410.0" y="389.0"/>
+        <omgdi:waypoint x="410.0" y="520.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow29" id="BPMNEdge_flow29" sourceElement="callactivity1" targetElement="endevent4">
+        <omgdi:waypoint x="467.0" y="547.5"/>
+        <omgdi:waypoint x="634.0" y="546.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow25" id="BPMNEdge_flow25" sourceElement="usertask1" targetElement="exclusivegateway1">
+        <omgdi:waypoint x="410.0" y="305.0"/>
+        <omgdi:waypoint x="410.0" y="357.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow27" id="BPMNEdge_flow27" sourceElement="exclusivegateway1" targetElement="usertask4">
+        <omgdi:waypoint x="426.0" y="373.0"/>
+        <omgdi:waypoint x="490.0" y="377.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow42" id="BPMNEdge_flow42" sourceElement="exclusivegateway2" targetElement="usertask1">
+        <omgdi:waypoint x="410.0" y="202.0"/>
+        <omgdi:waypoint x="410.0" y="250.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow43" id="BPMNEdge_flow43" sourceElement="exclusivegateway2" targetElement="callactivity1">
+        <omgdi:waypoint x="394.0" y="186.0"/>
+        <omgdi:waypoint x="294.0" y="281.0"/>
+        <omgdi:waypoint x="362.0" y="547.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow44" id="BPMNEdge_flow44" sourceElement="scripttask4" targetElement="subprocess1">
+        <omgdi:waypoint x="131.0" y="355.5"/>
+        <omgdi:waypoint x="234.0" y="355.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow40" id="BPMNEdge_flow40" sourceElement="usertask2" targetElement="usertask3">
+        <omgdi:waypoint x="391.0" y="727.5"/>
+        <omgdi:waypoint x="540.0" y="727.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow41" id="BPMNEdge_flow41" sourceElement="usertask4" targetElement="endevent3">
+        <omgdi:waypoint x="595.0" y="377.5"/>
+        <omgdi:waypoint x="634.0" y="376.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow35" id="BPMNEdge_flow35" sourceElement="boundarysignal1" targetElement="usertask2">
+        <omgdi:waypoint x="454.0" y="636.0"/>
+        <omgdi:waypoint x="391.0" y="727.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow36" id="BPMNEdge_flow36" sourceElement="usertask3" targetElement="endevent7">
+        <omgdi:waypoint x="645.0" y="727.5"/>
+        <omgdi:waypoint x="720.0" y="726.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow38" id="BPMNEdge_flow38" sourceElement="startevent2" targetElement="scripttask4">
+        <omgdi:waypoint x="76.0" y="280.0"/>
+        <omgdi:waypoint x="76.0" y="328.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow33" id="BPMNEdge_flow33" sourceElement="subprocess1" targetElement="endevent5">
+        <omgdi:waypoint x="721.0" y="355.5"/>
+        <omgdi:waypoint x="920.0" y="304.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow30" id="BPMNEdge_flow30" sourceElement="startevent3" targetElement="exclusivegateway2">
+        <omgdi:waypoint x="411.5" y="131.92953232207398"/>
+        <omgdi:waypoint x="411.5" y="171.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="-1.0" width="-1.0" x="-1.0" y="-1.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

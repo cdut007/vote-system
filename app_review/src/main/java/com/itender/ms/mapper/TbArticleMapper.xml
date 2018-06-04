@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itender.ms.mapper.TbArticleMapper">
+  <resultMap id="BaseResultMap" type="com.itender.ms.domain.TbArticle">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="DELETE_MARK" jdbcType="VARCHAR" property="deleteMark" />
+    <result column="NEWS_TITLE" jdbcType="VARCHAR" property="newsTitle" />
+    <result column="PUBLISH_TIME" jdbcType="TIMESTAMP" property="publishTime" />
+    <result column="PUBLISH_USER_ID" jdbcType="VARCHAR" property="publishUserId" />
+    <result column="PUBLISH_WAY" jdbcType="VARCHAR" property="publishWay" />
+    <result column="EDIT_TIME" jdbcType="TIMESTAMP" property="editTime" />
+    <result column="EDIT_USER_ID" jdbcType="VARCHAR" property="editUserId" />
+    <result column="NEWS_AUTHOR" jdbcType="VARCHAR" property="newsAuthor" />
+    <result column="NEWS_SOURCE" jdbcType="VARCHAR" property="newsSource" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="ARTICLE_TYPE" jdbcType="VARCHAR" property="articleType" />
+    <result column="PUBLISH_ORGAN_ID" jdbcType="VARCHAR" property="publishOrganId" />
+    <result column="INDUSTRY" jdbcType="VARCHAR" property="industry" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.itender.ms.domain.TbArticle">
+    <result column="NEWS_CONTENT" jdbcType="CLOB" property="newsContent" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, DELETE_MARK, NEWS_TITLE, PUBLISH_TIME, PUBLISH_USER_ID, PUBLISH_WAY, EDIT_TIME, 
+    EDIT_USER_ID, NEWS_AUTHOR, NEWS_SOURCE, CREATE_TIME, ARTICLE_TYPE, PUBLISH_ORGAN_ID, 
+    INDUSTRY
+  </sql>
+  <sql id="Blob_Column_List">
+    NEWS_CONTENT
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.itender.ms.domain.TbArticleExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from TB_ARTICLE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.itender.ms.domain.TbArticleExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from TB_ARTICLE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from TB_ARTICLE
+    where ID = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from TB_ARTICLE
+    where ID = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.itender.ms.domain.TbArticleExample">
+    delete from TB_ARTICLE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.itender.ms.domain.TbArticle">
+    insert into TB_ARTICLE (ID, DELETE_MARK, NEWS_TITLE, 
+      PUBLISH_TIME, PUBLISH_USER_ID, PUBLISH_WAY, 
+      EDIT_TIME, EDIT_USER_ID, NEWS_AUTHOR, 
+      NEWS_SOURCE, CREATE_TIME, ARTICLE_TYPE, 
+      PUBLISH_ORGAN_ID, INDUSTRY, NEWS_CONTENT
+      )
+    values (#{id,jdbcType=VARCHAR}, #{deleteMark,jdbcType=VARCHAR}, #{newsTitle,jdbcType=VARCHAR}, 
+      #{publishTime,jdbcType=TIMESTAMP}, #{publishUserId,jdbcType=VARCHAR}, #{publishWay,jdbcType=VARCHAR}, 
+      #{editTime,jdbcType=TIMESTAMP}, #{editUserId,jdbcType=VARCHAR}, #{newsAuthor,jdbcType=VARCHAR}, 
+      #{newsSource,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{articleType,jdbcType=VARCHAR}, 
+      #{publishOrganId,jdbcType=VARCHAR}, #{industry,jdbcType=VARCHAR}, #{newsContent,jdbcType=CLOB}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.itender.ms.domain.TbArticle">
+    insert into TB_ARTICLE
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="deleteMark != null">
+        DELETE_MARK,
+      </if>
+      <if test="newsTitle != null">
+        NEWS_TITLE,
+      </if>
+      <if test="publishTime != null">
+        PUBLISH_TIME,
+      </if>
+      <if test="publishUserId != null">
+        PUBLISH_USER_ID,
+      </if>
+      <if test="publishWay != null">
+        PUBLISH_WAY,
+      </if>
+      <if test="editTime != null">
+        EDIT_TIME,
+      </if>
+      <if test="editUserId != null">
+        EDIT_USER_ID,
+      </if>
+      <if test="newsAuthor != null">
+        NEWS_AUTHOR,
+      </if>
+      <if test="newsSource != null">
+        NEWS_SOURCE,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+      <if test="articleType != null">
+        ARTICLE_TYPE,
+      </if>
+      <if test="publishOrganId != null">
+        PUBLISH_ORGAN_ID,
+      </if>
+      <if test="industry != null">
+        INDUSTRY,
+      </if>
+      <if test="newsContent != null">
+        NEWS_CONTENT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteMark != null">
+        #{deleteMark,jdbcType=VARCHAR},
+      </if>
+      <if test="newsTitle != null">
+        #{newsTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="publishTime != null">
+        #{publishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="publishUserId != null">
+        #{publishUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="publishWay != null">
+        #{publishWay,jdbcType=VARCHAR},
+      </if>
+      <if test="editTime != null">
+        #{editTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="editUserId != null">
+        #{editUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="newsAuthor != null">
+        #{newsAuthor,jdbcType=VARCHAR},
+      </if>
+      <if test="newsSource != null">
+        #{newsSource,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="articleType != null">
+        #{articleType,jdbcType=VARCHAR},
+      </if>
+      <if test="publishOrganId != null">
+        #{publishOrganId,jdbcType=VARCHAR},
+      </if>
+      <if test="industry != null">
+        #{industry,jdbcType=VARCHAR},
+      </if>
+      <if test="newsContent != null">
+        #{newsContent,jdbcType=CLOB},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.itender.ms.domain.TbArticleExample" resultType="java.lang.Long">
+    select count(*) from TB_ARTICLE
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update TB_ARTICLE
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deleteMark != null">
+        DELETE_MARK = #{record.deleteMark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.newsTitle != null">
+        NEWS_TITLE = #{record.newsTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="record.publishTime != null">
+        PUBLISH_TIME = #{record.publishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.publishUserId != null">
+        PUBLISH_USER_ID = #{record.publishUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.publishWay != null">
+        PUBLISH_WAY = #{record.publishWay,jdbcType=VARCHAR},
+      </if>
+      <if test="record.editTime != null">
+        EDIT_TIME = #{record.editTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.editUserId != null">
+        EDIT_USER_ID = #{record.editUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.newsAuthor != null">
+        NEWS_AUTHOR = #{record.newsAuthor,jdbcType=VARCHAR},
+      </if>
+      <if test="record.newsSource != null">
+        NEWS_SOURCE = #{record.newsSource,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null">
+        CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.articleType != null">
+        ARTICLE_TYPE = #{record.articleType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.publishOrganId != null">
+        PUBLISH_ORGAN_ID = #{record.publishOrganId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.industry != null">
+        INDUSTRY = #{record.industry,jdbcType=VARCHAR},
+      </if>
+      <if test="record.newsContent != null">
+        NEWS_CONTENT = #{record.newsContent,jdbcType=CLOB},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update TB_ARTICLE
+    set ID = #{record.id,jdbcType=VARCHAR},
+      DELETE_MARK = #{record.deleteMark,jdbcType=VARCHAR},
+      NEWS_TITLE = #{record.newsTitle,jdbcType=VARCHAR},
+      PUBLISH_TIME = #{record.publishTime,jdbcType=TIMESTAMP},
+      PUBLISH_USER_ID = #{record.publishUserId,jdbcType=VARCHAR},
+      PUBLISH_WAY = #{record.publishWay,jdbcType=VARCHAR},
+      EDIT_TIME = #{record.editTime,jdbcType=TIMESTAMP},
+      EDIT_USER_ID = #{record.editUserId,jdbcType=VARCHAR},
+      NEWS_AUTHOR = #{record.newsAuthor,jdbcType=VARCHAR},
+      NEWS_SOURCE = #{record.newsSource,jdbcType=VARCHAR},
+      CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
+      ARTICLE_TYPE = #{record.articleType,jdbcType=VARCHAR},
+      PUBLISH_ORGAN_ID = #{record.publishOrganId,jdbcType=VARCHAR},
+      INDUSTRY = #{record.industry,jdbcType=VARCHAR},
+      NEWS_CONTENT = #{record.newsContent,jdbcType=CLOB}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update TB_ARTICLE
+    set ID = #{record.id,jdbcType=VARCHAR},
+      DELETE_MARK = #{record.deleteMark,jdbcType=VARCHAR},
+      NEWS_TITLE = #{record.newsTitle,jdbcType=VARCHAR},
+      PUBLISH_TIME = #{record.publishTime,jdbcType=TIMESTAMP},
+      PUBLISH_USER_ID = #{record.publishUserId,jdbcType=VARCHAR},
+      PUBLISH_WAY = #{record.publishWay,jdbcType=VARCHAR},
+      EDIT_TIME = #{record.editTime,jdbcType=TIMESTAMP},
+      EDIT_USER_ID = #{record.editUserId,jdbcType=VARCHAR},
+      NEWS_AUTHOR = #{record.newsAuthor,jdbcType=VARCHAR},
+      NEWS_SOURCE = #{record.newsSource,jdbcType=VARCHAR},
+      CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
+      ARTICLE_TYPE = #{record.articleType,jdbcType=VARCHAR},
+      PUBLISH_ORGAN_ID = #{record.publishOrganId,jdbcType=VARCHAR},
+      INDUSTRY = #{record.industry,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.itender.ms.domain.TbArticle">
+    update TB_ARTICLE
+    <set>
+      <if test="deleteMark != null">
+        DELETE_MARK = #{deleteMark,jdbcType=VARCHAR},
+      </if>
+      <if test="newsTitle != null">
+        NEWS_TITLE = #{newsTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="publishTime != null">
+        PUBLISH_TIME = #{publishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="publishUserId != null">
+        PUBLISH_USER_ID = #{publishUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="publishWay != null">
+        PUBLISH_WAY = #{publishWay,jdbcType=VARCHAR},
+      </if>
+      <if test="editTime != null">
+        EDIT_TIME = #{editTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="editUserId != null">
+        EDIT_USER_ID = #{editUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="newsAuthor != null">
+        NEWS_AUTHOR = #{newsAuthor,jdbcType=VARCHAR},
+      </if>
+      <if test="newsSource != null">
+        NEWS_SOURCE = #{newsSource,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="articleType != null">
+        ARTICLE_TYPE = #{articleType,jdbcType=VARCHAR},
+      </if>
+      <if test="publishOrganId != null">
+        PUBLISH_ORGAN_ID = #{publishOrganId,jdbcType=VARCHAR},
+      </if>
+      <if test="industry != null">
+        INDUSTRY = #{industry,jdbcType=VARCHAR},
+      </if>
+      <if test="newsContent != null">
+        NEWS_CONTENT = #{newsContent,jdbcType=CLOB},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.itender.ms.domain.TbArticle">
+    update TB_ARTICLE
+    set DELETE_MARK = #{deleteMark,jdbcType=VARCHAR},
+      NEWS_TITLE = #{newsTitle,jdbcType=VARCHAR},
+      PUBLISH_TIME = #{publishTime,jdbcType=TIMESTAMP},
+      PUBLISH_USER_ID = #{publishUserId,jdbcType=VARCHAR},
+      PUBLISH_WAY = #{publishWay,jdbcType=VARCHAR},
+      EDIT_TIME = #{editTime,jdbcType=TIMESTAMP},
+      EDIT_USER_ID = #{editUserId,jdbcType=VARCHAR},
+      NEWS_AUTHOR = #{newsAuthor,jdbcType=VARCHAR},
+      NEWS_SOURCE = #{newsSource,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      ARTICLE_TYPE = #{articleType,jdbcType=VARCHAR},
+      PUBLISH_ORGAN_ID = #{publishOrganId,jdbcType=VARCHAR},
+      INDUSTRY = #{industry,jdbcType=VARCHAR},
+      NEWS_CONTENT = #{newsContent,jdbcType=CLOB}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.itender.ms.domain.TbArticle">
+    update TB_ARTICLE
+    set DELETE_MARK = #{deleteMark,jdbcType=VARCHAR},
+      NEWS_TITLE = #{newsTitle,jdbcType=VARCHAR},
+      PUBLISH_TIME = #{publishTime,jdbcType=TIMESTAMP},
+      PUBLISH_USER_ID = #{publishUserId,jdbcType=VARCHAR},
+      PUBLISH_WAY = #{publishWay,jdbcType=VARCHAR},
+      EDIT_TIME = #{editTime,jdbcType=TIMESTAMP},
+      EDIT_USER_ID = #{editUserId,jdbcType=VARCHAR},
+      NEWS_AUTHOR = #{newsAuthor,jdbcType=VARCHAR},
+      NEWS_SOURCE = #{newsSource,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      ARTICLE_TYPE = #{articleType,jdbcType=VARCHAR},
+      PUBLISH_ORGAN_ID = #{publishOrganId,jdbcType=VARCHAR},
+      INDUSTRY = #{industry,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

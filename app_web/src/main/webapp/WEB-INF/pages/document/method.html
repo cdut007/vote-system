@@ -1,0 +1,17 @@
+当投标报价比评标基准价每增加
+<input type='text' name='GT_PERCENT' style='width:40px;' class="easyui-numberbox" data-options="max:100,min:0,required:true,onChange:function(newValue,oldValue){$('#GT_PERCENT').html(newValue);}" />
+%（含
+<em id='GT_PERCENT'></em>
+%），扣
+<input name='GT_SCORE' style='width:40px;' class='easyui-numberbox' data-options="required:true,precision:2">
+分，扣至
+<input type='text' name='GT_MIN_SCORE' style='width:40px;' class="easyui-numberbox" data-options="required:true" />
+分为止；当投标报价比评标基准价每减少
+<input type='text' name='LT_PERCENT' style='width:40px;' class="easyui-numberbox" data-options="max:100,min:0,required:true,onChange:function(newValue,oldValue){$('#LT_PERCENT').html(newValue);}" />
+%（含
+<em id='LT_PERCENT'></em>
+%），扣
+<input type='text' name='LT_SCORE' style='width:40px;' class="easyui-numberbox" data-options="required:true,precision:2" />
+分，扣至
+<input type='text' name='LT_MIN_SCORE' style='width:40px;' class="easyui-numberbox" data-options="required:true" />
+分为止

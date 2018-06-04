@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <signal id="reviewResultSignal" name="reviewResultSignal" activiti:scope="global"></signal>
+  <process id="draw_expert_audit" name="抽专家申请审核流程" isExecutable="true">
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <userTask id="usertask1" name="代理机构审核" activiti:assignee="${dlrzj}" activiti:formKey="expertApplication/expertApplyReview">
+      <documentation>${projectInstanceName} 抽专家申请审核</documentation>
+      <extensionElements>
+        <activiti:formProperty id="view_url" name="表单地址" type="string" expression="expertApplication/expertApplyReview" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="expertApplyId" name="申请ID" type="string" expression="${execution.processBusinessKey}" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="pass" name="通过与否" type="boolean"></activiti:formProperty>
+        <activiti:formProperty id="opinion" name="审核意见" type="string"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <scriptTask id="scripttask1" name="变量初始化" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <script>def expertApply=baseService.get("com.mhb.expert.entity.TBExpertApply",execution.processBusinessKey);
+def projectInstance=baseService.get("com.mhb.project.entity.TBProjectInstance",expertApply.projectInstanceId);
+execution.setVariable("projectInstanceId",projectInstance.getId());
+execution.setVariable("projectInstanceName",projectInstance.getZbxmmc());
+execution.setVariable("projectManagerId",projectInstance.getProjectManagerId());
+execution.setVariable("ownerId",projectInstance.getOwnerId());
+execution.setVariable("organId",projectInstance.getOrganId());
+execution.setVariable("dlrzj",userService.getPrincipalIdByOrganId(projectInstance.getOrganId()));</script>
+    </scriptTask>
+    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="scripttask1"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="scripttask1" targetRef="usertask1"></sequenceFlow>
+    <endEvent id="endevent1" name="审核不通过"></endEvent>
+    <sequenceFlow id="flow3" name="审核通过1" sourceRef="usertask1" targetRef="usertask3">
+      <extensionElements>
+        <activiti:executionListener event="take" expression="${expertApplyService.updateReviewStatus(execution.processBusinessKey,'1','')}"></activiti:executionListener>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${pass&&not empty organId}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow4" name="审核不通过3" sourceRef="usertask1" targetRef="endevent1">
+      <extensionElements>
+        <activiti:executionListener event="take" expression="${expertApplyService.updateReviewStatus(execution.processBusinessKey,'3','')}"></activiti:executionListener>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!pass}]]></conditionExpression>
+    </sequenceFlow>
+    <userTask id="usertask2" name="平台审核" activiti:candidateGroups="1ae9a74b-784e-41e4-9c04-7d7d7585cdda" activiti:formKey="expertApplication/expertApplyReview_1">
+      <documentation>${projectInstanceName} 抽专家申请审核</documentation>
+      <extensionElements>
+        <activiti:formProperty id="view_url" name="表单地址" type="string" expression="expertApplication/expertApplyReview" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="expertApplyId" name="申请ID" type="string" expression="${execution.processBusinessKey}" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="pass" name="通过与否" type="boolean"></activiti:formProperty>
+        <activiti:formProperty id="opinion" name="审核意见" type="string"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow5" name="审核不通过4" sourceRef="usertask2" targetRef="endevent1">
+      <extensionElements>
+        <activiti:executionListener event="take" expression="${expertApplyService.updateReviewStatus(execution.processBusinessKey,'4','')}"></activiti:executionListener>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!pass}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow6" sourceRef="usertask2" targetRef="endevent1">
+      <extensionElements>
+        <activiti:executionListener event="take" expression="${expertApplyService.updateReviewStatus(execution.processBusinessKey,'2','')}"></activiti:executionListener>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${pass&&not empty organId}]]></conditionExpression>
+    </sequenceFlow>
+    <userTask id="usertask3" name="招标单位审核" activiti:assignee="${ownerId}" activiti:formKey="expertApplication/expertApplyReview">
+      <documentation>${projectInstanceName} 抽专家申请审核</documentation>
+      <extensionElements>
+        <activiti:formProperty id="view_url" name="表单地址" type="string" expression="expertApplication/expertApplyReview" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="expertApplyId" name="申请ID" type="string" expression="${execution.processBusinessKey}" writable="false"></activiti:formProperty>
+        <activiti:formProperty id="pass" name="通过与否" type="boolean"></activiti:formProperty>
+        <activiti:formProperty id="opinion" name="审核意见" type="string"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow7" name="审核通过6" sourceRef="usertask3" targetRef="usertask2">
+      <extensionElements>
+        <activiti:executionListener event="take" expression="${expertApplyService.updateReviewStatus(execution.processBusinessKey,'6','')}"></activiti:executionListener>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${pass&&not empty organId}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow8" name="审核不通过5" sourceRef="usertask3" targetRef="endevent1">
+      <extensionElements>
+        <activiti:executionListener event="take" expression="${expertApplyService.updateReviewStatus(execution.processBusinessKey,'5','')}"></activiti:executionListener>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!pass}]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_draw_expert_audit">
+    <bpmndi:BPMNPlane bpmnElement="draw_expert_audit" id="BPMNPlane_draw_expert_audit">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="780.0" y="8.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask1" id="BPMNShape_usertask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="209.0" y="1.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scripttask1" id="BPMNShape_scripttask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="520.0" y="1.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="245.0" y="417.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask2" id="BPMNShape_usertask2">
+        <omgdc:Bounds height="55.0" width="105.0" x="209.0" y="317.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask3" id="BPMNShape_usertask3">
+        <omgdc:Bounds height="55.0" width="105.0" x="209.0" y="170.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="780.0" y="25.0"></omgdi:waypoint>
+        <omgdi:waypoint x="625.0" y="28.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="520.0" y="28.0"></omgdi:waypoint>
+        <omgdi:waypoint x="314.0" y="28.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="261.0" y="56.0"></omgdi:waypoint>
+        <omgdi:waypoint x="261.0" y="170.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="71.0" x="213.0" y="96.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="261.0" y="56.0"></omgdi:waypoint>
+        <omgdi:waypoint x="477.0" y="244.0"></omgdi:waypoint>
+        <omgdi:waypoint x="477.0" y="434.0"></omgdi:waypoint>
+        <omgdi:waypoint x="280.0" y="434.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="87.0" x="396.0" y="143.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="209.0" y="344.0"></omgdi:waypoint>
+        <omgdi:waypoint x="132.0" y="344.0"></omgdi:waypoint>
+        <omgdi:waypoint x="132.0" y="434.0"></omgdi:waypoint>
+        <omgdi:waypoint x="245.0" y="434.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="87.0" x="101.0" y="377.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="261.0" y="372.0"></omgdi:waypoint>
+        <omgdi:waypoint x="262.0" y="417.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="261.0" y="225.0"></omgdi:waypoint>
+        <omgdi:waypoint x="261.0" y="317.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="71.0" x="199.0" y="246.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="261.0" y="225.0"></omgdi:waypoint>
+        <omgdi:waypoint x="442.0" y="361.0"></omgdi:waypoint>
+        <omgdi:waypoint x="262.0" y="417.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="87.0" x="299.0" y="262.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -2,19 +2,28 @@ package com.itender;
 
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
+import freemarker.template.TemplateException;
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -24,6 +33,8 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.io.IOException;
+
 @Configurable
 @EnableAutoConfiguration
 @ComponentScan(basePackages = "com.itender")
@@ -32,16 +43,55 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableTransactionManagement
 @EnableSwagger2
 @ServletComponentScan
-public class Application{
 
+public class Application  extends  SpringBootServletInitializer{
 
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+        return builder.sources(Application.class);
+    }
 
+//    @Bean
+//    public ViewResolver getJspViewResolver(){
+//        InternalResourceViewResolver internalResourceViewResolver = new InternalResourceViewResolver();
+//        internalResourceViewResolver.setPrefix("WEB-INF/pages/");
+//        internalResourceViewResolver.setSuffix(".jsp");
+//        internalResourceViewResolver.setOrder(1);
+//        return  internalResourceViewResolver;
+//    }
 
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class,args);
 
     }
+
+    @Bean
+    public FreeMarkerViewResolver getFmResolver(){
+        FreeMarkerViewResolver resolver = new FreeMarkerViewResolver();
+        resolver.setCache(false);
+        resolver.setAllowRequestOverride(false);
+        resolver.setAllowSessionOverride(false);
+        resolver.setExposeRequestAttributes(false);
+        resolver.setExposeSessionAttributes(false);
+        resolver.setPrefix("");
+        resolver.setSuffix(".ftl");
+        resolver.setContentType("text/html;charset=UTF-8");
+        resolver.setOrder(0);
+        return resolver;
+    }
+
+
+    @Bean
+    public FreeMarkerConfigurer freemarkerConfig() throws IOException,TemplateException {
+        FreeMarkerConfigurationFactory factory = new FreeMarkerConfigurationFactory();
+        factory.setTemplateLoaderPath("WEB-INF/freemarker/");
+        factory.setDefaultEncoding("UTF-8");
+        FreeMarkerConfigurer result = new FreeMarkerConfigurer();
+        result.setConfiguration(factory.createConfiguration());
+        return result;
+    }
+
 
     @Bean
     public FilterRegistrationBean WebStatfilterRegistrationBean(){

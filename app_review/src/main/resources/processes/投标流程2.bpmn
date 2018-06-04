@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <signal id="paySignal" name="paySignal"></signal>
+  <process id="send" name="投标流程" isExecutable="true">
+    <startEvent id="startevent1" name="投标流程开始" activiti:initiator="applyUserId"></startEvent>
+    <userTask id="usertask4" name="下载标书/投标" activiti:assignee="${applyUserId}" activiti:formKey="tender/downloadRecruitFile">
+      <documentation>报名成功，您需要上传 ${projectInstanceName} 的 ${projectItemName} 的 ${sel_label}</documentation>
+      <extensionElements>
+        <activiti:taskListener event="complete" expression="${uploadBidFileCompleteListener.execute(execution)}"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <endEvent id="endevent1" name="投标流程结束"></endEvent>
+    <sequenceFlow id="flow32" sourceRef="startevent1" targetRef="scripttask2"></sequenceFlow>
+    <scriptTask id="scripttask2" name="变量初始化" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <script>def tenderItemId=execution.getVariable("tenderItemId");
+def tenderItem=baseService.get("com.mhb.tender.entity.TBTenderItem",tenderItemId);
+def projectItem=baseService.get("com.mhb.project.entity.TBProjectItem",tenderItem.getProjectItemId());
+execution.setVariable("projectItemName",projectItem.getBdmc00());
+runtimeService.updateBusinessKey(execution.getProcessInstanceId(), tenderItemId);
+execution.setVariable("sel_label",projectItem.getCurrentBidStage()==2?"投标文件":"资格预审申请文件");</script>
+    </scriptTask>
+    <scriptTask id="scripttask3" name="更新投标状态" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <script>def map=["tenderItemId":execution.getVariable("tenderItemId"),"currentDate":new java.util.Date(),"reviewStatus":"1"];
+baseService.executeByDynamicNamedQuery("updateTenderItemSuccess",map);
+
+</script>
+    </scriptTask>
+    <sequenceFlow id="flow39" sourceRef="scripttask3" targetRef="endevent1"></sequenceFlow>
+    <sequenceFlow id="flow41" sourceRef="usertask4" targetRef="scripttask3"></sequenceFlow>
+    <sequenceFlow id="flow42" sourceRef="scripttask2" targetRef="usertask4"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_send">
+    <bpmndi:BPMNPlane bpmnElement="send" id="BPMNPlane_send">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="199.0" y="90.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask4" id="BPMNShape_usertask4">
+        <omgdc:Bounds height="55.0" width="105.0" x="164.0" y="280.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="199.0" y="470.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scripttask2" id="BPMNShape_scripttask2">
+        <omgdc:Bounds height="55.0" width="105.0" x="164.0" y="180.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scripttask3" id="BPMNShape_scripttask3">
+        <omgdc:Bounds height="55.0" width="105.0" x="164.0" y="370.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow32" id="BPMNEdge_flow32">
+        <omgdi:waypoint x="216.0" y="125.0"></omgdi:waypoint>
+        <omgdi:waypoint x="216.0" y="180.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow39" id="BPMNEdge_flow39">
+        <omgdi:waypoint x="216.0" y="425.0"></omgdi:waypoint>
+        <omgdi:waypoint x="216.0" y="470.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow41" id="BPMNEdge_flow41">
+        <omgdi:waypoint x="216.0" y="335.0"></omgdi:waypoint>
+        <omgdi:waypoint x="216.0" y="370.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow42" id="BPMNEdge_flow42">
+        <omgdi:waypoint x="216.0" y="235.0"></omgdi:waypoint>
+        <omgdi:waypoint x="216.0" y="280.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="invitation_file_agency_confirm_workflow" name="投标邀请书代理机构回执确认流程" isExecutable="true">
+    <startEvent id="startevent1" name="开始"></startEvent>
+    <endEvent id="endevent1" name="结束"></endEvent>
+    <sequenceFlow id="flow3" sourceRef="startevent1" targetRef="usertask2"></sequenceFlow>
+    <userTask id="usertask2" name="代理人回执流程确认" activiti:assignee="${dlrzjjid}" activiti:formKey="document/invitation_agency_confirm">
+      <documentation>${ztmc00} ${actionName} ${projectInstanceName} - ${projectItemName} 的投标邀请</documentation>
+    </userTask>
+    <sequenceFlow id="flow4" sourceRef="usertask2" targetRef="endevent1">
+   		<extensionElements>
+       	 	<activiti:executionListener event="take" expression="${tenderService.createInvitationTender(execution.processBusinessKey, acceptStatus)}"></activiti:executionListener>
+      	</extensionElements>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_invitation_file_agency_confirm_workflow">
+    <bpmndi:BPMNPlane bpmnElement="invitation_file_agency_confirm_workflow" id="BPMNPlane_invitation_file_agency_confirm_workflow">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="130.0" y="110.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="570.0" y="128.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask2" id="BPMNShape_usertask2">
+        <omgdc:Bounds height="92.0" width="261.0" x="110.0" y="299.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="147.0" y="145.0"></omgdi:waypoint>
+        <omgdi:waypoint x="240.0" y="299.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="240.0" y="299.0"></omgdi:waypoint>
+        <omgdi:waypoint x="587.0" y="163.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

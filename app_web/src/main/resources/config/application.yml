@@ -6,7 +6,7 @@ logging:
 spring:
     ## 多环境配置
     profiles:
-        active: staging
+        active: dev
 
  #设置文件上大小
     http:
@@ -42,25 +42,19 @@ spring:
         minEvictableIdleTimeMillis: 30000
         keepAlive: true
 
-    #freemarker配置
-    # FREEMARKER (FreeMarkerAutoConfiguration)
-    freemarker:
-      allow-request-override: false # Set whether HttpServletRequest attributes are allowed to override (hide) controller generated model attributes of the same name.
-      allow-session-override: false # Set whether HttpSession attributes are allowed to override (hide) controller generated model attributes of the same name.
-      cache: false # Enable templates caching.
-      charset: UTF-8 # Template encoding.
-      check-template-location: true # Check that the templates location exists.
-      content-type: text/html # Content-Type value.
-      enabled: true # Enable MVC view resolution for this technology.
-      expose-request-attributes: false # Set whether all request attributes should be added to the model prior to merging with the templates.
-      expose-session-attributes: false # Set whether all HttpSession attributes should be added to the model prior to merging with the templates.
-      expose-spring-macro-helpers: true # Set whether to expose a RequestContext for use by Spring's macro library, under the name "springMacroRequestContext".
-      prefer-file-system-access: true # Prefer file system access for templates loading. File system access enables hot detection of templates changes.
-      prefix: # Prefix that gets prepended to view names when building a URL.
-      request-context-attribute: # Name of the RequestContext attribute for all views.
-      suffix: .ftl # Suffix that gets appended to view names when building a URL.
-      template-loader-path: classpath:/templates/
 
+
+
+
+    activiti:
+      database-schema-update: true
+      db-identity-used: false
+      job-executor-activate: true
+      async-executor-activate: false
+    mvc:
+      view:
+        prefix: WEB-INF/pages/
+        suffix: .jsp
 
 
 
@@ -86,51 +80,6 @@ pagehelper:
     supportMethodsArguments: true
     params: count=countSql
 
-#权限资源uri配置
-privilege-uri-init:
-  #无权限URI
-  no_permission_uri: /nopermission
-  #不需要自动跳转URI
-  always_unreturn_uri:
-    - /
-  #一直无需检查URI
-  always_uncheck_uri:
-    - /
-    - /error
-    - /login
-    - /management/user/code
-    - /management/user/login
-    - /management/user/logout
-    - /management/user/register
-    - /swagger-*
-    - /book/bookRecord
-    - /static/*
-    - /review*
-    - /industry/listAll
-    - /test*
-  #登录后无需检查URI
-  login_uncheck_uri:
-    - /
-    - /dashboard*
-    - /index
-    - /login
-    - /book/bookRecord
-    - /management/user/logout
-    - /management/user/register
-    - /management/user/detilsModal
-    - /management/user/updateMy
-    - /supervision/leaveRoom
-    - /review*
-    - /industry/listAll
-    - /test*
-  #后台登录URI
-  backend_login_uri: /
-  #前台登录URI
-  frontend_login_uri: /home
-  #后台需要检查的URI前缀
-  backend_check_prefix: /
-  #前台需要检查的URI前缀
-  frontend_check_prefix: /home
 
 sys:
   version: "@project.version@"

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <signal id="guardianSignSignal" name="guardianSignSignal"></signal>
+  <signal id="auditTenderSignSignal" name="auditTenderSignSignal"></signal>
+  <process id="tender_sign_work_flow" name="投标人签到流程" isExecutable="true">
+    <userTask id="usertask19" name="投标人签到" activiti:assignee="${userId}" activiti:dueDate="${bidOpenDate}" activiti:formKey="redirect:/bidOpen/bidOpenManager?expertApplyId=${execution.processBusinessKey}">
+      <documentation>${projectInstanceName} 即将开标，请您在开标时间到达前签到</documentation>
+      <extensionElements>
+        <activiti:taskListener event="complete" expression="${signService.bidderSign(execution.processBusinessKey)}"></activiti:taskListener>
+      </extensionElements>
+      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${tenderUserIdSign}" activiti:elementVariable="userId"></multiInstanceLoopCharacteristics>
+    </userTask>
+    <startEvent id="startevent11" name="等待开标"></startEvent>
+    <scriptTask id="scripttask1" name="变量初始化" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <script>def expertApplyId=execution.getVariable("expertApplyId");
+def expertApply=baseService.get("com.mhb.expert.entity.TBExpertApply",expertApplyId);
+def map = ["expertApplyId":expertApplyId];
+baseService.executeByHQL("delete TBSign where expertApplyId=:expertApplyId and userType='3'",map);
+/*runtimeService.updateBusinessKey(execution.getProcessInstanceId(), expertApplyId);*/
+/*cacheManager.getCache("expertApplyCache").put(new net.sf.ehcache.Element(execution.processBusinessKey,expertApply));*/
+/*chatManagerService.sendSystemMessage(dlrzj0,freeMarkerBean.getFileTemplateResult("message/bidOpenMessage.ftl",execution.variables));*/
+def tenderUserIdSign=userService.retrieveTenderUserIdSign(execution.processBusinessKey);
+execution.setVariable('tenderUserIdSign',tenderUserIdSign);/*获取有效投标人*/
+      	
+      </script>
+    </scriptTask>
+    <sequenceFlow id="flow238" sourceRef="startevent11" targetRef="scripttask1"></sequenceFlow>
+    <endEvent id="endevent21" name="End"></endEvent>
+    <sequenceFlow id="flow243" name="审核投标人签到" sourceRef="parallelgateway2" targetRef="signalintermediatecatchevent2">
+      <extensionElements>
+        <activiti:executionListener event="take" expression="${guardianService.strartGuardianWorkflow(execution.processBusinessKey,'auditTenderSign')}"></activiti:executionListener>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="flow254" name="监标人签到" sourceRef="parallelgateway1" targetRef="signalintermediatecatchevent1">
+      <extensionElements>
+        <activiti:executionListener event="take" expression="${guardianService.strartGuardianWorkflow(execution.processBusinessKey,&quot;sign&quot;)}"></activiti:executionListener>
+      </extensionElements>
+    </sequenceFlow>
+    <intermediateCatchEvent id="signalintermediatecatchevent1" name="SignalCatchEvent">
+      <signalEventDefinition signalRef="guardianSignSignal"></signalEventDefinition>
+    </intermediateCatchEvent>
+    <sequenceFlow id="flow255" sourceRef="parallelgateway1" targetRef="usertask19"></sequenceFlow>
+    <intermediateCatchEvent id="signalintermediatecatchevent2" name="SignalCatchEvent">
+      <signalEventDefinition signalRef="auditTenderSignSignal"></signalEventDefinition>
+    </intermediateCatchEvent>
+    <sequenceFlow id="flow256" sourceRef="signalintermediatecatchevent2" targetRef="endevent21"></sequenceFlow>
+    <parallelGateway id="parallelgateway1" name="Parallel Gateway"></parallelGateway>
+    <sequenceFlow id="flow257" sourceRef="scripttask1" targetRef="parallelgateway1"></sequenceFlow>
+    <parallelGateway id="parallelgateway2" name="Parallel Gateway"></parallelGateway>
+    <sequenceFlow id="flow258" sourceRef="usertask19" targetRef="parallelgateway2"></sequenceFlow>
+    <sequenceFlow id="flow259" sourceRef="signalintermediatecatchevent1" targetRef="parallelgateway2"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_tender_sign_work_flow">
+    <bpmndi:BPMNPlane bpmnElement="tender_sign_work_flow" id="BPMNPlane_tender_sign_work_flow">
+      <bpmndi:BPMNShape bpmnElement="usertask19" id="BPMNShape_usertask19">
+        <omgdc:Bounds height="55.0" width="105.0" x="860.0" y="254.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent11" id="BPMNShape_startevent11">
+        <omgdc:Bounds height="35.0" width="35.0" x="1190.0" y="66.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scripttask1" id="BPMNShape_scripttask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="948.0" y="56.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent21" id="BPMNShape_endevent21">
+        <omgdc:Bounds height="35.0" width="35.0" x="370.0" y="400.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="signalintermediatecatchevent1" id="BPMNShape_signalintermediatecatchevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="1072.0" y="264.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="signalintermediatecatchevent2" id="BPMNShape_signalintermediatecatchevent2">
+        <omgdc:Bounds height="35.0" width="35.0" x="615.0" y="400.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="parallelgateway1" id="BPMNShape_parallelgateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="980.0" y="147.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="parallelgateway2" id="BPMNShape_parallelgateway2">
+        <omgdc:Bounds height="40.0" width="40.0" x="980.0" y="397.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow238" id="BPMNEdge_flow238">
+        <omgdi:waypoint x="1190.0" y="83.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1053.0" y="83.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow243" id="BPMNEdge_flow243">
+        <omgdi:waypoint x="980.0" y="417.0"></omgdi:waypoint>
+        <omgdi:waypoint x="650.0" y="417.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="48.0" width="100.0" x="753.0" y="394.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow254" id="BPMNEdge_flow254">
+        <omgdi:waypoint x="1000.0" y="187.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1089.0" y="264.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="80.0" x="1004.0" y="210.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow255" id="BPMNEdge_flow255">
+        <omgdi:waypoint x="1000.0" y="187.0"></omgdi:waypoint>
+        <omgdi:waypoint x="912.0" y="254.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow256" id="BPMNEdge_flow256">
+        <omgdi:waypoint x="615.0" y="417.0"></omgdi:waypoint>
+        <omgdi:waypoint x="405.0" y="417.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow257" id="BPMNEdge_flow257">
+        <omgdi:waypoint x="1000.0" y="111.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1000.0" y="147.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow258" id="BPMNEdge_flow258">
+        <omgdi:waypoint x="912.0" y="309.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1000.0" y="397.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow259" id="BPMNEdge_flow259">
+        <omgdi:waypoint x="1089.0" y="299.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1000.0" y="397.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

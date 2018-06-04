@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <signal id="paySignal" name="paySignal"></signal>
+  <process id="recruitFile_addendum_confirm" name="招标文件补遗回执流程" isExecutable="true">
+    <startEvent id="startevent1" name="投标邀请流程" activiti:initiator="applyUserId"></startEvent>
+    <userTask id="usertask4" name="招标文件补遗" activiti:assignee="${tenderUserId}" activiti:formKey="document/recruitFileAddendum_confirm">
+      <documentation>收到 ${title}，请确认</documentation>
+    </userTask>
+    <endEvent id="endevent1" name="投标邀请流程结束"></endEvent>
+    <sequenceFlow id="flow42" sourceRef="startevent1" targetRef="usertask4"></sequenceFlow>
+    <userTask id="usertask5" name="补遗回执确认" activiti:assignee="${commissioner}" activiti:formKey="document/recruitFileAddendum_receipt_confirm">
+      <documentation>收到${title}回执文件，请确认</documentation>
+      <extensionElements>
+        <activiti:formProperty id="tenderUserId" name="投标人ID" type="string" expression="${tenderUserId}"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow43" sourceRef="usertask4" targetRef="usertask5"></sequenceFlow>
+    <sequenceFlow id="flow44" sourceRef="usertask5" targetRef="endevent1"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_recruitFile_addendum_confirm">
+    <bpmndi:BPMNPlane bpmnElement="recruitFile_addendum_confirm" id="BPMNPlane_recruitFile_addendum_confirm">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="235.0" y="91.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask4" id="BPMNShape_usertask4">
+        <omgdc:Bounds height="55.0" width="177.0" x="164.0" y="220.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="235.0" y="540.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask5" id="BPMNShape_usertask5">
+        <omgdc:Bounds height="55.0" width="177.0" x="164.0" y="360.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow42" id="BPMNEdge_flow42">
+        <omgdi:waypoint x="252.0" y="126.0"></omgdi:waypoint>
+        <omgdi:waypoint x="252.0" y="220.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow43" id="BPMNEdge_flow43">
+        <omgdi:waypoint x="252.0" y="275.0"></omgdi:waypoint>
+        <omgdi:waypoint x="252.0" y="360.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow44" id="BPMNEdge_flow44">
+        <omgdi:waypoint x="252.0" y="415.0"></omgdi:waypoint>
+        <omgdi:waypoint x="252.0" y="540.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

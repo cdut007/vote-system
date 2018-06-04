@@ -1,0 +1,38 @@
+/*����ʽ*/
+form td {
+	padding: 3px 0;
+}
+
+td.need {
+	color: red;
+	width: 10px;
+}
+
+.inputxt, select, textarea {
+	padding: 5px 2px 4px 2px;
+	border: 1px solid #a5aeb6;
+	width: 196px
+}
+
+.combo, .numberbox {
+	padding: 3px 2px;
+	border: 1px solid #a5aeb6;
+}
+
+.combo .combo-arrow {
+	border: 1px solid #333;
+	background-color: #ddd;
+	margin: 2px 2px;
+	background-color: #ddd;
+}
+
+.inputxt:focus, select:focus, textarea:focus, .textbox-focused {
+	border-color: rgba(82, 168, 236, 0.8);
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px
+		rgba(82, 168, 236, 0.6);
+	-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px
+		rgba(82, 168, 236, 0.6);
+	box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.075), 0px 0px 8px
+		rgba(82, 168, 236, 0.6);
+	outline: thin dotted \9;
+}

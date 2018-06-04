@@ -1,0 +1,157 @@
+table.mytableStyle {
+	width: 100%;
+	border: #e4e4e4 1px solid;
+	font-family: '微软雅黑';
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+table.mytableStyle>caption {
+	text-align: center;
+	font-weight: 900;
+}
+
+table.mytableStyle>thead>tr>th {
+	background-color: #fafafa;
+	font-weight: 600;
+	text-align: center;
+	border-bottom: #e4e4e4 2px solid;
+	border-bottom-weight: bold;
+	height: 27px;
+	line-height: 27px;
+	color: #bd0c0c;
+	border-right: #ccc 1px solid;
+	border-top: #ccc 1px solid;
+}
+
+table.mytableStyle>tbody>tr>th {
+	border-weight: bold;
+	text-align: right;
+	background-color: #fafafa;
+	font-weight: bold;
+	padding: 0 10px;
+}
+
+table.mytableStyle>tbody>tr>td {
+	border-weight: bold;
+	text-align: left;
+}
+
+table.mytableStyle>tbody>tr>td>table.mytableStyle {
+	border: none;
+}
+
+table.mytableStyle>tbody>tr>td>table.mytableStyle>thead>tr>th {
+	border-top: none;
+}
+
+table.mytableStyle>tbody>tr>td>input.inputxt, table.mytableStyle>tbody>tr>td>textarea,
+	table.mytableStyle>tbody>tr>td>select {
+	border: none;
+	width: 100%;
+	height: 27px;
+	background-color: none;
+}
+
+table.mytableStyle>tbody>tr>td, table.mytableStyle>tbody>tr>th {
+	border-bottom: rgb(231, 231, 231) 1px dashed;
+	border-right: rgb(231, 231, 231) 1px dashed;
+	padding: 0 5px;
+	height: 27px;
+	line-height: 27px;
+}
+
+.tableTitle {
+	color: #fff;
+	font-weight: bold;
+	font-family: '微软雅黑';
+	background-color: #c70000;
+	height: 27px;
+	border: 1px solid #c8d2b8;
+	text-align: left;
+	border-bottom: none;
+	line-height: 27px;
+	padding: 0 5px 0 5px;
+	text-indent: 5px;
+}
+
+.tableTitle2 {
+	color: #c70000;
+	font-weight: bold;
+	font-family: '微软雅黑';
+	height: 27px;
+	border: 1px solid #e4e4e4;
+	text-align: left;
+	border-bottom: none;
+	line-height: 27px;
+	padding: 0 5px 0 5px;
+	text-indent: 5px;
+}
+
+.tableTitle span {
+	float: left;
+	color: #fff;
+	font-weight: bold;
+	height: 27px;
+	line-height: 27px;
+	font-size: 14px;
+}
+
+.tableTitle a {
+	float: right;
+	color: #fff;
+}
+
+table.mytableStyle .none {
+	display: none;
+}
+
+table.mytableStyle .insert {
+	float: left;
+}
+
+table.mytableStyle .delete {
+	float: right;
+}
+
+table.mytableStyle a.button {
+	color: #fff;
+}
+
+table.bottom_table {
+	padding: 4px 6px 4px 0px;
+	margin: 3px auto 3px auto;
+	color: #313031;
+	TEXT-ALIGN: center;
+}
+
+.select_a {
+	padding: 7px;
+	font-weight: 900;
+	background-color: #ff891b
+}
+
+.no_select_a {
+	padding: 7px;
+	background-color: #ccc
+}
+
+.no_select_mouseover_a {
+	padding: 7px;
+	background-color: #0f0
+}
+
+#menubar {
+	width: 100%;
+	height: 50px;
+}
+
+#menubar ul {
+	line-height: 30px;
+	padding: 0px;
+}
+
+#menubar li {
+	float: left;
+	border: 1px solid #fff;
+}

@@ -1,0 +1,40 @@
+$(function(){
+	$("#log-datagrid").datagrid({
+		title:"访问日志列表",
+		url:ctx+"/log/pagingLogData",
+		pagination:true,
+		rownumbers:true,
+		striped:true,
+		method:"post",
+		idField:"id",
+	
+		onOpen:function(){
+			$(this).on("click","a.edit",function(){
+				createOrUpdateLog($(this).parent().parent().parent().children("td").find(":checkbox").val());
+			});
+			$(this).on("click","a.delete",function(){
+				deleteLog([$(this).parent().parent().parent().children("td").find(":checkbox").val()]);
+			});
+		},
+		columns:[[
+			{field:"id",checkbox:true,hidden:true},
+			{title:"用户",field:"user",width:80},
+			{title:"功能名称",field:'title',align:"left",width:100},
+			{title:"请求类型",field:'method',align:"left",width:70},
+			{title:"开始时间",field:'beginDate',align:"left",width:120},
+			{title:"响应用时",field:'useTime',align:"right",width:70,formatter:function(value){
+				return value==null?"":(""+value+"ms");
+			}},
+			/*{title:"请求用户ID",field:'createUserId',align:"left",width:100,hidden:true},*/
+			{title:"远程IP",field:'remoteAddr',align:"left",width:80},
+			{title:"请求地址",field:'requestUri',align:"left",width:100},
+			{title:"日志类型",field:'type',align:"left",width:80},
+			{title:"客户端描述",field:'userAgent',align:"left",width:160},
+			/*{title:"请求参数",field:'params',align:"left",width:100},*/
+			/*{title:"错误堆栈",field:'exception',align:"left",width:100,hidden:true},*/
+			{title:"操作",field:"opt",width:80,formatter:function(value,rowData,rowIndex){
+				return "<a class=\"button red small \">查看</a>";
+			}}
+		]]
+	});
+});

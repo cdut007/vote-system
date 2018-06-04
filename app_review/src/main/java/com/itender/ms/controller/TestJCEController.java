@@ -1,14 +1,22 @@
 package com.itender.ms.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.github.pagehelper.PageHelper;
 import com.itender.ms.convert.LayuiTableData;
+import com.itender.ms.domain.TbArticle;
+import com.itender.ms.domain.TbArticleExample;
+import com.itender.ms.domain.TbAttachment;
+import com.itender.ms.domain.TbAttachmentExample;
 import com.itender.ms.exception.APIException;
+import com.itender.ms.mapper.TbArticleMapper;
+import com.itender.ms.mapper.TbAttachmentMapper;
 import com.itender.ms.util.HttpHelper;
+import com.itender.ms.workflow.model.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.activiti.engine.task.Task;
-import org.activiti.engine.task.TaskQuery;
+import org.activiti.engine.form.AbstractFormType;
+import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -24,7 +32,9 @@ import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -41,9 +51,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.net.ssl.SSLContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
 import java.io.*;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -58,12 +66,40 @@ import java.util.List;
 @Controller
 @RequestMapping("/test")
 public class TestJCEController {
+
+
+    @Bean
+    public InitializingBean activitiConfigurer(SpringProcessEngineConfiguration engineConfiguration) {
+        return new InitializingBean() {
+            @Override
+            public void afterPropertiesSet() throws Exception {
+
+                List<AbstractFormType> customFormTypes = new ArrayList<AbstractFormType>();
+                customFormTypes.add(new BinaryFormType());
+                customFormTypes.add(new IntegerFormType());
+                customFormTypes.add(new TextFormType());
+                customFormTypes.add(new TimeFormType());
+                customFormTypes.add(new UserFormType());
+
+                engineConfiguration.setCustomFormTypes(customFormTypes);
+            }
+        };
+        }
+
+
+
     private static final Logger logger = LoggerFactory.getLogger(TestJCEController.class);
     @Autowired
     private HttpHelper httpHelper;
     private String domain = "https://stage.jcebid.com";//"http://192.168.99.44:8080";
     private HashMap<String, String> sessionIdMap = new HashMap<>();
     private HashMap<String, String> userDataMap = new HashMap<>();
+
+
+    @Autowired
+    private TbArticleMapper tbArticleMapper;
+    @Autowired
+    private TbAttachmentMapper attachmentMapper;
 
     String getProjectId() {
 
@@ -262,7 +298,7 @@ public class TestJCEController {
         return strAllParam;
     }
 
-    public static final LayuiTableData convertToLayuiData(JSONObject jsonObject, Integer statusCode, String msg) {
+    public static final LayuiTableData convertToLayuiData(JsonObjectIgnoreDuplicates jsonObject, Integer statusCode, String msg) {
         LayuiTableData<Object> objectLayuiTableData = new LayuiTableData<>();
         List<Object> jsonObjectList = new ArrayList<>();
         JSONArray jsonArray = jsonObject.optJSONArray("rows");
@@ -340,7 +376,7 @@ public class TestJCEController {
             noticeId = (String) request.getAttribute("noticeId");//for test
         }
         String url = getDomain() + "/tenderApply/tenderApplyForm?noticeId=" + noticeId;
-        ResponseEntity resultInfo = clientForm(getUserSessionCache(request.getParameter("userId")), url, HttpMethod.GET, new JSONObject());
+        ResponseEntity resultInfo = clientForm(getUserSessionCache(request.getParameter("userId")), url, HttpMethod.GET, new JsonObjectIgnoreDuplicates());
         if (resultInfo.getStatusCodeValue() != 200) {
             //parse 關鍵字
             result.put("status", false);
@@ -357,7 +393,7 @@ public class TestJCEController {
         //save init first
 
         String initUrl = getDomain() + "/tenderApply/tenderApply";
-        JSONObject initJsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates initJsonObject = new JsonObjectIgnoreDuplicates();
 
         try {
             initJsonObject.put("signData_raw", "1234556677");
@@ -367,7 +403,7 @@ public class TestJCEController {
             initJsonObject.put("tenderItemList[0].projectItemId", itemId);
             initJsonObject.put("isComplete", "false");
             initJsonObject.put("token", doc.getElementsByAttributeValue("name", "token").first().attr("value"));
-            initJsonObject.put("signatureData", null);
+            initJsonObject.put("signatureData", "");
             initJsonObject.put("sealName", "四川投标测试单位1");
             initJsonObject.put("content", doc.getElementById("content").attr("value"));
         } catch (JSONException e) {
@@ -383,11 +419,11 @@ public class TestJCEController {
 
         //上传附件
         String uploadUrl = getDomain() + "/attachment/uploadAttachment";
-        JSONObject uploadJsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates uploadJsonObject = new JsonObjectIgnoreDuplicates();
 
         try {
             if (StringUtils.isEmpty(id)) {
-                id = new JSONObject((String) initResultInfo.getBody()).optString("data");
+                id = new JsonObjectIgnoreDuplicates((String) initResultInfo.getBody()).optString("data");
             }
             uploadJsonObject.put("fjsszt", id);
             uploadJsonObject.put("fjgslx", "39");
@@ -414,9 +450,9 @@ public class TestJCEController {
             return ResponseEntity.ok(result);
         }
 
-        JSONObject resultUploadData = null;
+        JsonObjectIgnoreDuplicates resultUploadData = null;
         try {
-            resultUploadData = new JSONObject(uploadJson);
+            resultUploadData = new JsonObjectIgnoreDuplicates(uploadJson);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -426,7 +462,7 @@ public class TestJCEController {
 
 
         String applyUrl = getDomain() + "/tenderApply/tenderApply";
-        JSONObject tenderInfo = new JSONObject();
+        JsonObjectIgnoreDuplicates tenderInfo = new JsonObjectIgnoreDuplicates();
         try {
             tenderInfo.put("signData_raw", "1234556677");
             tenderInfo.put(itemId, "1234556677");
@@ -437,7 +473,7 @@ public class TestJCEController {
 
             tenderInfo.put("id", id);
             tenderInfo.put("token", doc.getElementsByAttributeValue("name", "token").first().attr("value"));
-            tenderInfo.put("signatureData", null);
+            tenderInfo.put("signatureData", "");
             tenderInfo.put("sealName", "四川投标测试单位1");
             tenderInfo.put("content", doc.getElementById("content").attr("value"));
 
@@ -452,9 +488,9 @@ public class TestJCEController {
             return ResponseEntity.ok(result);
         }
 
-        JSONObject resultData = null;
+        JsonObjectIgnoreDuplicates resultData = null;
         try {
-            resultData = new JSONObject((String) applyResultInfo.getBody());
+            resultData = new JsonObjectIgnoreDuplicates((String) applyResultInfo.getBody());
             if (!resultData.optBoolean("success")) {
                 result.put("status", false);
                 return ResponseEntity.ok(result);
@@ -465,7 +501,7 @@ public class TestJCEController {
 
 
         String joinUrl = getDomain() + "/tenderApply/tenderApplyStartFlow";
-        JSONObject joinJsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates joinJsonObject = new JsonObjectIgnoreDuplicates();
 
         try {
             joinJsonObject.put("tenderId", resultData.optString("data"));
@@ -505,7 +541,7 @@ public class TestJCEController {
 //api url地址
         String url = getDomain() + "/bidOpen/pagingBidOpeningData";
 
-        JSONObject jsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates jsonObject = new JsonObjectIgnoreDuplicates();
         try {
 
             jsonObject.put("page", "1");
@@ -515,7 +551,7 @@ public class TestJCEController {
             if (resultInfo.getStatusCodeValue() == 200) {
                 //parse 關鍵字
                 String json = (String) resultInfo.getBody();
-                JSONObject resultData = new JSONObject(json);
+                JsonObjectIgnoreDuplicates resultData = new JsonObjectIgnoreDuplicates(json);
 
                 result.put("status", resultData.optBoolean("success"));
                 result.put("msg", resultData.optString("msg"));
@@ -523,7 +559,7 @@ public class TestJCEController {
             } else {
                 result.put("status", false);
                 result.put("msg", "获取失敗!");
-                return ResponseEntity.ok(convertToLayuiData(new JSONObject("{}"), 200, "success"));
+                return ResponseEntity.ok(convertToLayuiData(new JsonObjectIgnoreDuplicates("{}"), 200, "success"));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -540,7 +576,7 @@ public class TestJCEController {
     ) throws APIException {
         Map<String, Object> result = new HashMap<>();
         String url = getDomain() + "/front_notice/pagingNotice";
-        ResponseEntity resultInfo = clientForm(getUserSessionCache(request.getParameter("userId")), url, HttpMethod.GET, new JSONObject());
+        ResponseEntity resultInfo = clientForm(getUserSessionCache(request.getParameter("userId")), url, HttpMethod.GET, new JsonObjectIgnoreDuplicates());
         if (resultInfo.getStatusCodeValue() != 200) {
             //parse 關鍵字
 
@@ -586,7 +622,7 @@ public class TestJCEController {
         Map<String, Object> result = new HashMap<>();
 
         try {
-            JSONObject jsonObject = new JSONObject();
+            JsonObjectIgnoreDuplicates jsonObject = new JsonObjectIgnoreDuplicates();
             jsonObject.put("token", "");
             jsonObject.put("createByAgency", " false");
             String assignee = request.getParameter("assignee");
@@ -712,7 +748,7 @@ public class TestJCEController {
                 }
 
 
-//                JSONObject  resultData = new JSONObject(json);
+//                JsonObjectIgnoreDuplicates  resultData = new JsonObjectIgnoreDuplicates(json);
 //
 //                result.put("status", resultData.optBoolean("success"));
 //                result.put("msg", resultData.optString("msg"));
@@ -749,7 +785,7 @@ public class TestJCEController {
     private  boolean tenderDecrptFile(String taskId, String userId, Document doc, Map<String,Object> result, String type) throws JSONException{
 
         String listBidFileUrl = getDomain() + "/bidFile/listBidFile";
-        JSONObject listBidFileJsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates listBidFileJsonObject = new JsonObjectIgnoreDuplicates();
         String expertApplyId = doc.getElementsByAttributeValue("name","expertApplyId").first().attr("value");
         listBidFileJsonObject.put("expertApplyId",expertApplyId);
         ResponseEntity listBidFileInfo = clientForm(getUserSessionCache(userId), listBidFileUrl, HttpMethod.POST, listBidFileJsonObject);
@@ -770,7 +806,7 @@ public class TestJCEController {
 //        expertApplyId: e2765c84-991f-4978-8358-7fcd3d9ae451
         result.put("type", type);
         String EvaluationUrl = getDomain() + "/getDigitalEnvelope";
-        JSONObject mEvaluationJsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates mEvaluationJsonObject = new JsonObjectIgnoreDuplicates();
 
         mEvaluationJsonObject.put("expertApplyId", expertApplyId);
         mEvaluationJsonObject.put("projectItemId", data.optString("projectItemId"));
@@ -795,7 +831,7 @@ public class TestJCEController {
             return false;
         }
 
-        JSONObject resultUploadData = new JSONObject(uploadJson);
+        JsonObjectIgnoreDuplicates resultUploadData = new JsonObjectIgnoreDuplicates(uploadJson);
         if (!resultUploadData.optBoolean("success")) {
             result.put("status", false);
             result.put("msg", resultUploadData.optString("msg"));
@@ -830,7 +866,7 @@ public class TestJCEController {
     private boolean parseChooseEvaluation(String taskId, String userId, Document doc, Map<String,Object> result, String type) throws JSONException{
         result.put("type", type);
         String EvaluationUrl = getDomain() + "/recruitFileData/retriveEvaluationBidFiles";
-        JSONObject mEvaluationJsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates mEvaluationJsonObject = new JsonObjectIgnoreDuplicates();
 
         mEvaluationJsonObject.put("expertApplyId", doc.getElementById("expertApplyId").attr("value"));
         mEvaluationJsonObject.put("projectItemId", doc.getElementById("projectItemId").attr("value"));
@@ -854,7 +890,7 @@ public class TestJCEController {
             return false;
         }
 
-//        JSONObject resultUploadData = new JSONObject(uploadJson);
+//        JsonObjectIgnoreDuplicates resultUploadData = new JsonObjectIgnoreDuplicates(uploadJson);
 //        if (!resultUploadData.optBoolean("success")) {
 //            result.put("status", false);
 //            result.put("msg", "抽系数失败!");
@@ -890,7 +926,7 @@ public class TestJCEController {
         }
 
 
-        JSONObject resultUploadData = new JSONObject(uploadJson);
+        JsonObjectIgnoreDuplicates resultUploadData = new JsonObjectIgnoreDuplicates(uploadJson);
         if (!resultUploadData.optBoolean("success")) {
             result.put("status", false);
             result.put("msg", resultUploadData.optString("msg"));
@@ -902,7 +938,7 @@ public class TestJCEController {
 
         //更新工作流状态
          activitiUrl = getDomain() + "/workflow/completeForm";
-        JSONObject activitiJsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates activitiJsonObject = new JsonObjectIgnoreDuplicates();
 
 
         activitiJsonObject.put("taskId", taskId);
@@ -925,7 +961,7 @@ public class TestJCEController {
     private boolean exportSign(String userId, String taskId, Document doc, Map<String, Object> result, String type) throws JSONException {
         result.put("type", type);
         String exportUrl = getDomain() + "/expertPromise/expertPromiseSave";
-        JSONObject expoertSignJsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates expoertSignJsonObject = new JsonObjectIgnoreDuplicates();
         File signAttachFile = new File(getFileDirByName("attach_files") + "test_sign.aip");
         expoertSignJsonObject.put("name", signAttachFile.getName());
         expoertSignJsonObject.put("taskId", taskId);
@@ -936,7 +972,7 @@ public class TestJCEController {
         expoertSignJsonObject.put("expertApplyId", expertApplyId);
         String getExportIdUrl = getDomain() + "/expertPromise/expertPromise?expertApplyId=" + expoertSignJsonObject.get("expertApplyId") + "&taskId=" + taskId;
 
-        ResponseEntity docmentIdInfo = clientForm(getUserSessionCache(userId), getExportIdUrl, HttpMethod.GET, new JSONObject());
+        ResponseEntity docmentIdInfo = clientForm(getUserSessionCache(userId), getExportIdUrl, HttpMethod.GET, new JsonObjectIgnoreDuplicates());
         if (docmentIdInfo.getStatusCodeValue() != 200) {
 
             result.put("status", false);
@@ -967,7 +1003,7 @@ public class TestJCEController {
 
         //更新工作流状态
         String activitiUrl = getDomain() + "/expertPromise/expertPromiseAvoid";
-        JSONObject activitiJsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates activitiJsonObject = new JsonObjectIgnoreDuplicates();
 
         activitiJsonObject.put("taskId", taskId);
         activitiJsonObject.put("expertApplyId", expertApplyId);
@@ -1018,7 +1054,7 @@ public class TestJCEController {
         result.put("type", type);
 
         String uploadBidFileUrl = getDomain() + "/uploadBidFile";
-        JSONObject bidJsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates bidJsonObject = new JsonObjectIgnoreDuplicates();
         File signAttachFile = new File(getFileDirByName("attach_files") + "test_tender_file.ebid");
         bidJsonObject.put("name", signAttachFile.getName());
         String tenderItemId = doc.getElementById("tenderItemId").attr("value");
@@ -1043,13 +1079,13 @@ public class TestJCEController {
             return false;
         }
 
-        JSONObject resultUploadData = new JSONObject(uploadJson);
+        JsonObjectIgnoreDuplicates resultUploadData = new JsonObjectIgnoreDuplicates(uploadJson);
         if (!resultUploadData.optBoolean("success")) {
             return false;
         }
 
         uploadBidFileUrl = getDomain() + "/attachment/uploadAttachment";
-        bidJsonObject = new JSONObject();
+        bidJsonObject = new JsonObjectIgnoreDuplicates();
         signAttachFile = new File(getFileDirByName("attach_files") + "test_tender_pic.png");
         bidJsonObject.put("name", signAttachFile.getName());
         bidJsonObject.put("fjsszt", tenderItemId);
@@ -1071,7 +1107,7 @@ public class TestJCEController {
             return false;
         }
 
-        resultUploadData = new JSONObject(uploadJson);
+        resultUploadData = new JsonObjectIgnoreDuplicates(uploadJson);
         if (!resultUploadData.optBoolean("success")) {
             return false;
         }
@@ -1091,7 +1127,7 @@ public class TestJCEController {
 
         //更新工作流状态
         String activitiUrl = getDomain() + "/workflow/completeForm";
-        JSONObject activitiJsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates activitiJsonObject = new JsonObjectIgnoreDuplicates();
 
 
         activitiJsonObject.put("taskId", taskId);
@@ -1107,7 +1143,7 @@ public class TestJCEController {
         }
         result.put("status", true);
         String json = (String) taskResultInfo.getBody();
-//        JSONObject resultData = new JSONObject(json);
+//        JsonObjectIgnoreDuplicates resultData = new JsonObjectIgnoreDuplicates(json);
 //        result.put("status", resultData.optBoolean("success"));
 //        result.put("msg", resultData.optString("msg"));
 
@@ -1118,7 +1154,7 @@ public class TestJCEController {
         result.put("type", type);
         Element reviewId = doc.getElementsByAttributeValue("name", "id").first();//招标内容
 
-        JSONObject reviewJsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates reviewJsonObject = new JsonObjectIgnoreDuplicates();
         if (reviewId != null) {
             String id = reviewId.attr("value");
             reviewJsonObject.put("id", id);
@@ -1171,7 +1207,7 @@ public class TestJCEController {
                 }
 
                 String expertApplyUrl = getDomain() + "/expertApplication/loadExpertApplyContent";
-                JSONObject ex = new JSONObject();
+                JsonObjectIgnoreDuplicates ex = new JsonObjectIgnoreDuplicates();
                 ex.put("expertApplyId", reviewJsonObject.get("expertApplyId"));
                 ResponseEntity taskResultInfo = clientForm(getUserSessionCache(userId), expertApplyUrl, HttpMethod.POST, ex);
                 if (taskResultInfo.getStatusCodeValue() != 200) {
@@ -1235,7 +1271,7 @@ public class TestJCEController {
 
                 String applyUrl = getDomain() + "/tenderApply/startTenderReceiptFlow";
                 String id = doc.getElementById("id").attr("value");
-                JSONObject applyObject = new JSONObject();
+                JsonObjectIgnoreDuplicates applyObject = new JsonObjectIgnoreDuplicates();
                 applyObject.put("id", id);
                 ResponseEntity applyResultInfo = clientForm(getUserSessionCache(userId), applyUrl, HttpMethod.POST, applyObject);
                 if (applyResultInfo.getStatusCodeValue() != 200) {
@@ -1245,7 +1281,7 @@ public class TestJCEController {
                     return false;
                 }
 
-                boolean ok = new JSONObject((String) applyResultInfo.getBody()).optBoolean("success");
+                boolean ok = new JsonObjectIgnoreDuplicates((String) applyResultInfo.getBody()).optBoolean("success");
                 if (!ok) {
                     result.put("status", false);
                     result.put("msg", "审核失败!");
@@ -1266,7 +1302,7 @@ public class TestJCEController {
             } else if(type.equals("指定评标委员会组长")){
                 String exportGroupSelection =  getDomain() +"/expertGroup/saveHeader";
                 String projectInstanceId = doc.getElementsByAttributeValue("name","projectInstanceId").first().attr("value");
-                JSONObject applyObject = new JSONObject();
+                JsonObjectIgnoreDuplicates applyObject = new JsonObjectIgnoreDuplicates();
                 applyObject.put("projectInstanceId", projectInstanceId);
                 applyObject.put("id",doc.getElementsByAttributeValue("name","id").first().attr("value"));
                 applyObject.put("zzzj00", "a97f6f0c-ffc1-4833-b4ee-fa78b7918bb2");//范俊明固定专家组长
@@ -1308,7 +1344,7 @@ public class TestJCEController {
 
         //查询存在的标段
         String projectItemCheckUrl = getDomain() + "/projectItem/pagingProjectItemData";
-        JSONObject projectItemJsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates projectItemJsonObject = new JsonObjectIgnoreDuplicates();
         JSONArray projectItemDatas = new JSONArray();
         projectItemJsonObject.put("projectInstanceId", projectInstanceId);
         ResponseEntity projectItemJsonInfo = clientForm(getUserSessionCache(userId), projectItemCheckUrl, HttpMethod.POST, projectItemJsonObject);
@@ -1328,7 +1364,7 @@ public class TestJCEController {
 
         //查询招标文件是否已经通过
         String projectStatusCheckUrl = getDomain() + "/recruitFile/pagingRecruitFileData";
-        JSONObject projectStatusJsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates projectStatusJsonObject = new JsonObjectIgnoreDuplicates();
         projectStatusJsonObject.put("projectInstanceId", projectInstanceId);
         projectStatusJsonObject.put("page", "1");
         projectStatusJsonObject.put("pageSize", "10");
@@ -1336,7 +1372,7 @@ public class TestJCEController {
         if (projectStatusJsonInfo.getStatusCodeValue() == 200) {
 
             try {
-                JSONObject data = new JSONObject((String) projectStatusJsonInfo.getBody());
+                JsonObjectIgnoreDuplicates data = new JsonObjectIgnoreDuplicates((String) projectStatusJsonInfo.getBody());
                 JSONArray datas = data.optJSONArray("rows");
 
                 if (datas != null && datas.length() > 0) {
@@ -1347,7 +1383,7 @@ public class TestJCEController {
                         parseExpert(userId, taskId, doc, result, projectInstanceId, projectItemDatas.getJSONObject(0).optString("id"));
 
                         String projectExpertGroupSelectionUrl = getDomain() + "/bidOpen/startExpertGroupSelection";
-                        JSONObject projectStatusDatas = new JSONObject();
+                        JsonObjectIgnoreDuplicates projectStatusDatas = new JsonObjectIgnoreDuplicates();
                         projectStatusDatas.put("recruitId", datas.getJSONObject(0).optString("id"));
                         ResponseEntity projectExpertGroupSelectionJsonInfo = clientForm(getUserSessionCache(userId), projectExpertGroupSelectionUrl, HttpMethod.POST, projectStatusDatas);
                         if (projectExpertGroupSelectionJsonInfo.getStatusCodeValue() == 200) {
@@ -1368,7 +1404,7 @@ public class TestJCEController {
         //检查当前已经创建的通知是否存在并审核通过
 
         String currentNoticesStatusUrl = getDomain() + "/notice/bidNoticeList";
-        JSONObject queryNoticeStatusJsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates queryNoticeStatusJsonObject = new JsonObjectIgnoreDuplicates();
 
         queryNoticeStatusJsonObject.put("projectInstanceId", projectInstanceId);
         queryNoticeStatusJsonObject.put("page", "1");
@@ -1376,7 +1412,7 @@ public class TestJCEController {
         ResponseEntity noticeStatusInfo = clientForm(getUserSessionCache(userId), currentNoticesStatusUrl, HttpMethod.POST, queryNoticeStatusJsonObject);
         if (noticeStatusInfo.getStatusCodeValue() == 200) {
 
-            JSONObject datas = new JSONObject((String) noticeStatusInfo.getBody());
+            JsonObjectIgnoreDuplicates datas = new JsonObjectIgnoreDuplicates((String) noticeStatusInfo.getBody());
 
             JSONArray rows = datas.optJSONArray("rows");
 
@@ -1412,7 +1448,7 @@ public class TestJCEController {
         Element terms = doc.getElementsByAttributeValue("name", "terms").first();//招标内容
         //保存招标内容
         String saveProjectUrl = getDomain() + "/projectInstance/updateProjectInstanceByAgentUser";
-        JSONObject saveJsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates saveJsonObject = new JsonObjectIgnoreDuplicates();
 
         saveJsonObject.put("id", projectInstanceId);
         saveJsonObject.put("nryfw0", nryfw0.text());
@@ -1436,7 +1472,7 @@ public class TestJCEController {
             return false;
         }
 
-        JSONObject resultUploadData = new JSONObject(uploadJson);
+        JsonObjectIgnoreDuplicates resultUploadData = new JsonObjectIgnoreDuplicates(uploadJson);
         if (!resultUploadData.optBoolean("success")) {
             return false;
         }
@@ -1452,7 +1488,7 @@ public class TestJCEController {
         //提交标段
         String url = getDomain() + "/projectItem/saveOrUpdateProjectItem";
 
-        JSONObject jsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates jsonObject = new JsonObjectIgnoreDuplicates();
 
         jsonObject.put("projectInstanceId", projectInstanceId);
         jsonObject.put("organProjectItemCode", "AUTO-TEST-" + currentDate);
@@ -1489,7 +1525,7 @@ public class TestJCEController {
             return false;
         }
 
-        JSONObject saveItemPackageData = new JSONObject(saveItemPackageJson);
+        JsonObjectIgnoreDuplicates saveItemPackageData = new JsonObjectIgnoreDuplicates(saveItemPackageJson);
         JSONObject packageItemData = saveItemPackageData.optJSONObject("data");
         if (packageItemData == null) {
             result.put("status", false);
@@ -1500,7 +1536,7 @@ public class TestJCEController {
 
         String noticePageUrl = getDomain() + "/notice/addOrEditBidNotice?projectInstanceId=" + projectInstanceId + "&ggxzdm=1&gglxdm=1";
 
-        //       ResponseEntity noticePageResultInfo = clientForm(getUserSessionCache(userId), noticePageUrl, HttpMethod.GET, new JSONObject());
+        //       ResponseEntity noticePageResultInfo = clientForm(getUserSessionCache(userId), noticePageUrl, HttpMethod.GET, new JsonObjectIgnoreDuplicates());
         String attachmentSsztId = "", token = "";
 //        if (noticePageResultInfo.getStatusCodeValue() == 200) {
 //            String html = (String) noticePageResultInfo.getBody();
@@ -1511,7 +1547,7 @@ public class TestJCEController {
 
 
         //创建资格后审公告 默认
-        JSONObject noticeJsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates noticeJsonObject = new JsonObjectIgnoreDuplicates();
         String noticeUrl = getDomain() + "/notice/saveOrUpdateBidNotice";
         noticeJsonObject.put("changeContent", "<br/>程序自动测试<br/>");
 
@@ -1538,7 +1574,7 @@ public class TestJCEController {
         String jsonDate = userDataMap.get(userId);
         if(!StringUtils.isEmpty(jsonDate)){
             try{
-                JSONObject dateJson = new JSONObject(jsonDate);
+                JsonObjectIgnoreDuplicates dateJson = new JsonObjectIgnoreDuplicates(jsonDate);
                 noticeJsonObject.put("tenderNoticeData.applyDateBegin", time1=dateJson.optString("tenderNoticeData.applyDateBegin"));//招标文件获取时间
                 noticeJsonObject.put("tenderNoticeData.applyDateEnd", time2=dateJson.optString("tenderNoticeData.applyDateEnd"));//招标文件获取截止时间
                 noticeJsonObject.put("tenderNoticeData.bidDeadline",  time3=dateJson.optString("tenderNoticeData.bidDeadline"));//投标文件递交截止时间
@@ -1596,7 +1632,7 @@ public class TestJCEController {
         }
 
 
-        JSONObject resultData = new JSONObject(json);
+        JsonObjectIgnoreDuplicates resultData = new JsonObjectIgnoreDuplicates(json);
         result.put("status", resultData.optBoolean("success"));
         result.put("msg", resultData.optString("msg"));
 
@@ -1605,7 +1641,7 @@ public class TestJCEController {
 
 
     private boolean parseTenderProjectCreate(String userId, Document doc, Map<String, Object> result, String projectInstanceId, String itemId) throws JSONException {
-        JSONObject tenderPoject = new JSONObject();
+        JsonObjectIgnoreDuplicates tenderPoject = new JsonObjectIgnoreDuplicates();
         //   tenderPoject.put("id", "2c91b4bc-63724367-0163-72598a94-000f");
         tenderPoject.put("isPrejudication", "false");
         tenderPoject.put("projectItemId", itemId);
@@ -1620,7 +1656,7 @@ public class TestJCEController {
         String jsonDate = userDataMap.get(userId);
         if(!StringUtils.isEmpty(jsonDate)){
             try{
-                JSONObject date = new JSONObject(jsonDate);
+                JsonObjectIgnoreDuplicates date = new JsonObjectIgnoreDuplicates(jsonDate);
                 tenderPoject.put("tenderNoticeData.applyDateBegin", date.optString("tenderNoticeData.applyDateBegin"));//招标文件获取时间
                 tenderPoject.put("tenderNoticeData.applyDateEnd", date.optString("tenderNoticeData.applyDateEnd"));//招标文件获取截止时间
                 tenderPoject.put("tenderNoticeData.bidDeadline",  date.optString("tenderNoticeData.bidDeadline"));//投标文件递交截止时间
@@ -1760,7 +1796,7 @@ public class TestJCEController {
         }
 
 
-        JSONObject resultData = new JSONObject(json);
+        JsonObjectIgnoreDuplicates resultData = new JsonObjectIgnoreDuplicates(json);
         result.put("status", resultData.optBoolean("success"));
         result.put("msg", resultData.optString("msg"));
         return true;
@@ -1770,7 +1806,7 @@ public class TestJCEController {
 
         //查询是否存在标段组合id
 
-        JSONObject queryExportPoject = new JSONObject();
+        JsonObjectIgnoreDuplicates queryExportPoject = new JsonObjectIgnoreDuplicates();
         queryExportPoject.put("projectInstanceId", projectInstanceId);
         queryExportPoject.put("page", "1");
         queryExportPoject.put("pageSize", "10");
@@ -1797,7 +1833,7 @@ public class TestJCEController {
         }
 
         if (!exsitId) {
-            JSONObject exportPoject = new JSONObject();
+            JsonObjectIgnoreDuplicates exportPoject = new JsonObjectIgnoreDuplicates();
             exportPoject.put("projectInstanceId", projectInstanceId);
             exportPoject.put("projectItemList[0].id", itemId);
             String saveExportUrl = getDomain() + "/expertApplication/save";
@@ -1807,7 +1843,7 @@ public class TestJCEController {
                 return false;
             }
             String json = (String) exportStatus.getBody();
-            JSONObject resultData = new JSONObject(json);
+            JsonObjectIgnoreDuplicates resultData = new JsonObjectIgnoreDuplicates(json);
             if (!resultData.optBoolean("success")) {
 
                 return false;
@@ -1818,7 +1854,7 @@ public class TestJCEController {
 
 
         //抽专家
-        JSONObject getExport = new JSONObject();
+        JsonObjectIgnoreDuplicates getExport = new JsonObjectIgnoreDuplicates();
         getExport.put("id", id);
         getExport.put("projectInstanceId", projectInstanceId);
         getExport.put("juryExpertNum", "5");
@@ -1856,7 +1892,7 @@ public class TestJCEController {
             return false;
         }
         String json = (String) commitExportStatus.getBody();
-        JSONObject resultData = new JSONObject(json);
+        JsonObjectIgnoreDuplicates resultData = new JsonObjectIgnoreDuplicates(json);
         if (!resultData.optBoolean("success")) {
 
             return false;
@@ -1869,7 +1905,7 @@ public class TestJCEController {
     private boolean loginTenderEditorCreateTender(Map<String, Object> result, String projectInstanceId, String itemId) throws JSONException {
 
         String loginUrl = getDomain() + ":9090/management/user/login";
-        JSONObject loginObj = new JSONObject();
+        JsonObjectIgnoreDuplicates loginObj = new JsonObjectIgnoreDuplicates();
         loginObj.put("username", "admin");
         loginObj.put("password", "123");
         ResponseEntity loginStatus = clientForm(null, loginUrl, HttpMethod.POST, loginObj);
@@ -1889,7 +1925,7 @@ public class TestJCEController {
 
         //create file
         String checkTempleFileUrl = getDomain() + ":9090/invitation/documents/add";
-        JSONObject tempFileObj = new JSONObject();
+        JsonObjectIgnoreDuplicates tempFileObj = new JsonObjectIgnoreDuplicates();
 
         ResponseEntity tempFileStatus = clientForm(sessionCookie, checkTempleFileUrl, HttpMethod.GET, tempFileObj);
         if (tempFileStatus.getStatusCodeValue() != 200) {
@@ -1913,7 +1949,7 @@ public class TestJCEController {
         }
 
         String createTempleFileUrl = getDomain() + ":9090/invitation/documents";
-        JSONObject createFileObj = new JSONObject();
+        JsonObjectIgnoreDuplicates createFileObj = new JsonObjectIgnoreDuplicates();
         createFileObj.put("metaTemplateId", templ);
         createFileObj.put("invitationDocumentName", "自动测试招标文件-" + itemId);
 
@@ -1929,7 +1965,7 @@ public class TestJCEController {
 
         //上传附件
         String uploadUrl = getDomain() + ":9090/invitation/documents/style/word/save";
-        JSONObject uploadJsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates uploadJsonObject = new JsonObjectIgnoreDuplicates();
         uploadJsonObject.put("documentId", docId);
         File attachFile = new File(getFileDirByName("attach_files") + "tender_test.pdf");
         ResponseEntity uploadResultInfo = clientFileForm(sessionCookie, uploadUrl, attachFile.getPath(), uploadJsonObject);
@@ -1939,7 +1975,7 @@ public class TestJCEController {
         }
 
         String updateTempleFileUrl = getDomain() + ":9090/invitation/documents/project";
-        JSONObject updateFileObj = new JSONObject();
+        JsonObjectIgnoreDuplicates updateFileObj = new JsonObjectIgnoreDuplicates();
         updateFileObj.put("documentId", docId);
         updateFileObj.put("itenderProjectId", getProjectId());
         updateFileObj.put("itenderInstanceId", projectInstanceId);
@@ -1981,7 +2017,7 @@ public class TestJCEController {
                 "\t\"operator\": \"admin\"\n" +
                 "}";
         String syncMethodFileUrl = getDomain() + ":9090/invitation/documents/sync/evaluation";
-        JSONObject syncMethodFileObj = new JSONObject();
+        JsonObjectIgnoreDuplicates syncMethodFileObj = new JsonObjectIgnoreDuplicates();
         syncMethodFileObj.put("id", docId);
         syncMethodFileObj.put("evaluationMethodJson", method);
         ResponseEntity syncMethodFileStatus = client(sessionCookie, syncMethodFileUrl, HttpMethod.PATCH, syncMethodFileObj);
@@ -1992,7 +2028,7 @@ public class TestJCEController {
 
         //发布招标文件
         String publishTempleFileUrl = getDomain() + ":9090/invitation/documents/deploy";
-        JSONObject publishFileObj = new JSONObject();
+        JsonObjectIgnoreDuplicates publishFileObj = new JsonObjectIgnoreDuplicates();
         publishFileObj.put("documentId", docId);
         ResponseEntity publishFileStatus = clientForm(sessionCookie, publishTempleFileUrl, HttpMethod.PATCH, publishFileObj);
         if (publishFileStatus.getStatusCodeValue() != 200) {
@@ -2025,7 +2061,7 @@ public class TestJCEController {
 
         //上传附件
         String uploadUrl = getDomain() + "/commissionContract/uploadCommissionContract";
-        JSONObject uploadJsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates uploadJsonObject = new JsonObjectIgnoreDuplicates();
         uploadJsonObject.put("projectInstanceId", projectInstanceId);
         File attachFile = new File(getFileDirByName("attach_files") + "test.pdf");
         ResponseEntity uploadResultInfo = clientFileForm(getUserSessionCache(userId), uploadUrl, attachFile.getPath(), uploadJsonObject);
@@ -2044,7 +2080,7 @@ public class TestJCEController {
             return false;
         }
 
-        JSONObject resultUploadData = new JSONObject(uploadJson);
+        JsonObjectIgnoreDuplicates resultUploadData = new JsonObjectIgnoreDuplicates(uploadJson);
         if (!resultUploadData.optBoolean("success")) {
             return false;
         }
@@ -2057,7 +2093,7 @@ public class TestJCEController {
         //提交代理合同
         String url = getDomain() + "/commissionContract/createOrUpdateCommissionContract";
 
-        JSONObject jsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates jsonObject = new JsonObjectIgnoreDuplicates();
         jsonObject.put("projectInstanceId", projectInstanceId);
         jsonObject.put("taskId", taskId);
         jsonObject.put("attachmentId", attachmentId);
@@ -2073,7 +2109,7 @@ public class TestJCEController {
 
         //更新工作流状态
         String activitiUrl = getDomain() + "/workflow/completeForm";
-        JSONObject activitiJsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates activitiJsonObject = new JsonObjectIgnoreDuplicates();
 
 
         activitiJsonObject.put("taskId", taskId);
@@ -2090,7 +2126,7 @@ public class TestJCEController {
         }
 
         String json = (String) resultInfo.getBody();
-        JSONObject resultData = new JSONObject(json);
+        JsonObjectIgnoreDuplicates resultData = new JsonObjectIgnoreDuplicates(json);
         result.put("status", resultData.optBoolean("success"));
         result.put("msg", resultData.optString("msg"));
 
@@ -2114,12 +2150,23 @@ public class TestJCEController {
                                                       @RequestParam(required = false) Integer pageNum,
                                                       @RequestParam(required = false) Integer pagesize
     ) throws APIException {
+
+
+        TbArticleExample tbArticleQExample = new TbArticleExample();
+
+        List<TbArticle> articles =  tbArticleMapper.selectByExample(tbArticleQExample);
+
+
+        TbAttachmentExample tbArticleExample = new TbAttachmentExample();
+        PageHelper.startPage(1,10);
+        List<TbAttachment> attachments =  attachmentMapper.selectByExample(tbArticleExample);
+
         Map<String, Object> result = new HashMap<>();
 //api url地址
         String url = getDomain() + "/workflow/pagingTask";
         pageNum = pageNum == null ? 1 : pageNum;
         pagesize = pagesize == null ? 10 : pagesize;
-        JSONObject jsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates jsonObject = new JsonObjectIgnoreDuplicates();
         try {
 
             jsonObject.put("page", pageNum);
@@ -2129,7 +2176,7 @@ public class TestJCEController {
             if (resultInfo.getStatusCodeValue() == 200) {
                 //parse 關鍵字
                 String json = (String) resultInfo.getBody();
-                JSONObject resultData = new JSONObject(json);
+                JsonObjectIgnoreDuplicates resultData = new JsonObjectIgnoreDuplicates(JSON.parse(json).toString()) ;
 
                 result.put("status", resultData.optBoolean("success"));
                 result.put("msg", resultData.optString("msg"));
@@ -2137,7 +2184,7 @@ public class TestJCEController {
             } else {
                 result.put("status", false);
                 result.put("msg", "获取失敗!");
-                return ResponseEntity.ok(convertToLayuiData(new JSONObject("{}"), 200, "success"));
+                return ResponseEntity.ok(convertToLayuiData(new JsonObjectIgnoreDuplicates("{}"), 200, "success"));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -2154,7 +2201,7 @@ public class TestJCEController {
         Map<String, Object> result = new HashMap<>();
 //api url地址
         String url = getDomain() + "/sign/openDecrypt1";
-        JSONObject jsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates jsonObject = new JsonObjectIgnoreDuplicates();
 
         try {
 
@@ -2164,7 +2211,7 @@ public class TestJCEController {
             if (resultInfo.getStatusCodeValue() == 200) {
                 //parse 關鍵字
                 String json = (String) resultInfo.getBody();
-                JSONObject resultData = new JSONObject(json);
+                JsonObjectIgnoreDuplicates resultData = new JsonObjectIgnoreDuplicates(json);
                 result.put("status", resultData.optBoolean("success"));
                 result.put("msg", resultData.optString("msg"));
             } else {
@@ -2186,7 +2233,7 @@ public class TestJCEController {
         Map<String, Object> result = new HashMap<>();
 //api url地址
         String url = getDomain() + "/projectInstance/saveProjectInstance";
-        JSONObject jsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates jsonObject = new JsonObjectIgnoreDuplicates();
         //得到long类型当前时间
         long l = System.currentTimeMillis();
 //new日期对象
@@ -2215,7 +2262,7 @@ public class TestJCEController {
             jsonObject.put("jdbmfzr", "james");
             jsonObject.put("jdbmdh", "18688173429");
 
-            JSONObject dateJson = new JSONObject();
+            JsonObjectIgnoreDuplicates dateJson = new JsonObjectIgnoreDuplicates();
             dateJson.put("tenderNoticeData.applyDateBegin", getDate(Long.parseLong(request.getParameter("applyDateBegin"))));//招标文件获取时间
             dateJson.put("tenderNoticeData.applyDateEnd",  getDate(Long.parseLong(request.getParameter("applyDateEnd"))));//招标文件获取截止时间
             dateJson.put("tenderNoticeData.bidDeadline", getDate(Long.parseLong(request.getParameter("bidDeadline"))));//投标文件递交截止时间
@@ -2226,7 +2273,7 @@ public class TestJCEController {
             if (resultInfo.getStatusCodeValue() == 200) {
                 //parse 關鍵字
                 String json = (String) resultInfo.getBody();
-                JSONObject resultData = new JSONObject(json);
+                JsonObjectIgnoreDuplicates resultData = new JsonObjectIgnoreDuplicates(json);
 
                 result.put("status", resultData.optBoolean("success"));
                 result.put("msg", resultData.optString("msg"));
@@ -2254,7 +2301,7 @@ public class TestJCEController {
         Map<String, Object> result = new HashMap<>();
 
         String url = getDomain() + "/workflow/completeForm";
-        JSONObject jsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates jsonObject = new JsonObjectIgnoreDuplicates();
 
 
         try {
@@ -2306,7 +2353,7 @@ public class TestJCEController {
         setDomain(domain);
 //api url地址
         String url = getDomain() + "/login";
-        JSONObject jsonObject = new JSONObject();
+        JsonObjectIgnoreDuplicates jsonObject = new JsonObjectIgnoreDuplicates();
 
 
         try {
@@ -2346,7 +2393,7 @@ public class TestJCEController {
     }
 
 
-    public ResponseEntity clientFileForm(String sessionId, String url, String filePath, JSONObject jsonObject) {
+    public ResponseEntity clientFileForm(String sessionId, String url, String filePath, JsonObjectIgnoreDuplicates jsonObject) {
         RestTemplate client = restTemplateRequestFactory();
         HttpHeaders headers = new HttpHeaders();
         headers.set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko");
@@ -2390,11 +2437,11 @@ public class TestJCEController {
     }
 
 
-    public ResponseEntity clientForm(String sessionId, String url, HttpMethod method, JSONObject jsonObject) {
+    public ResponseEntity clientForm(String sessionId, String url, HttpMethod method, JsonObjectIgnoreDuplicates jsonObject) {
         return clientForm(false, sessionId, url, method, jsonObject);
     }
 
-    public ResponseEntity clientForm(boolean redirect, String sessionId, String url, HttpMethod method, JSONObject jsonObject) {
+    public ResponseEntity clientForm(boolean redirect, String sessionId, String url, HttpMethod method, JsonObjectIgnoreDuplicates jsonObject) {
         RestTemplate client = null;
         try {
             client = restTemplateRequestFactory(redirect);
@@ -2441,7 +2488,7 @@ public class TestJCEController {
     }
 
 
-    public ResponseEntity client(String sessionId, String url, HttpMethod method, JSONObject jsonObject) {
+    public ResponseEntity client(String sessionId, String url, HttpMethod method, JsonObjectIgnoreDuplicates jsonObject) {
         RestTemplate client = restTemplateRequestFactory();
         HttpHeaders headers = new HttpHeaders();
         headers.set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko");

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="all_delegation" name="完全代理招标流程" isExecutable="true">
+    <extensionElements>
+      <activiti:executionListener event="end" expression="${projectInstanceService.archiveUpdate(execution)}"></activiti:executionListener>
+    </extensionElements>
+    <userTask id="usertask21" name="招标管理" activiti:assignee="${dlrzj0}" activiti:formKey="recruit/node_6">
+      <documentation>${zbxmmc} 需要您来完成招标具体工作</documentation>
+      <extensionElements>
+        <activiti:formProperty id="reason" name="不通过原因" type="string" writable="false"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <userTask id="usertask22" name="委派任务项目经理" activiti:assignee="${userService.getPrincipalIdByOrganId(organId)}" activiti:formKey="recruit/node_4">
+      <documentation>您需要为 ${zbxmmc} 指定一个项目经理，项目经理职责如下：
+1、指定项目的具体负责人；
+2、发布公告审核；</documentation>
+      <extensionElements>
+        <activiti:formProperty id="ownerId" name="招标文件编制人" type="string" variable="projectManagerId" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow132" sourceRef="usertask21" targetRef="endevent1"></sequenceFlow>
+    <endEvent id="endevent1" name="招标完成"></endEvent>
+    <userTask id="usertask27" name="上传委托合同" activiti:assignee="${applyUserId}" activiti:formKey="recruit/uploadCommissionContract">
+      <documentation>请您上传 ${zbxmmc} 的的招标委托代理合同扫描件。</documentation>
+    </userTask>
+    <sequenceFlow id="flow138" sourceRef="usertask22" targetRef="scripttask2"></sequenceFlow>
+    <sequenceFlow id="flow139" sourceRef="usertask27" targetRef="usertask31"></sequenceFlow>
+    <userTask id="usertask28" name="选择项目专员" activiti:assignee="${projectManagerId}" activiti:formKey="recruit/node_5">
+      <documentation>您需要为${zbxmmc}指定一个具体负责人，具体负责人职责如下：
+1、编制与发布招标文件
+2、编制与发布公告
+3、评标专家的抽取
+4、开标工作</documentation>
+      <extensionElements>
+        <activiti:formProperty id="ownerId" name="招标文件编制人" type="string" variable="dlrzj0" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow140" sourceRef="scripttask3" targetRef="usertask29"></sequenceFlow>
+    <scriptTask id="scripttask2" name="保存项目经理" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <script>def map=[projectManagerId:execution.getVariable("projectManagerId"),projectInstanceId:execution.processBusinessKey];
+baseService.executeByHQL("update TBProjectInstance set projectManagerId=:projectManagerId where id=:projectInstanceId",map);</script>
+    </scriptTask>
+    <scriptTask id="scripttask3" name="保存项目专员" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <script>def map=[projectManagerId:execution.getVariable("dlrzj0"),projectInstanceId:execution.processBusinessKey];
+baseService.executeByHQL("update TBProjectInstance set dlrzj0=:projectManagerId where id=:projectInstanceId",map);
+tenderService.information(execution.getVariable("dlrzj0"));</script>
+    </scriptTask>
+    <sequenceFlow id="flow142" sourceRef="usertask28" targetRef="scripttask3"></sequenceFlow>
+    <sequenceFlow id="flow143" sourceRef="scripttask2" targetRef="usertask28"></sequenceFlow>
+    <startEvent id="startevent3" name="Start"></startEvent>
+    <sequenceFlow id="flow144" sourceRef="startevent3" targetRef="usertask30"></sequenceFlow>
+    <userTask id="usertask29" name="指定报名审核专员" activiti:assignee="${projectManagerId}" activiti:formKey="recruit/node_5_1">
+      <documentation>您需要为 ${zbxmmc} 指定报名审核专员</documentation>
+      <extensionElements>
+        <activiti:formProperty id="ownerId" name="招标文件编制人" type="string" variable="signUpId" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow145" sourceRef="usertask29" targetRef="scripttask4"></sequenceFlow>
+    <scriptTask id="scripttask4" name="更新报名审核专员" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <documentation>您需要为 ${zbxmmc} 指定报名审核专员</documentation>
+      <script>tenderService.updateAttache(execution.processBusinessKey,execution.getVariable("signUpId"));</script>
+    </scriptTask>
+    <sequenceFlow id="flow146" sourceRef="scripttask4" targetRef="usertask21"></sequenceFlow>
+    <userTask id="usertask30" name="招标机构审核" activiti:assignee="${ownerId}" activiti:formKey="redirect:/projectInstance/reviewProjectInstance?id=${execution.processBusinessKey}">
+      <documentation>招标项目${zbxmmc} 需要您审核</documentation>
+      <extensionElements>
+        <activiti:formProperty id="pass" name="是否通过" type="boolean" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow147" sourceRef="usertask30" targetRef="exclusivegateway1"></sequenceFlow>
+    <sequenceFlow id="flow148" sourceRef="exclusivegateway1" targetRef="usertask27">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${pass}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="endevent2" name="End"></endEvent>
+    <sequenceFlow id="flow149" sourceRef="exclusivegateway1" targetRef="endevent2">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!pass}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"></exclusiveGateway>
+    <userTask id="usertask31" name="确认合同" activiti:assignee="${ownerId}" activiti:formKey="recruit/confirmCommissionContract_all">
+      <documentation>请您确认 ${zbxmmc} 的的招标委托代理合同扫描件。</documentation>
+      <extensionElements>
+        <activiti:formProperty id="pass" name="pass" type="boolean"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow150" sourceRef="usertask31" targetRef="exclusivegateway2"></sequenceFlow>
+    <sequenceFlow id="flow151" sourceRef="exclusivegateway2" targetRef="usertask27">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!pass}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow152" sourceRef="exclusivegateway2" targetRef="usertask22">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${pass}]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_all_delegation">
+    <bpmndi:BPMNPlane bpmnElement="all_delegation" id="BPMNPlane_all_delegation">
+      <bpmndi:BPMNShape bpmnElement="usertask21" id="BPMNShape_usertask21">
+        <omgdc:Bounds height="55.0" width="105.0" x="1031.0" y="175.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask22" id="BPMNShape_usertask22">
+        <omgdc:Bounds height="55.0" width="105.0" x="537.0" y="176.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="1231.0" y="186.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask27" id="BPMNShape_usertask27">
+        <omgdc:Bounds height="55.0" width="105.0" x="257.0" y="176.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask28" id="BPMNShape_usertask28">
+        <omgdc:Bounds height="55.0" width="105.0" x="681.0" y="176.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scripttask2" id="BPMNShape_scripttask2">
+        <omgdc:Bounds height="55.0" width="105.0" x="618.0" y="268.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scripttask3" id="BPMNShape_scripttask3">
+        <omgdc:Bounds height="55.0" width="105.0" x="771.0" y="268.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent3" id="BPMNShape_startevent3">
+        <omgdc:Bounds height="35.0" width="35.0" x="1.0" y="188.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask29" id="BPMNShape_usertask29">
+        <omgdc:Bounds height="55.0" width="105.0" x="865.0" y="175.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scripttask4" id="BPMNShape_scripttask4">
+        <omgdc:Bounds height="55.0" width="105.0" x="941.0" y="268.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask30" id="BPMNShape_usertask30">
+        <omgdc:Bounds height="55.0" width="105.0" x="91.0" y="178.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="220.0" y="275.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent2" id="BPMNShape_endevent2">
+        <omgdc:Bounds height="35.0" width="35.0" x="223.0" y="370.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
+        <omgdc:Bounds height="40.0" width="40.0" x="433.0" y="296.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask31" id="BPMNShape_usertask31">
+        <omgdc:Bounds height="55.0" width="105.0" x="401.0" y="176.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow132" id="BPMNEdge_flow132">
+        <omgdi:waypoint x="1136.0" y="202.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1231.0" y="203.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow138" id="BPMNEdge_flow138">
+        <omgdi:waypoint x="589.0" y="231.0"></omgdi:waypoint>
+        <omgdi:waypoint x="670.0" y="268.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow139" id="BPMNEdge_flow139">
+        <omgdi:waypoint x="362.0" y="203.0"></omgdi:waypoint>
+        <omgdi:waypoint x="401.0" y="203.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow140" id="BPMNEdge_flow140">
+        <omgdi:waypoint x="823.0" y="268.0"></omgdi:waypoint>
+        <omgdi:waypoint x="917.0" y="230.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow142" id="BPMNEdge_flow142">
+        <omgdi:waypoint x="733.0" y="231.0"></omgdi:waypoint>
+        <omgdi:waypoint x="823.0" y="268.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow143" id="BPMNEdge_flow143">
+        <omgdi:waypoint x="670.0" y="268.0"></omgdi:waypoint>
+        <omgdi:waypoint x="733.0" y="231.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow144" id="BPMNEdge_flow144">
+        <omgdi:waypoint x="36.0" y="205.0"></omgdi:waypoint>
+        <omgdi:waypoint x="91.0" y="205.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow145" id="BPMNEdge_flow145">
+        <omgdi:waypoint x="917.0" y="230.0"></omgdi:waypoint>
+        <omgdi:waypoint x="993.0" y="268.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow146" id="BPMNEdge_flow146">
+        <omgdi:waypoint x="993.0" y="268.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1083.0" y="230.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow147" id="BPMNEdge_flow147">
+        <omgdi:waypoint x="143.0" y="233.0"></omgdi:waypoint>
+        <omgdi:waypoint x="240.0" y="275.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow148" id="BPMNEdge_flow148">
+        <omgdi:waypoint x="240.0" y="275.0"></omgdi:waypoint>
+        <omgdi:waypoint x="309.0" y="231.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow149" id="BPMNEdge_flow149">
+        <omgdi:waypoint x="240.0" y="315.0"></omgdi:waypoint>
+        <omgdi:waypoint x="240.0" y="370.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow150" id="BPMNEdge_flow150">
+        <omgdi:waypoint x="453.0" y="231.0"></omgdi:waypoint>
+        <omgdi:waypoint x="453.0" y="296.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow151" id="BPMNEdge_flow151">
+        <omgdi:waypoint x="453.0" y="296.0"></omgdi:waypoint>
+        <omgdi:waypoint x="309.0" y="231.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow152" id="BPMNEdge_flow152">
+        <omgdi:waypoint x="453.0" y="296.0"></omgdi:waypoint>
+        <omgdi:waypoint x="589.0" y="231.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

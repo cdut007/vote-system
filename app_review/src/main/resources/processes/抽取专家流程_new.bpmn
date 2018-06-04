@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <signal id="expertApplyNeedUpdateSignal" name="expertApplyNeedUpdateSignal"></signal>
+  <process id="expert_apply_new" name="抽取专家流程_NEW" isExecutable="true">
+    <startEvent id="startevent1" name="申请抽取专家" activiti:initiator="applyUserId"></startEvent>
+    <userTask id="usertask1" name="添加业主专家" activiti:assignee="${empty ownerId?dlrzj0:ownerId}" activiti:formKey="expert/addProjectOrganExpert">
+      <documentation>${projectInstanceName}  添加业主专家</documentation>
+      <extensionElements>
+        <activiti:formProperty id="expertApplyId" name="抽取专家申请表ID" type="string" expression="${execution.processBusinessKey}" writable="false"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="scripttask1"></sequenceFlow>
+    <endEvent id="endevent1" name="专家抽取结束"></endEvent>
+    <scriptTask id="scripttask1" name="变量初始化" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <script>def expertApply=baseService.get("com.mhb.expert.entity.TBExpertApply",execution.processBusinessKey);
+def projectInstance=baseService.get("com.mhb.project.entity.TBProjectInstance",expertApply.projectInstanceId);
+execution.setVariable("projectInstanceId",expertApply.getProjectInstanceId());
+execution.setVariable("juryTUserNum",expertApply.getJuryTUserNum());
+execution.setVariable("projectInstanceName",expertApply.getProjectInstanceName());
+/*execution.setVariable("projectItemId",expertApply.getProjectItemId());*/
+/*execution.setVariable("projectItemName",expertApply.getProjectItemName());*/
+execution.setVariable("signDate",expertApplyService.loadSignDate(expertApply.getSignDate()));
+execution.setVariable("bidOpenDate",expertApply.getBidOpenDate());
+execution.setVariable("ownerId",projectInstance.getOwnerId());
+execution.setVariable("dlrzj0",projectInstance.getDlrzj0());
+execution.setVariable("expertElect",expertApply.expertElect);
+execution.setVariable("expertApplyId",expertApply.id);</script>
+    </scriptTask>
+    <userTask id="usertask3" name="修改申请表" activiti:assignee="${empty dlrzj0?ownerId:dlrzj0}" activiti:formKey="redirect:/expertApplication/expertApplyForm?id=${execution.processBusinessKey}">
+      <documentation>${projectInstanceName}需要重新提交专家抽取信息</documentation>
+    </userTask>
+    <sequenceFlow id="flow62" sourceRef="usertask1" targetRef="usertask4"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway5" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow69" sourceRef="scripttask1" targetRef="exclusivegateway5"></sequenceFlow>
+    <sequenceFlow id="flow70" sourceRef="exclusivegateway5" targetRef="exclusivegateway6">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!isEdit}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow71" sourceRef="exclusivegateway5" targetRef="usertask3">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isEdit}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow77" sourceRef="usertask3" targetRef="endevent1"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway6" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow78" sourceRef="exclusivegateway6" targetRef="usertask1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${juryTUserNum>0}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow79" sourceRef="exclusivegateway6" targetRef="usertask4">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${juryTUserNum==0}]]></conditionExpression>
+    </sequenceFlow>
+    <userTask id="usertask4" name="指定监标人" activiti:assignee="${ownerId}" activiti:formKey="redirect:/guardian/configGuardianList?id=${execution.processBusinessKey}">
+      <documentation>${projectInstanceName}  需要你指定监标人</documentation>
+    </userTask>
+    <sequenceFlow id="flow80" sourceRef="usertask4" targetRef="endevent1">
+      <extensionElements>
+        <activiti:executionListener event="groovy" expression="${expertApplyService.preliminaryReview(execution.processBusinessKey)}"></activiti:executionListener>
+      </extensionElements>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_expert_apply_new">
+    <bpmndi:BPMNPlane bpmnElement="expert_apply_new" id="BPMNPlane_expert_apply_new">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="36.0" y="19.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask1" id="BPMNShape_usertask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="460.0" y="11.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="840.0" y="77.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="scripttask1" id="BPMNShape_scripttask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="1.0" y="85.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask3" id="BPMNShape_usertask3">
+        <omgdc:Bounds height="55.0" width="105.0" x="390.0" y="295.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway5" id="BPMNShape_exclusivegateway5">
+        <omgdc:Bounds height="40.0" width="40.0" x="160.0" y="92.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway6" id="BPMNShape_exclusivegateway6">
+        <omgdc:Bounds height="40.0" width="40.0" x="320.0" y="113.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask4" id="BPMNShape_usertask4">
+        <omgdc:Bounds height="71.0" width="105.0" x="690.0" y="1.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="53.0" y="54.0"></omgdi:waypoint>
+        <omgdi:waypoint x="53.0" y="85.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow62" id="BPMNEdge_flow62">
+        <omgdi:waypoint x="565.0" y="38.0"></omgdi:waypoint>
+        <omgdi:waypoint x="690.0" y="36.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow69" id="BPMNEdge_flow69">
+        <omgdi:waypoint x="106.0" y="112.0"></omgdi:waypoint>
+        <omgdi:waypoint x="160.0" y="112.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow70" id="BPMNEdge_flow70">
+        <omgdi:waypoint x="200.0" y="112.0"></omgdi:waypoint>
+        <omgdi:waypoint x="320.0" y="133.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow71" id="BPMNEdge_flow71">
+        <omgdi:waypoint x="180.0" y="132.0"></omgdi:waypoint>
+        <omgdi:waypoint x="180.0" y="377.0"></omgdi:waypoint>
+        <omgdi:waypoint x="442.0" y="350.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow77" id="BPMNEdge_flow77">
+        <omgdi:waypoint x="442.0" y="295.0"></omgdi:waypoint>
+        <omgdi:waypoint x="857.0" y="112.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow78" id="BPMNEdge_flow78">
+        <omgdi:waypoint x="340.0" y="113.0"></omgdi:waypoint>
+        <omgdi:waypoint x="340.0" y="28.0"></omgdi:waypoint>
+        <omgdi:waypoint x="460.0" y="38.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow79" id="BPMNEdge_flow79">
+        <omgdi:waypoint x="340.0" y="153.0"></omgdi:waypoint>
+        <omgdi:waypoint x="375.0" y="167.0"></omgdi:waypoint>
+        <omgdi:waypoint x="742.0" y="72.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow80" id="BPMNEdge_flow80">
+        <omgdi:waypoint x="795.0" y="36.0"></omgdi:waypoint>
+        <omgdi:waypoint x="857.0" y="77.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
