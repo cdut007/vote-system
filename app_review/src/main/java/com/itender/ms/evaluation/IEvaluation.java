@@ -14,5 +14,8 @@ public interface IEvaluation {
     public static final int CODE_OK = 0;
 
 
+    public String getErrorMsg();
+
+
 
 }

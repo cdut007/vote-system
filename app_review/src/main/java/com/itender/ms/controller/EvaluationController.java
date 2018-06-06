@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -76,7 +77,11 @@ public class EvaluationController {
              data.put("finalControlPrice",reasonableLowPriceTrafficEvalution.getFinalControlPrice());
              data.put("benchmarkPrice",reasonableLowPriceTrafficEvalution.getBenchmarkPrice());
              data.put("tenders",tenders);
-             result.put("msg", EvaluationFactory.getMsgByCode(code));
+             String msg = EvaluationFactory.getMsgByCode(code);
+             if(StringUtils.isEmpty(msg)){
+                 msg = reasonableLowPriceTrafficEvalution.getErrorMsg();
+             }
+             result.put("msg", msg);
              result.put("data", data);
          }catch (Exception e){
              e.printStackTrace();

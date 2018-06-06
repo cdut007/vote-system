@@ -11,7 +11,6 @@ public class EvaluationFactory {
     static {
         codeMsgMap.put(IEvaluation.CODE_OK,"计算成功");
         codeMsgMap.put(IEvaluation.CODE_ERROR_RATIO,"系数校验不对，请检查抽取系数");
-        codeMsgMap.put(IEvaluation.CODE_ERROR_SELECT_CONDITION,"抽取参与评标基准价计算单位数量不对");
         codeMsgMap.put(IEvaluation.CODE_ERROR_UNKONWN,"未知错误");
     }
 

@@ -85,6 +85,13 @@ public class ReasonableLowPriceTrafficEvaluation extends TrafficEvaluation {
         return code;
     }
 
+
+    private String errMsg;
+    @Override
+    public String getErrorMsg() {
+        return errMsg;
+    }
+
     private int calculateByMethod2(List<Tender> tenders) {
         int code = checkRatio3();
         if (code != CODE_OK) {
@@ -98,7 +105,7 @@ public class ReasonableLowPriceTrafficEvaluation extends TrafficEvaluation {
         checkTenders = EvaluationFactory.getTenderListByValidStatus(tenders, true);
         logger.info("当前有效的投标家数=================：" + checkTenders.size());
         if (checkTenders.size() < 2) {
-            logger.info("不够两家，无法进行等差区间运算");
+            logger.info(errMsg="当前有效评标价不够两家，无法进行等差区间运算");
             return CODE_ERROR_SELECT_CONDITION;
         }
         BigDecimal B_Vaule = calcuBValue(checkTenders);
@@ -148,6 +155,10 @@ public class ReasonableLowPriceTrafficEvaluation extends TrafficEvaluation {
 
         for (List<BigDecimal> sectionList : avgSkipList) {
             avgList.add(MathTool.avg1(sectionList));
+        }
+
+        if(avgList.isEmpty()){
+            return  basePrice;
         }
 
         BigDecimal b = MathTool.avg1(avgList);
@@ -246,11 +257,14 @@ public class ReasonableLowPriceTrafficEvaluation extends TrafficEvaluation {
         logger.info("当前需要抽的投标家数=================：" + Math.max(minLen, checkLen));
         if (selectedSize < minLen) {
             selectedNum = minLen;
+            logger.info(errMsg="应抽取参与评标基准价计算单位数量为"+selectedNum);
+
             return CODE_ERROR_SELECT_CONDITION;
         }
 
         if (selectedSize != checkLen && checkLen > minLen) {
             selectedNum = checkLen;
+            logger.info(errMsg="应抽取参与评标基准价计算单位数量为"+selectedNum);
             return CODE_ERROR_SELECT_CONDITION;
         }
 
