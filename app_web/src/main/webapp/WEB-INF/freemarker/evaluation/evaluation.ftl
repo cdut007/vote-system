@@ -109,10 +109,19 @@
                 </select>
             </form>
 
+            <form id="subStrategy" class="layui-form" action="" style="display: none">
+                <select id="subStrategyType_item" name="subStrategyType" lay-verify="required" lay-filter="subStrategyType_select">
+                    <option value="">评标基准价计算方法</option>
+                    <option value='1'>评标基准价计算方法1</option>
+                    <option value='2'>评标基准价计算方法2</option>
+                    <option value='3'>评标基准价计算方法3</option>
+                </select>
+            </form>
+
             <div class="layui-inline">
                 <label class="layui-form-label">最高限价</label>
                 <div class="layui-input-inline">
-                    <input type="text" class="layui-input" id="controlPrice" placeholder="输入最高限价..."  lay-verify="required">
+                    <input value="66000000" type="text" class="layui-input" id="controlPrice" placeholder="输入最高限价..."  lay-verify="required">
                 </div>
 
             </div>
@@ -232,13 +241,22 @@
         var layer = layui.layer;
         var table = layui.table;
         var strategyType;
+        var subStrategyType;
         var industry;
 
         form.render();
+        form.on('select(subStrategyType_select)', function(data){
+            subStrategyType = data.value;
 
+            return false;
+        });
         form.on('select(strategyType_select)', function(data){
             strategyType = data.value;
-
+            if(strategyType == 1){
+                $("#subStrategy").show();
+            }else{
+                $("#subStrategy").hide();
+            }
             return false;
         });
 
@@ -272,12 +290,12 @@
             }
 
             var tenders=[
-                {id:$("#tender1").val(),price:$("#price1").val()},
-                {id:$("#tender2").val(),price:$("#price2").val()},
-                {id:$("#tender3").val(),price:$("#price3").val()}];
-            var strategySubType=1;
+                {id:$("#tender1").val(),price:$("#price1").val(),selected:true},
+                {id:$("#tender2").val(),price:$("#price2").val(),selected:true},
+                {id:$("#tender3").val(),price:$("#price3").val(),selected:true}];
+
             var data ={controlPrice:$("#controlPrice").val(),controlRatio:$("#controlRatio").val(),ratio:$("#ratio").val(),weightedRatio:$("#weightedRatio").val(),
-                LowERatio:$("#LowERatio").val(),HighERatio:$("#HighERatio").val(),catagory:industry,strategyType:strategyType,strategySubType:strategySubType}
+                LowERatio:$("#LowERatio").val(),HighERatio:$("#HighERatio").val(),catagory:industry,strategyType:strategyType,strategySubType:subStrategyType}
             $.ajax({
                url: createURL("/evaluation/calculate",data),
                type: "POST",

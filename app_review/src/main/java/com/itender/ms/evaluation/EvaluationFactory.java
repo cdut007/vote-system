@@ -11,6 +11,7 @@ public class EvaluationFactory {
     static {
         codeMsgMap.put(IEvaluation.CODE_OK,"计算成功");
         codeMsgMap.put(IEvaluation.CODE_ERROR_RATIO,"系数校验不对，请检查抽取系数");
+        codeMsgMap.put(IEvaluation.CODE_ERROR_SELECT_CONDITION,"抽取参与评标基准价计算单位数量不对");
         codeMsgMap.put(IEvaluation.CODE_ERROR_UNKONWN,"未知错误");
     }
 
@@ -37,7 +38,18 @@ public class EvaluationFactory {
         return evalution;
     }
 
+    public static List<Tender> getTenderListByValidStatus(List<Tender> tenders, boolean valid) {
 
+        List<Tender> validList = new ArrayList<>();
+        for (Tender tender:tenders
+                ) {
+            if(tender.isKickout() != valid){
+                validList.add(tender);
+            }
+
+        }
+        return validList;
+    }
     public static List<BigDecimal> covertTendersToPriceList(List<Tender> tenders){
         List<BigDecimal> priceList = new ArrayList<>();
         for (Tender tender:tenders
@@ -58,7 +70,7 @@ public class EvaluationFactory {
         ReasonableLowPriceTrafficEvaluation reasonableLowPriceTrafficEvalution = (ReasonableLowPriceTrafficEvaluation) evalution;
 
         reasonableLowPriceTrafficEvalution.setControlPriceAndRatio(new BigDecimal(71000000),0.03f);
-        reasonableLowPriceTrafficEvalution.setRatiosAndBenchmarkMethod1(0.99f,0.4f);
+        reasonableLowPriceTrafficEvalution.setRatiosAndBenchmarkMethod(0.99f,0.4f,1);
         reasonableLowPriceTrafficEvalution.setHighERatio(2f);
         reasonableLowPriceTrafficEvalution.setLowERatio(1f);
 
@@ -85,5 +97,6 @@ public class EvaluationFactory {
         System.out.println(tenders.toString());
 
     }
+
 
 }

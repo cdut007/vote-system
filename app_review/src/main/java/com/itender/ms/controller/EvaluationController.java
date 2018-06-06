@@ -62,8 +62,10 @@ public class EvaluationController {
              ReasonableLowPriceTrafficEvaluation reasonableLowPriceTrafficEvalution = (ReasonableLowPriceTrafficEvaluation) evalution;
 
              reasonableLowPriceTrafficEvalution.setControlPriceAndRatio(new BigDecimal(controlPrice),controlRatio);
-
-             reasonableLowPriceTrafficEvalution.setRatiosAndBenchmarkMethod1(ratio,weightedRatio);
+             if(weightedRatio==null){
+                 weightedRatio = 0f;
+             }
+             reasonableLowPriceTrafficEvalution.setRatiosAndBenchmarkMethod(ratio,weightedRatio,strategySubType);
              reasonableLowPriceTrafficEvalution.setHighERatio(HighERatio);
              reasonableLowPriceTrafficEvalution.setLowERatio(LowERatio);
              int code = reasonableLowPriceTrafficEvalution.calculate(tenders);

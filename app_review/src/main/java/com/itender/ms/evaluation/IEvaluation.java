@@ -9,6 +9,8 @@ public interface IEvaluation {
 
     public static final int CODE_ERROR_RATIO = -1001;
 
+    public static final int CODE_ERROR_SELECT_CONDITION = -1002;
+
     public static final int CODE_OK = 0;
 
 

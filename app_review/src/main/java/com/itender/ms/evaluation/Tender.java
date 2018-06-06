@@ -14,6 +14,7 @@ public class Tender implements Comparable<Tender> {
     private  boolean kickout;
 
 
+    private boolean selected;
 
     private float score;
 
@@ -23,6 +24,14 @@ public class Tender implements Comparable<Tender> {
     private String id;
 
     private BigDecimal price;
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
 
     public void setKickout(boolean kickout) {
         this.kickout = kickout;
@@ -69,6 +78,7 @@ public class Tender implements Comparable<Tender> {
     public String toString() {
         return "Tender{" +
                 "kickout=" + kickout +
+                ", selected=" + selected +
                 ", score=" + score +
                 ", deviationValue=" + deviationValue +
                 ", id='" + id + '\'' +
