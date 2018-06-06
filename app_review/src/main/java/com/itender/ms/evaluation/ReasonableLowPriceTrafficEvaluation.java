@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 //合理低价法
@@ -85,7 +86,83 @@ public class ReasonableLowPriceTrafficEvaluation extends TrafficEvaluation {
     }
 
     private int calculateByMethod2(List<Tender> tenders) {
-        return 0;
+        int code = checkRatio3();
+        if (code != CODE_OK) {
+            return code;
+        }
+        List<Tender> checkTenders = new ArrayList<>(tenders);
+        code = checkTenderPrice(checkTenders);
+        if (code != CODE_OK) {
+            return code;
+        }
+        checkTenders = EvaluationFactory.getTenderListByValidStatus(tenders, true);
+        logger.info("当前有效的投标家数=================：" + checkTenders.size());
+        if (checkTenders.size() < 2) {
+            logger.info("不够两家，无法进行等差区间运算");
+            return CODE_ERROR_SELECT_CONDITION;
+        }
+        BigDecimal B_Vaule = calcuBValue(checkTenders);
+        logger.info("当前b值=================：" + B_Vaule);
+        benchmarkPrice = calcuBenchMark2(B_Vaule);
+
+        //评标价得分＝100—100×E× ｜评标价ˉ评标基准价｜／评标基准价
+        calcuScore(tenders);
+        return CODE_OK;
+    }
+
+    private BigDecimal calcuBValue(List<Tender> validTenders) {
+        //从高到低划分为5个等差报价区
+        //间’对各区间的评标价进行算术平均值计算（“四舍五入’’保留小
+        //数点后两位’当评标价等于区间临界值时’列入较高一个区间计算
+        //平均值’最高评标价不参与区间计算）’然后再将各区间的算术平
+        //均值（非零）进行第二次算术平均值计算’所得数值即为B值
+        Collections.sort(validTenders);
+
+
+        //获得等差基数 - 5个等差区间
+        BigDecimal basePrice = validTenders.get(0).getPrice();
+        BigDecimal skip = (validTenders.get(validTenders.size() - 1).getPrice().subtract(basePrice)).divide(new BigDecimal(5));
+        List<List<BigDecimal>> avgSkipList = new ArrayList<List<BigDecimal>>();
+
+        //最高投标价格不参与计算
+        validTenders.remove(validTenders.size() - 1);
+
+        for (int i = 0; i < 5; i++) {
+            List<BigDecimal> sectionList = new ArrayList<BigDecimal>();
+            int index = 0;
+            for (Tender tender : validTenders) {
+                if (tender.getPrice().compareTo(basePrice.add(new BigDecimal(i).multiply(skip))) >= 0 && tender.getPrice().compareTo(basePrice.add(new BigDecimal(i + 1).multiply(skip))) < 0) {
+                    sectionList.add(tender.getPrice());
+                } else if (i == 4 && index == validTenders.size() - 1) {
+                    //最后一个区段
+                }
+                index++;
+            }
+            if (sectionList.size() > 0) {
+                avgSkipList.add(sectionList);
+            }
+
+        }
+
+        List<BigDecimal> avgList = new ArrayList<BigDecimal>();
+
+        for (List<BigDecimal> sectionList : avgSkipList) {
+            avgList.add(MathTool.avg1(sectionList));
+        }
+
+        BigDecimal b = MathTool.avg1(avgList);
+
+        return MathTool.getFormatValue(b, 2);
+
+    }
+
+    private BigDecimal calcuBenchMark2(BigDecimal B_Vaule) {
+        //评标基准价＝B× （1—k）
+
+        float deltaRatio = 1 - ratio;
+        BigDecimal benchmarkPrice = B_Vaule.multiply(MathTool.getFormatValue(new BigDecimal(deltaRatio), 3));
+        benchmarkPrice = MathTool.getFormatValue(benchmarkPrice, 3);
+        return benchmarkPrice;
     }
 
     private int calculateByMethod3(List<Tender> tenders) {
@@ -330,14 +407,14 @@ public class ReasonableLowPriceTrafficEvaluation extends TrafficEvaluation {
     private int calcuScore(List<Tender> tenders) {
         for (Tender tender : tenders
                 ) {
-            BigDecimal deviationValue = MathTool.abs(tender.getPrice().subtract(benchmarkPrice)).divide(benchmarkPrice, 4, BigDecimal.ROUND_HALF_UP);
-            tender.setDeviationValue(deviationValue.floatValue());
+            BigDecimal deviationValue = MathTool.abs(tender.getPrice().subtract(benchmarkPrice)).divide(benchmarkPrice, 6, BigDecimal.ROUND_HALF_UP);
+            tender.setDeviationValue(MathTool.getFormatValue(deviationValue.floatValue(),4));
             float E = LowERatio;
             //有效评标价＞评标基准价时’E取1～2
             if (tender.getPrice().compareTo(benchmarkPrice) > 0) {
                 E = HighERatio;
             }
-            tender.setScore(MathTool.getFormatValue(100 - 100 * E * tender.getDeviationValue(), 3));
+            tender.setScore(MathTool.getFormatValue(100 - 100 * E * deviationValue.floatValue(), 3));
         }
         return CODE_OK;
     }
