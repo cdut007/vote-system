@@ -56,30 +56,34 @@ public class EvaluationController {
                                                          @RequestParam(required = false) Integer strategySubType
     ) throws APIException {
         Map<String, Object> result = new HashMap<>();
-
+        Map<String, Object> data = new HashMap<>();
          try{
              IEvaluation evalution = EvaluationFactory.createEvalution(catagory,strategyType);
 
-             ReasonableLowPriceTrafficEvaluation reasonableLowPriceTrafficEvalution = (ReasonableLowPriceTrafficEvaluation) evalution;
+             if(catagory == EvaluationFactory.TYPE_TRAFFIC){
+                 ReasonableLowPriceTrafficEvaluation reasonableLowPriceTrafficEvalution = (ReasonableLowPriceTrafficEvaluation) evalution;
 
-             reasonableLowPriceTrafficEvalution.setControlPriceAndRatio(new BigDecimal(controlPrice),controlRatio);
-             if(weightedRatio==null){
-                 weightedRatio = 0f;
+                 reasonableLowPriceTrafficEvalution.setControlPriceAndRatio(new BigDecimal(controlPrice),controlRatio);
+                 if(weightedRatio==null){
+                     weightedRatio = 0f;
+                 }
+                 reasonableLowPriceTrafficEvalution.setRatiosAndBenchmarkMethod(ratio,weightedRatio,strategySubType);
+                 reasonableLowPriceTrafficEvalution.setHighERatio(HighERatio);
+                 reasonableLowPriceTrafficEvalution.setLowERatio(LowERatio);
+                 data.put("reasonableCostPrice",reasonableLowPriceTrafficEvalution.getReasonableCostPrice());
+                 data.put("finalControlPrice",reasonableLowPriceTrafficEvalution.getFinalControlPrice());
+                 data.put("benchmarkPrice",reasonableLowPriceTrafficEvalution.getBenchmarkPrice());
+             }else if(catagory == EvaluationFactory.TYPE_BUILDING){
+
              }
-             reasonableLowPriceTrafficEvalution.setRatiosAndBenchmarkMethod(ratio,weightedRatio,strategySubType);
-             reasonableLowPriceTrafficEvalution.setHighERatio(HighERatio);
-             reasonableLowPriceTrafficEvalution.setLowERatio(LowERatio);
-             int code = reasonableLowPriceTrafficEvalution.calculate(tenders);
+
+             int code = evalution.calculate(tenders);
              Collections.sort(tenders);
              result.put("code",code);
-             Map<String, Object> data = new HashMap<>();
-             data.put("reasonableCostPrice",reasonableLowPriceTrafficEvalution.getReasonableCostPrice());
-             data.put("finalControlPrice",reasonableLowPriceTrafficEvalution.getFinalControlPrice());
-             data.put("benchmarkPrice",reasonableLowPriceTrafficEvalution.getBenchmarkPrice());
              data.put("tenders",tenders);
              String msg = EvaluationFactory.getMsgByCode(code);
              if(StringUtils.isEmpty(msg)){
-                 msg = reasonableLowPriceTrafficEvalution.getErrorMsg();
+                 msg = evalution.getErrorMsg();
              }
              result.put("msg", msg);
              result.put("data", data);

@@ -18,6 +18,10 @@ public class Tender implements Comparable<Tender> {
 
     private float score;
 
+    private float skillScore;
+
+    private float creditScore;
+
     private float deviationValue;
 
 

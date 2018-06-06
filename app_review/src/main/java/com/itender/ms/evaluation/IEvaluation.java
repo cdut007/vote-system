@@ -11,10 +11,17 @@ public interface IEvaluation {
 
     public static final int CODE_ERROR_SELECT_CONDITION = -1002;
 
+    public static final int CODE_ERROR_BID = -1004;//一般不足三家
+
     public static final int CODE_OK = 0;
 
 
     public String getErrorMsg();
+
+
+    public static final int benchmark_method_1 = 0x01;
+    public static final int benchmark_method_2 = 0x02;
+    public static final int benchmark_method_3 = 0x03;
 
 
 

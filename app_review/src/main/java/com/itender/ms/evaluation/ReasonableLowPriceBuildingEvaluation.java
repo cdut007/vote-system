@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 //合理低价法
-public class ReasonableLowPriceTrafficEvaluation extends TrafficEvaluation {
+public class ReasonableLowPriceBuildingEvaluation extends TrafficEvaluation {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
 
@@ -342,7 +342,7 @@ public class ReasonableLowPriceTrafficEvaluation extends TrafficEvaluation {
         //进行算术平均值计算·评标价低于理论成本价的’不再参与后续计算。
         List<Tender> checkTenders = new ArrayList<>(tenders);
         if (checkTenders.size() >= 5) {
-            java.util.Collections.sort(checkTenders);
+            Collections.sort(checkTenders);
             Tender tenderTop = checkTenders.remove(checkTenders.size() - 1);
             logger.info("理论成本价=================去掉最高投标：" + tenderTop.toString());
             Tender tenderLow = checkTenders.remove(0);

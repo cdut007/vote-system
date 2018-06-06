@@ -26,7 +26,7 @@ public class EvaluationFactory {
         IEvaluation evalution = null;
         switch(catagory){
             case TYPE_BUILDING:
-
+                evalution = BuildingEvaluation.createEvalution(strategyType);
                 break;
             case TYPE_TRAFFIC:
                 evalution = TrafficEvaluation.createEvalution(strategyType);
