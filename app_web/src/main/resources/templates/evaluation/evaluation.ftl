@@ -277,10 +277,7 @@
                 return;
             }
 
-            var tenders=[
-                {id:$("#tender1").val(),price:$("#price1").val(),selected:true},
-                {id:$("#tender2").val(),price:$("#price2").val(),selected:true},
-                {id:$("#tender3").val(),price:$("#price3").val(),selected:true}];
+            var tenders=[];
 
 
             for (var i = 0; i <  items.length; i++) {
