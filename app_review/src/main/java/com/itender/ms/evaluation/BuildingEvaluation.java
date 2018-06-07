@@ -1,5 +1,6 @@
 package com.itender.ms.evaluation;
 
+import java.util.Collections;
 import java.util.List;
 
 public abstract class BuildingEvaluation implements IEvaluation {
@@ -23,6 +24,7 @@ public abstract class BuildingEvaluation implements IEvaluation {
     @Override
     public int calculate(List<Tender> tenders) {
         //检查是否有重复的id
+        Collections.sort(tenders);
         return CODE_OK;
     }
 }

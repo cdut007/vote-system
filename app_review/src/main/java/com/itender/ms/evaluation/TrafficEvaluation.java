@@ -10,7 +10,7 @@ public abstract class TrafficEvaluation implements IEvaluation {
         IEvaluation evalution = null;
         switch(strategyType){
             case TYPE_LOW_PRICE:
-                evalution = new ReasonableLowPriceTrafficEvaluation();
+                evalution = new ReasonableLowPriceBuildingEvaluation();
                 break;
 
             default:

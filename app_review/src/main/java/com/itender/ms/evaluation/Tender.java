@@ -29,6 +29,33 @@ public class Tender implements Comparable<Tender> {
 
     private BigDecimal price;
 
+    private String tag;
+
+    public Tender setTag(String tag){
+        this.tag = tag;
+        return this;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public float getSkillScore() {
+        return skillScore;
+    }
+
+    public void setSkillScore(float skillScore) {
+        this.skillScore = skillScore;
+    }
+
+    public float getCreditScore() {
+        return creditScore;
+    }
+
+    public void setCreditScore(float creditScore) {
+        this.creditScore = creditScore;
+    }
+
     public boolean isSelected() {
         return selected;
     }
@@ -84,9 +111,12 @@ public class Tender implements Comparable<Tender> {
                 "kickout=" + kickout +
                 ", selected=" + selected +
                 ", score=" + score +
+                ", skillScore=" + skillScore +
+                ", creditScore=" + creditScore +
                 ", deviationValue=" + deviationValue +
                 ", id='" + id + '\'' +
                 ", price=" + price +
+                ", tag='" + tag + '\'' +
                 '}';
     }
 }

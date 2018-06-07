@@ -66,6 +66,7 @@
                     <option value="">请选择行业类型</option>
                     <option value='2'>交通</option>
                     <option value='1'>房建</option>
+                    <option value='3'>市政</option>
                 </select>
             </form>
 

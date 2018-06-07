@@ -85,13 +85,31 @@ public class EvaluationController {
                      weightedRatio = 0f;
                  }
                  reasonableLowPriceBuildingEvaluation.setRatiosAndBenchmarkMethod(ratio,weightedRatio,strategySubType);
-                 reasonableLowPriceBuildingEvaluation.setHighERatio(HighERatio);
-                 reasonableLowPriceBuildingEvaluation.setLowERatio(LowERatio);
+
                  int code = evalution.calculate(tenders);
                  result.put("code",code);
-                 data.put("reasonableCostPrice",reasonableLowPriceBuildingEvaluation.getReasonableCostPrice());
                  data.put("finalControlPrice",reasonableLowPriceBuildingEvaluation.getFinalControlPrice());
+                 data.put("reasonableCostPrice",reasonableLowPriceBuildingEvaluation.getReasonableCostPrice());
                  data.put("benchmarkPrice",reasonableLowPriceBuildingEvaluation.getBenchmarkPrice());
+                 String msg = EvaluationFactory.getMsgByCode(code);
+                 if(StringUtils.isEmpty(msg)){
+                     msg = evalution.getErrorMsg();
+                 }
+                 result.put("msg", msg);
+             }else if(catagory == EvaluationFactory.TYPE_MUNICIPAL){
+                 ReasonableLowPriceMunicipalEvaluation reasonableLowPriceMunicipalEvaluation = (ReasonableLowPriceMunicipalEvaluation) evalution;
+
+                 reasonableLowPriceMunicipalEvaluation.setControlPriceAndRatio(new BigDecimal(controlPrice),controlRatio);
+                 if(weightedRatio==null){
+                     weightedRatio = 0f;
+                 }
+                 reasonableLowPriceMunicipalEvaluation.setRatiosAndBenchmarkMethod(ratio,weightedRatio,strategySubType);
+
+                 int code = evalution.calculate(tenders);
+                 result.put("code",code);
+                 data.put("finalControlPrice",reasonableLowPriceMunicipalEvaluation.getFinalControlPrice());
+                 data.put("reasonableCostPrice",reasonableLowPriceMunicipalEvaluation.getReasonableCostPrice());
+                 data.put("benchmarkPrice",reasonableLowPriceMunicipalEvaluation.getBenchmarkPrice());
                  String msg = EvaluationFactory.getMsgByCode(code);
                  if(StringUtils.isEmpty(msg)){
                      msg = evalution.getErrorMsg();
