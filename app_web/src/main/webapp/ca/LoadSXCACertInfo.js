@@ -1,2 +1,0 @@
-var s ="<object id=\"CertInfo\" classid=\"CLSID:6FA144DC-ADDC-45EE-B5D5-7F5519F92C36\" style='position:absolute;width:0px;height:0px;left:0px;top:0px;' codebase=\"/resources/ca/SXCACertActiveX.cab#version=2,0,1,6\"></object>";
-document.write(s);

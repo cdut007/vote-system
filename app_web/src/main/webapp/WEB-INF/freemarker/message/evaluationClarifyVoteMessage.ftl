@@ -1,1 +1,0 @@
-${task.getVariable('userName')} 发起发起了一个澄清。<a href='/workflow/customTaskForm?taskId=${task.id}' target="_blank">点击查看</a>

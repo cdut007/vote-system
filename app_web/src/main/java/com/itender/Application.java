@@ -66,32 +66,6 @@ public class Application  extends  SpringBootServletInitializer{
 
     }
 
-    @Bean
-    public FreeMarkerViewResolver getFmResolver(){
-        FreeMarkerViewResolver resolver = new FreeMarkerViewResolver();
-        resolver.setCache(false);
-        resolver.setAllowRequestOverride(false);
-        resolver.setAllowSessionOverride(false);
-        resolver.setExposeRequestAttributes(false);
-        resolver.setExposeSessionAttributes(false);
-        resolver.setPrefix("");
-        resolver.setSuffix(".ftl");
-        resolver.setContentType("text/html;charset=UTF-8");
-        resolver.setOrder(0);
-        return resolver;
-    }
-
-
-    @Bean
-    public FreeMarkerConfigurer freemarkerConfig() throws IOException,TemplateException {
-        FreeMarkerConfigurationFactory factory = new FreeMarkerConfigurationFactory();
-        factory.setTemplateLoaderPath("WEB-INF/freemarker/");
-        factory.setDefaultEncoding("UTF-8");
-        FreeMarkerConfigurer result = new FreeMarkerConfigurer();
-        result.setConfiguration(factory.createConfiguration());
-        return result;
-    }
-
 
     @Bean
     public FilterRegistrationBean WebStatfilterRegistrationBean(){

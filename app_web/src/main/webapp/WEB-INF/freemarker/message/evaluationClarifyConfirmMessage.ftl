@@ -1,1 +1,0 @@
-收到 ${task.getVariable('organBName')} 对  ${task.getVariable('projectInstanceName')} ${task.getVariable('projectItemName')} 的澄清。<a href='/workflow/customTaskForm?taskId=${task.id}' target="_blank">点击查看</a>
