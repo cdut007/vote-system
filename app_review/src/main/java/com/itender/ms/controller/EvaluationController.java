@@ -1,9 +1,6 @@
 package com.itender.ms.controller;
 
-import com.itender.ms.evaluation.EvaluationFactory;
-import com.itender.ms.evaluation.IEvaluation;
-import com.itender.ms.evaluation.ReasonableLowPriceTrafficEvaluation;
-import com.itender.ms.evaluation.Tender;
+import com.itender.ms.evaluation.*;
 import com.itender.ms.exception.APIException;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -70,22 +67,43 @@ public class EvaluationController {
                  reasonableLowPriceTrafficEvalution.setRatiosAndBenchmarkMethod(ratio,weightedRatio,strategySubType);
                  reasonableLowPriceTrafficEvalution.setHighERatio(HighERatio);
                  reasonableLowPriceTrafficEvalution.setLowERatio(LowERatio);
+                 int code = evalution.calculate(tenders);
+                 result.put("code",code);
                  data.put("reasonableCostPrice",reasonableLowPriceTrafficEvalution.getReasonableCostPrice());
                  data.put("finalControlPrice",reasonableLowPriceTrafficEvalution.getFinalControlPrice());
                  data.put("benchmarkPrice",reasonableLowPriceTrafficEvalution.getBenchmarkPrice());
+                 String msg = EvaluationFactory.getMsgByCode(code);
+                 if(StringUtils.isEmpty(msg)){
+                     msg = evalution.getErrorMsg();
+                 }
+                 result.put("msg", msg);
              }else if(catagory == EvaluationFactory.TYPE_BUILDING){
+                 ReasonableLowPriceBuildingEvaluation reasonableLowPriceBuildingEvaluation = (ReasonableLowPriceBuildingEvaluation) evalution;
 
+                 reasonableLowPriceBuildingEvaluation.setControlPriceAndRatio(new BigDecimal(controlPrice),controlRatio);
+                 if(weightedRatio==null){
+                     weightedRatio = 0f;
+                 }
+                 reasonableLowPriceBuildingEvaluation.setRatiosAndBenchmarkMethod(ratio,weightedRatio,strategySubType);
+                 reasonableLowPriceBuildingEvaluation.setHighERatio(HighERatio);
+                 reasonableLowPriceBuildingEvaluation.setLowERatio(LowERatio);
+                 int code = evalution.calculate(tenders);
+                 result.put("code",code);
+                 data.put("reasonableCostPrice",reasonableLowPriceBuildingEvaluation.getReasonableCostPrice());
+                 data.put("finalControlPrice",reasonableLowPriceBuildingEvaluation.getFinalControlPrice());
+                 data.put("benchmarkPrice",reasonableLowPriceBuildingEvaluation.getBenchmarkPrice());
+                 String msg = EvaluationFactory.getMsgByCode(code);
+                 if(StringUtils.isEmpty(msg)){
+                     msg = evalution.getErrorMsg();
+                 }
+                 result.put("msg", msg);
              }
 
-             int code = evalution.calculate(tenders);
+
              Collections.sort(tenders);
-             result.put("code",code);
+
              data.put("tenders",tenders);
-             String msg = EvaluationFactory.getMsgByCode(code);
-             if(StringUtils.isEmpty(msg)){
-                 msg = evalution.getErrorMsg();
-             }
-             result.put("msg", msg);
+
              result.put("data", data);
          }catch (Exception e){
              e.printStackTrace();

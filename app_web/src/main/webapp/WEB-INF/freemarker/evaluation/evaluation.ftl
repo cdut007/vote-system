@@ -44,50 +44,17 @@
 
     <div align="center" class="" style="margin:0 auto;background-color:#f6f6f6;z-index: 1000; ">
 
-         <div style="width: 600px">
-             <div class="layui-form-item">
-                 <div class="layui-inline">
-                     <label class="layui-form-label">投标单位1</label>
-                     <div class="layui-input-inline">
-                         <input  id="tender1" lay-verify="required" autocomplete="off" class="layui-input" value="投标单位1">
+         <div style="width: 900px">
 
-                     </div>
-                 </div>
-                 <div class="layui-inline">
-                     <label class="layui-form-label">投标金额</label>
-                     <div class="layui-input-inline">
-                         <input type="text" id="price1" lay-verify="required" autocomplete="off" class="layui-input" value="66000000">
-                     </div>
-                 </div>
+             <button id="add_btn" class="layui-btn layui-btn-default layui-btn-block"   style="width: 45%;margin-top: 60px;margin-bottom: 60px">
+                 添加投标单位
+             </button>
 
-                 <div class="layui-inline">
-                     <label class="layui-form-label">投标单位2</label>
-                     <div class="layui-input-inline">
-                         <input  id="tender2" lay-verify="required" autocomplete="off" class="layui-input" value="投标单位2">
 
-                     </div>
-                 </div>
-                 <div class="layui-inline">
-                     <label class="layui-form-label">投标金额</label>
-                     <div class="layui-input-inline">
-                         <input type="text" id="price2" lay-verify="required" autocomplete="off" class="layui-input" value="66000000">
-                     </div>
-                 </div>
+             <div id="add_item" class="layui-form-item">
 
-                 <div class="layui-inline">
-                     <label class="layui-form-label">投标单位3</label>
-                     <div class="layui-input-inline">
-                         <input  id="tender3" lay-verify="required" autocomplete="off" class="layui-input" value="投标单位3">
-
-                     </div>
-                 </div>
-                 <div class="layui-inline">
-                     <label class="layui-form-label">投标金额</label>
-                     <div class="layui-input-inline">
-                         <input type="text" id="price3" lay-verify="required" autocomplete="off" class="layui-input" value="66000000">
-                     </div>
-                 </div>
              </div>
+
          </div>
 
 
@@ -243,6 +210,7 @@
         var strategyType;
         var subStrategyType;
         var industry;
+        var items=[];
 
         form.render();
         form.on('select(subStrategyType_select)', function(data){
@@ -276,6 +244,26 @@
             return urlLink.replace(' ', '');
         }
 
+        var addContainer = $('#add_item');
+        $("#add_btn").click(function () {
+            var index = items.length;
+            items.push(index);
+            var item=$(' <div class="layui-inline">\n' +
+                    '                     <label class="layui-form-label">投标单位'+(index+1)+'</label>\n' +
+                    '                     <div class="layui-input-inline">\n' +
+                    '                         <input  id="tender'+index+'" lay-verify="required" autocomplete="off" class="layui-input" value="投标单位'+(index+1)+'">\n' +
+                    '\n' +
+                    '                     </div>\n' +
+                    '                 </div>\n' +
+                    '                 <div class="layui-inline">\n' +
+                    '                     <label class="layui-form-label">投标金额</label>\n' +
+                    '                     <div class="layui-input-inline">\n' +
+                    '                         <input type="text" id="price'+index+'" lay-verify="required" autocomplete="off" class="layui-input" value="66000000">\n' +
+                    '                     </div>\n' +
+                    '                 </div>');
+            addContainer.append(item);
+        });
+
 
         $("#calculate").click(function () {
 
@@ -293,6 +281,13 @@
                 {id:$("#tender1").val(),price:$("#price1").val(),selected:true},
                 {id:$("#tender2").val(),price:$("#price2").val(),selected:true},
                 {id:$("#tender3").val(),price:$("#price3").val(),selected:true}];
+
+
+            for (var i = 0; i <  items.length; i++) {
+                var index = items[i];
+                tenders.push( {id:$("#tender"+index).val(),price:$("#price"+index).val(),selected:true});
+            }
+
 
             var data ={controlPrice:$("#controlPrice").val(),controlRatio:$("#controlRatio").val(),ratio:$("#ratio").val(),weightedRatio:$("#weightedRatio").val(),
                 LowERatio:$("#LowERatio").val(),HighERatio:$("#HighERatio").val(),catagory:industry,strategyType:strategyType,strategySubType:subStrategyType}
