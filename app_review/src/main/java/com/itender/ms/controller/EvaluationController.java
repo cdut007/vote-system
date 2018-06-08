@@ -1,10 +1,14 @@
 package com.itender.ms.controller;
 
+import com.itender.ms.domain.TbDictionary;
+import com.itender.ms.domain.TbDictionaryExample;
 import com.itender.ms.evaluation.*;
 import com.itender.ms.exception.APIException;
+import com.itender.ms.mapper.TbDictionaryMapper;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -26,7 +30,8 @@ import java.util.*;
 public class EvaluationController {
 
 
-
+    @Autowired
+    private TbDictionaryMapper tbDictionaryMapper;
 
     private static final Logger logger = LoggerFactory.getLogger(EvaluationController.class);
 
@@ -35,6 +40,38 @@ public class EvaluationController {
     @RequestMapping("")
     public String index(HttpServletRequest request, HttpServletResponse response) {
         return "evaluation/evaluation";
+    }
+
+
+    @ApiOperation(value = "使用平台评标算法", notes = "用于评标算法")
+    @RequestMapping(value = "/enableCalculate", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> enableCalculate(HttpServletRequest request,
+                                                               @RequestParam(required = true) boolean enable
+    ) throws APIException {
+        Map<String, Object> result = new HashMap<>();
+
+        //设置是否切换算法平台
+        TbDictionaryExample tbDictionaryExample = new TbDictionaryExample();
+        tbDictionaryExample.createCriteria().andTypeNameEqualTo("平台配置");
+        List<TbDictionary> tbDictionaries = tbDictionaryMapper.selectByExample(tbDictionaryExample);
+        if (tbDictionaries.size() > 0) {
+            for (TbDictionary dictionary:tbDictionaries
+                 ) {
+                if(dictionary.getItemCode()!=null){
+                    result.put("prevStatus", dictionary.getItemCode());
+                    dictionary.setItemCode(String.valueOf(enable));
+                    tbDictionaryMapper.updateByPrimaryKeySelective(dictionary);
+                    result.put("setStatus", dictionary.getItemCode());
+                    result.put("code", IEvaluation.CODE_OK);
+                    return ResponseEntity.ok(result);
+                }
+            }
+
+        }
+
+        result.put("code",IEvaluation.CODE_ERROR_UNKONWN);
+
+        return ResponseEntity.ok(result);
     }
 
 
@@ -54,82 +91,64 @@ public class EvaluationController {
     ) throws APIException {
         Map<String, Object> result = new HashMap<>();
         Map<String, Object> data = new HashMap<>();
-         try{
-             IEvaluation evalution = EvaluationFactory.createEvalution(catagory,strategyType);
+        try {
+            IEvaluation evalution = EvaluationFactory.createEvalution(catagory, strategyType);
 
-             if(catagory == EvaluationFactory.TYPE_TRAFFIC){
-                 ReasonableLowPriceTrafficEvaluation reasonableLowPriceTrafficEvalution = (ReasonableLowPriceTrafficEvaluation) evalution;
+            if (catagory == EvaluationFactory.TYPE_TRAFFIC) {
+                ReasonableLowPriceTrafficEvaluation reasonableLowPriceTrafficEvalution = (ReasonableLowPriceTrafficEvaluation) evalution;
 
-                 reasonableLowPriceTrafficEvalution.setControlPriceAndRatio(new BigDecimal(controlPrice),controlRatio);
-                 if(weightedRatio==null){
-                     weightedRatio = 0f;
-                 }
-                 reasonableLowPriceTrafficEvalution.setRatiosAndBenchmarkMethod(ratio,weightedRatio,strategySubType);
-                 reasonableLowPriceTrafficEvalution.setHighERatio(HighERatio);
-                 reasonableLowPriceTrafficEvalution.setLowERatio(LowERatio);
-                 int code = evalution.calculate(tenders);
-                 result.put("code",code);
-                 data.put("reasonableCostPrice",reasonableLowPriceTrafficEvalution.getReasonableCostPrice());
-                 data.put("finalControlPrice",reasonableLowPriceTrafficEvalution.getFinalControlPrice());
-                 data.put("benchmarkPrice",reasonableLowPriceTrafficEvalution.getBenchmarkPrice());
-                 String msg = EvaluationFactory.getMsgByCode(code);
-                 if(StringUtils.isEmpty(msg)){
-                     msg = evalution.getErrorMsg();
-                 }
-                 result.put("msg", msg);
-             }else if(catagory == EvaluationFactory.TYPE_BUILDING){
-                 ReasonableLowPriceBuildingEvaluation reasonableLowPriceBuildingEvaluation = (ReasonableLowPriceBuildingEvaluation) evalution;
+                reasonableLowPriceTrafficEvalution.setControlPriceAndRatio(new BigDecimal(controlPrice), controlRatio);
+                if (weightedRatio == null) {
+                    weightedRatio = 0f;
+                }
+                reasonableLowPriceTrafficEvalution.setRatiosAndBenchmarkMethod(ratio, weightedRatio, strategySubType);
+                reasonableLowPriceTrafficEvalution.setHighERatio(HighERatio);
+                reasonableLowPriceTrafficEvalution.setLowERatio(LowERatio);
 
-                 reasonableLowPriceBuildingEvaluation.setControlPriceAndRatio(new BigDecimal(controlPrice),controlRatio);
-                 if(weightedRatio==null){
-                     weightedRatio = 0f;
-                 }
-                 reasonableLowPriceBuildingEvaluation.setRatiosAndBenchmarkMethod(ratio,weightedRatio,strategySubType);
+            } else if (catagory == EvaluationFactory.TYPE_BUILDING) {
+                ReasonableLowPriceBuildingEvaluation reasonableLowPriceBuildingEvaluation = (ReasonableLowPriceBuildingEvaluation) evalution;
 
-                 int code = evalution.calculate(tenders);
-                 result.put("code",code);
-                 data.put("finalControlPrice",reasonableLowPriceBuildingEvaluation.getFinalControlPrice());
-                 data.put("reasonableCostPrice",reasonableLowPriceBuildingEvaluation.getReasonableCostPrice());
-                 data.put("benchmarkPrice",reasonableLowPriceBuildingEvaluation.getBenchmarkPrice());
-                 String msg = EvaluationFactory.getMsgByCode(code);
-                 if(StringUtils.isEmpty(msg)){
-                     msg = evalution.getErrorMsg();
-                 }
-                 result.put("msg", msg);
-             }else if(catagory == EvaluationFactory.TYPE_MUNICIPAL){
-                 ReasonableLowPriceMunicipalEvaluation reasonableLowPriceMunicipalEvaluation = (ReasonableLowPriceMunicipalEvaluation) evalution;
-
-                 reasonableLowPriceMunicipalEvaluation.setControlPriceAndRatio(new BigDecimal(controlPrice),controlRatio);
-                 if(weightedRatio==null){
-                     weightedRatio = 0f;
-                 }
-                 reasonableLowPriceMunicipalEvaluation.setRatiosAndBenchmarkMethod(ratio,weightedRatio,strategySubType);
-
-                 int code = evalution.calculate(tenders);
-                 result.put("code",code);
-                 data.put("finalControlPrice",reasonableLowPriceMunicipalEvaluation.getFinalControlPrice());
-                 data.put("reasonableCostPrice",reasonableLowPriceMunicipalEvaluation.getReasonableCostPrice());
-                 data.put("benchmarkPrice",reasonableLowPriceMunicipalEvaluation.getBenchmarkPrice());
-                 String msg = EvaluationFactory.getMsgByCode(code);
-                 if(StringUtils.isEmpty(msg)){
-                     msg = evalution.getErrorMsg();
-                 }
-                 result.put("msg", msg);
-             }
+                reasonableLowPriceBuildingEvaluation.setControlPriceAndRatio(new BigDecimal(controlPrice), controlRatio);
+                if (weightedRatio == null) {
+                    weightedRatio = 0f;
+                }
+                reasonableLowPriceBuildingEvaluation.setRatiosAndBenchmarkMethod(ratio, weightedRatio, strategySubType);
 
 
-             Collections.sort(tenders);
+            } else if (catagory == EvaluationFactory.TYPE_MUNICIPAL) {
+                ReasonableLowPriceMunicipalEvaluation reasonableLowPriceMunicipalEvaluation = (ReasonableLowPriceMunicipalEvaluation) evalution;
 
-             data.put("tenders",tenders);
-
-             result.put("data", data);
-         }catch (Exception e){
-             e.printStackTrace();
-             result.put("code",IEvaluation.CODE_ERROR_UNKONWN);
-             result.put("msg", EvaluationFactory.getMsgByCode(IEvaluation.CODE_ERROR_UNKONWN));
-         }
+                reasonableLowPriceMunicipalEvaluation.setControlPriceAndRatio(new BigDecimal(controlPrice), controlRatio);
+                if (weightedRatio == null) {
+                    weightedRatio = 0f;
+                }
+                reasonableLowPriceMunicipalEvaluation.setRatiosAndBenchmarkMethod(ratio, weightedRatio, strategySubType);
 
 
+            }
+
+            int code = evalution.calculate(tenders);
+            result.put("code", code);
+            data.put("finalControlPrice", evalution.getFinalControlPrice());
+            data.put("reasonableCostPrice", evalution.getReasonableCostPrice());
+            data.put("benchmarkPrice", evalution.getBenchmarkPrice());
+            String msg = evalution.getErrorMsg();
+            if (StringUtils.isEmpty(msg)) {
+                msg = EvaluationFactory.getMsgByCode(code);
+            }
+            result.put("msg", msg);
+
+
+            Collections.sort(tenders);
+
+            data.put("tenders", tenders);
+
+            result.put("data", data);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("code", IEvaluation.CODE_ERROR_UNKONWN);
+            result.put("msg", EvaluationFactory.getMsgByCode(IEvaluation.CODE_ERROR_UNKONWN));
+        }
 
 
         return ResponseEntity.ok(result);

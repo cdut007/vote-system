@@ -54,9 +54,21 @@ public class ReasonableLowPriceBuildingEvaluation extends BuildingEvaluation {
 
     }
 
+    @Override
     public BigDecimal getFinalControlPrice() {
         return finalControlPrice;
     }
+
+    @Override
+    public BigDecimal getBenchmarkPrice() {
+        return benchmarkPrice;
+    }
+
+    @Override
+    public BigDecimal getReasonableCostPrice() {
+        return reasonableCostPrice;
+    }
+
 
     //评标基准价基础参数设置
     public void setRatiosAndBenchmarkMethod(float ratio, float weightedRatio, int strategySubType) {
@@ -66,6 +78,15 @@ public class ReasonableLowPriceBuildingEvaluation extends BuildingEvaluation {
     }
 
     protected int checkReasonableCostPrice(List<Tender> tenders) {
+
+        for (Tender tender : tenders
+                ) {
+             if(tender.getSkillScore()>25 || tender.getCreditScore()>20){
+                 logger.info(errMsg="施工组织设计不超过25分,投标人资信不超过20分");
+                 return CODE_ERROR_RATIO;
+             }
+        }
+
         //    当投标人≥5家时，去掉投标报价总价最高的20%家数（四舍五入取整）和最低的20%家（四舍五入取整）后进行算术平均；当投标人＜5家时，则全部投标报价总价进行算术平均。算术平均值下浮一定比例作为参加评标基准价合成和评标的合理最低价。
         //    房屋建筑下浮范围为3%～6%，市政工程下浮范围为3%～8%。招标人可以在招标文件中明确下浮率，也可以在开标时随机抽取（下浮率取整）。
         //低于合理最低价的投标报价不再参加评标基准价的合成，低于理论成本指标的进行理论成本评审。
@@ -87,7 +108,7 @@ public class ReasonableLowPriceBuildingEvaluation extends BuildingEvaluation {
 
         reasonableCostPrice = MathTool.avg1(EvaluationFactory.covertTendersToPriceList(tenders));
         reasonableCostPrice = reasonableCostPrice.multiply(new BigDecimal(1 - ratio));
-        reasonableCostPrice = MathTool.getFormatValue(reasonableCostPrice,3);
+        reasonableCostPrice = MathTool.getFormatValue(reasonableCostPrice, 3);
         return CODE_OK;
     }
 
@@ -104,18 +125,12 @@ public class ReasonableLowPriceBuildingEvaluation extends BuildingEvaluation {
             return code;
         }
         //1 检查
-        switch (benchmarkMethod) {
-            case benchmark_method_1:
-                code = calculateByMethod1(tenders);
-                break;
-            case benchmark_method_2:
-                code = calculateByMethod2(tenders);
-                break;
-            case benchmark_method_3:
-                code = calculateByMethod3(tenders);
-                break;
-            default:
-
+        if (benchmarkMethod == benchmark_method_1) {
+            code = calculateByMethod1(tenders);
+        } else if (benchmarkMethod == benchmark_method_2) {
+            code = calculateByMethod2(tenders);
+        } else if (benchmarkMethod == benchmark_method_3) {
+            code = calculateByMethod3(tenders);
         }
 
         return code;
@@ -129,7 +144,8 @@ public class ReasonableLowPriceBuildingEvaluation extends BuildingEvaluation {
         return errMsg;
     }
 
-    private int calculateByMethod2(List<Tender> tenders) {
+    @Override
+    public int calculateByMethod2(List<Tender> tenders) {
         int code = checkRatio2();
         if (code != CODE_OK) {
             return code;
@@ -153,7 +169,8 @@ public class ReasonableLowPriceBuildingEvaluation extends BuildingEvaluation {
         return benchmarkPrice;
     }
 
-    private int calculateByMethod3(List<Tender> tenders) {
+    @Override
+    public int calculateByMethod3(List<Tender> tenders) {
 
         List<Tender> checkTenders = new ArrayList<>(tenders);
 
@@ -166,15 +183,18 @@ public class ReasonableLowPriceBuildingEvaluation extends BuildingEvaluation {
 
     private int checkRatio2() {
         if (weightedRatio != 0.7f && weightedRatio != 0.6f && weightedRatio != 0.5f) {
+            logger.info(errMsg="加权系数不对,应为0.7， 0.6 ，0.5");
             return CODE_ERROR_RATIO;//加权系数不对
         }
 
 
         if (ratio != 0.3f && ratio != 0.4f && ratio != 0.5f) {
+            logger.info(errMsg="评标基准价系数不对,应为0.3， 0.4 ，0.5");
             return CODE_ERROR_RATIO;//评标基准价系数不对
         }
 
         if (weightedRatio + ratio != 1.0f) {
+            logger.info(errMsg="评标基准价系数和加权系数之和应为1");
             return CODE_ERROR_RATIO;//评标基准价系数不对
         }
         return CODE_OK;
@@ -208,7 +228,8 @@ public class ReasonableLowPriceBuildingEvaluation extends BuildingEvaluation {
     }
 
 
-    private int calculateByMethod1(List<Tender> tenders) {
+    @Override
+    public int calculateByMethod1(List<Tender> tenders) {
         //检查系数
         int code = checkRatio();
         if (code != CODE_OK) {
@@ -238,23 +259,26 @@ public class ReasonableLowPriceBuildingEvaluation extends BuildingEvaluation {
             public int compare(Tender o1, Tender o2) {
                 float less = o1.getSkillScore() - o2.getSkillScore();
                 if (less < 0) {
-                    return -1;
-                } else if (less > 0) {
                     return 1;
+                } else if (less > 0) {
+                    return -1;
                 }
                 return 0;
             }
         });
         BigDecimal benchmarkPrice = tenders.get(0).setTag("del").getPrice().multiply(new BigDecimal(0.15f));
         benchmarkPrice = benchmarkPrice.add(tenders.get(1).setTag("del").getPrice().multiply(new BigDecimal(0.1f)));
+
+        Collections.sort(tenders);
+
         Collections.sort(tenders, new Comparator<Tender>() {
             @Override
             public int compare(Tender o1, Tender o2) {
                 float less = o1.getCreditScore() - o2.getCreditScore();
                 if (less < 0) {
-                    return -1;
-                } else if (less > 0) {
                     return 1;
+                } else if (less > 0) {
+                    return -1;
                 }
                 return 0;
             }
@@ -330,18 +354,9 @@ public class ReasonableLowPriceBuildingEvaluation extends BuildingEvaluation {
                 ) {
             BigDecimal deviationValue = MathTool.abs(tender.getPrice().subtract(benchmarkPrice)).divide(benchmarkPrice, 6, BigDecimal.ROUND_HALF_UP);
             tender.setDeviationValue(MathTool.getFormatValue(deviationValue.floatValue(), 4));
-            tender.setScore(55 - 100 * MathTool.getFormatValue(deviationValue.floatValue(), 3));
+            tender.setScore(tender.getSkillScore()+tender.getCreditScore()+55 - 100 * MathTool.getFormatValue(deviationValue.floatValue(), 3));
         }
         return CODE_OK;
-    }
-
-
-    public BigDecimal getBenchmarkPrice() {
-        return benchmarkPrice;
-    }
-
-    public BigDecimal getReasonableCostPrice() {
-        return reasonableCostPrice;
     }
 
 

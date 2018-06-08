@@ -261,6 +261,20 @@
                     '                     <div class="layui-input-inline">\n' +
                     '                         <input type="text" id="price'+index+'" lay-verify="required" autocomplete="off" class="layui-input" value="66000000">\n' +
                     '                     </div>\n' +
+                    '                 </div>'+
+
+                    ' <div class="layui-inline">\n' +
+                    '                     <label class="layui-form-label">施工组织设计得分</label>\n' +
+                    '                     <div class="layui-input-inline">\n' +
+                    '                         <input  id="skillScore'+index+'" lay-verify="required" autocomplete="off" class="layui-input" value="25">\n' +
+                    '\n' +
+                    '                     </div>\n' +
+                    '                 </div>\n' +
+                    '                 <div class="layui-inline">\n' +
+                    '                     <label class="layui-form-label">投标人资信得分</label>\n' +
+                    '                     <div class="layui-input-inline">\n' +
+                    '                         <input type="text" id="creditScore'+index+'" lay-verify="required" autocomplete="off" class="layui-input" value="20">\n' +
+                    '                     </div>\n' +
                     '                 </div>');
             addContainer.append(item);
         });
@@ -283,7 +297,8 @@
 
             for (var i = 0; i <  items.length; i++) {
                 var index = items[i];
-                tenders.push( {id:$("#tender"+index).val(),price:$("#price"+index).val(),selected:true});
+                tenders.push( {id:$("#tender"+index).val(),price:$("#price"+index).val(),selected:true,
+                    creditScore:$("#creditScore"+index).val(),skillScore:$("#skillScore"+index).val()});
             }
 
 

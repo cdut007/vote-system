@@ -3,7 +3,7 @@ package com.itender.ms.evaluation;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class BuildingEvaluation implements IEvaluation {
+public abstract class BuildingEvaluation implements IEvaluation ,IReasonableLowPriceEvaluation{
 
 
     public static final  int TYPE_LOW_PRICE = 0x01;

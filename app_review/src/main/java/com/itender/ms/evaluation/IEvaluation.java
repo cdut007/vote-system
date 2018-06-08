@@ -1,9 +1,13 @@
 package com.itender.ms.evaluation;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface IEvaluation {
     public  int calculate(List<Tender> tenders);
+
+
+    public static final int CODE_ERROR_SCORE = -1005;
 
     public static final int CODE_ERROR_UNKONWN = -1003;
 
@@ -23,6 +27,13 @@ public interface IEvaluation {
     public static final int benchmark_method_2 = 0x02;
     public static final int benchmark_method_3 = 0x03;
 
+
+    public BigDecimal getFinalControlPrice();
+
+
+    public BigDecimal getBenchmarkPrice();
+
+    public BigDecimal getReasonableCostPrice();
 
 
 }

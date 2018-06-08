@@ -66,6 +66,7 @@ public class ReasonableLowPriceTrafficEvaluation extends TrafficEvaluation {
             return code;
         }
         //1 检查
+
         switch (benchmarkMethod) {
             case benchmark_method_1:
                 code = calculateByMethod1(tenders);
@@ -90,7 +91,8 @@ public class ReasonableLowPriceTrafficEvaluation extends TrafficEvaluation {
         return errMsg;
     }
 
-    private int calculateByMethod2(List<Tender> tenders) {
+    @Override
+    public  int calculateByMethod2(List<Tender> tenders) {
         int code = checkRatio3();
         if (code != CODE_OK) {
             return code;
@@ -174,7 +176,8 @@ public class ReasonableLowPriceTrafficEvaluation extends TrafficEvaluation {
         return benchmarkPrice;
     }
 
-    private int calculateByMethod3(List<Tender> tenders) {
+    @Override
+    public  int calculateByMethod3(List<Tender> tenders) {
         int code = checkRatio3();
         if (code != CODE_OK) {
             return code;
@@ -204,6 +207,7 @@ public class ReasonableLowPriceTrafficEvaluation extends TrafficEvaluation {
 
     private int checkRatio3() {
         if (ratio < 0.005f || ratio > 0.03f) {
+            logger.info(errMsg="评标基准价系数不对,应为0.05%， 0.3%之间");
             return CODE_ERROR_RATIO;//评标基准价系数不对
         }
 
@@ -215,6 +219,7 @@ public class ReasonableLowPriceTrafficEvaluation extends TrafficEvaluation {
             stepCheck = MathTool.getFormatValue(stepCheck, 3);
         }
         if (stepCheck < 0) {
+            logger.info(errMsg="评标基准价系数不对,应为0.05%， 0.3%之间，且步长为0.05%");
             return CODE_ERROR_RATIO;
         }
 
@@ -291,7 +296,8 @@ public class ReasonableLowPriceTrafficEvaluation extends TrafficEvaluation {
     //有效评标价指介于理论成本价（含）与最终最高投标限价（含）
     //范围内的评标价. 当有效评标价数量大于5时’可去掉其中的最高
     //和最低值’再进行算术平均值计算
-    private int calculateByMethod1(List<Tender> tenders) {
+    @Override
+    public int calculateByMethod1(List<Tender> tenders) {
         //检查系数
         int code = checkRatio();
         if (code != CODE_OK) {
@@ -374,6 +380,7 @@ public class ReasonableLowPriceTrafficEvaluation extends TrafficEvaluation {
 
     private int checkRatio() {
         if (weightedRatio != 0.3f && weightedRatio != 0.35f && weightedRatio != 0.4f) {
+
             return CODE_ERROR_RATIO;//加权系数不对
         }
 
@@ -431,15 +438,15 @@ public class ReasonableLowPriceTrafficEvaluation extends TrafficEvaluation {
         return CODE_OK;
     }
 
-
+    @Override
     public BigDecimal getBenchmarkPrice() {
         return benchmarkPrice;
     }
-
+    @Override
     public BigDecimal getReasonableCostPrice() {
         return reasonableCostPrice;
     }
-
+    @Override
     public BigDecimal getFinalControlPrice() {
         return finalControlPrice;
     }

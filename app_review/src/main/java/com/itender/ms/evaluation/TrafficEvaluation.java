@@ -2,7 +2,7 @@ package com.itender.ms.evaluation;
 
 import java.util.List;
 
-public abstract class TrafficEvaluation implements IEvaluation {
+public abstract class TrafficEvaluation implements IEvaluation ,IReasonableLowPriceEvaluation{
 
     public static final  int TYPE_LOW_PRICE = 0x01;
 
@@ -10,7 +10,7 @@ public abstract class TrafficEvaluation implements IEvaluation {
         IEvaluation evalution = null;
         switch(strategyType){
             case TYPE_LOW_PRICE:
-                evalution = new ReasonableLowPriceBuildingEvaluation();
+                evalution = new ReasonableLowPriceTrafficEvaluation();
                 break;
 
             default:
