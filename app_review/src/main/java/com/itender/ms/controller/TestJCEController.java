@@ -15,6 +15,8 @@ import com.itender.ms.workflow.model.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.form.AbstractFormType;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -68,6 +70,7 @@ import java.util.List;
 public class TestJCEController {
 
 
+
     @Bean
     public InitializingBean activitiConfigurer(SpringProcessEngineConfiguration engineConfiguration) {
         return new InitializingBean() {
@@ -80,7 +83,6 @@ public class TestJCEController {
                 customFormTypes.add(new TextFormType());
                 customFormTypes.add(new TimeFormType());
                 customFormTypes.add(new UserFormType());
-
                 engineConfiguration.setCustomFormTypes(customFormTypes);
             }
         };

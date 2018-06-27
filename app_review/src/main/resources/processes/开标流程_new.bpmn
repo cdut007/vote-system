@@ -5,7 +5,7 @@
   <signal id="endDecodeSignal" name="endDecodeSignal"></signal>
   <signal id="endExpertSignSignal" name="endExpertSignSignal"></signal>
   <signal id="auditExpertSignSignal" name="auditExpertSignSignal"></signal>
-  <process id="bid_open" name="开标流程" isExecutable="true">
+  <process id="yj_bid_open" name="开标流程" isExecutable="true">
     <serviceTask id="servicetask1" name="开标检查" activiti:expression="${bidOpenCheckService.execute(execution)}" activiti:resultVariableName="checkSuccess"></serviceTask>
     <sequenceFlow id="flow139" sourceRef="exclusivegateway3" targetRef="parallelgateway5">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${checkSuccess}]]></conditionExpression>
@@ -20,7 +20,7 @@
     </sequenceFlow>
     <parallelGateway id="parallelgateway5" name="Parallel Gateway"></parallelGateway>
     <startEvent id="startevent11" name="等待开标"></startEvent>
-    <callActivity id="callactivity1" name="标段开标" calledElement="project_item_open">
+    <callActivity id="callactivity1" name="标段开标" calledElement="yj_project_item_open">
       <extensionElements>
         <activiti:in source="projectItemId" target="projectItemId"></activiti:in>
         <activiti:in source="projectInstanceId" target="projectInstanceId"></activiti:in>
@@ -83,8 +83,8 @@ map=[projectInstanceName:projectInstanceName,expertApplyId:execution.processBusi
     </intermediateCatchEvent>
     <sequenceFlow id="flow240" sourceRef="signalintermediatecatchevent1" targetRef="endevent20"></sequenceFlow>
   </process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_bid_open">
-    <bpmndi:BPMNPlane bpmnElement="bid_open" id="BPMNPlane_bid_open">
+  <bpmndi:BPMNDiagram id="BPMNDiagram_yj_bid_open">
+    <bpmndi:BPMNPlane bpmnElement="yj_bid_open" id="BPMNPlane_yj_bid_open">
       <bpmndi:BPMNShape bpmnElement="servicetask1" id="BPMNShape_servicetask1">
         <omgdc:Bounds height="55.0" width="105.0" x="688.0" y="202.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>

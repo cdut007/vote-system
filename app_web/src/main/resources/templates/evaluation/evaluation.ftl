@@ -67,6 +67,7 @@
                     <option value='2'>交通</option>
                     <option value='1'>房建</option>
                     <option value='3'>市政</option>
+                    <option value='4'>水利</option>
                 </select>
             </form>
 

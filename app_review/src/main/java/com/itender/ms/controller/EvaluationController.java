@@ -5,7 +5,16 @@ import com.itender.ms.domain.TbDictionaryExample;
 import com.itender.ms.evaluation.*;
 import com.itender.ms.exception.APIException;
 import com.itender.ms.mapper.TbDictionaryMapper;
+import com.itender.ms.workflow.service.IWorkFlowService;
 import io.swagger.annotations.ApiOperation;
+import org.activiti.engine.FormService;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.form.FormProperty;
+import org.activiti.engine.impl.form.DateFormType;
+import org.activiti.engine.impl.form.TaskFormDataImpl;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
@@ -49,7 +59,7 @@ public class EvaluationController {
                                                                @RequestParam(required = true) boolean enable
     ) throws APIException {
         Map<String, Object> result = new HashMap<>();
-
+        testActivity();
         //设置是否切换算法平台
         TbDictionaryExample tbDictionaryExample = new TbDictionaryExample();
         tbDictionaryExample.createCriteria().andTypeNameEqualTo("平台配置");
@@ -72,6 +82,58 @@ public class EvaluationController {
         result.put("code",IEvaluation.CODE_ERROR_UNKONWN);
 
         return ResponseEntity.ok(result);
+    }
+    @Autowired
+    private RuntimeService runtimeService;
+    @Autowired
+    private FormService formService;
+    @Autowired
+    private TaskService taskService;
+    @Autowired
+    private IWorkFlowService workFlowService;
+    private void testActivity() {
+        Map<String, Object> variableMap = new HashMap<String, Object>();
+        variableMap.put("projectInstanceId", "projectInstanceId111");
+        // 绑定招标项目名称
+        variableMap.put("projectInstanceName", "projectInstanceName111");
+
+        variableMap.put("expertSignEnd", true);
+
+        variableMap.put("envelopeTypeOrder", "first");
+
+        variableMap.put("expertApplyId", "expertApplyId111");
+        variableMap.put("projectItemId", "projectItemId111");
+
+        variableMap.put("expertIdSign","expertIdSign111");
+        //查询出监标人
+        variableMap.put("guardianIdSign","guardianIdSign111");
+        variableMap.put("preliminaryReview", "0");
+
+        variableMap.put("roleId", "roleId111");
+
+        List<ProcessInstance> processInstanceList = runtimeService.createProcessInstanceQuery()
+                .processDefinitionKey("yj_project_item_open").processInstanceBusinessKey("expertApplyId111").active().list();
+        for (ProcessInstance processInstance : processInstanceList) {
+            workFlowService.deleteProcessInstance(processInstance.getId(), "重新初始化");
+        }
+
+        ProcessInstance processInstance = this.runtimeService.startProcessInstanceByKey("yj_project_item_open", "expertApplyId111", variableMap);
+      String taskId = this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
+        Task task = this.taskService.createTaskQuery().taskId(taskId).singleResult();
+        TaskFormDataImpl taskFormData = (TaskFormDataImpl) formService.getTaskFormData(taskId);
+        List<FormProperty> formPropertiesList = taskFormData.getFormProperties();
+
+        for (FormProperty formProperty : formPropertiesList) {
+        }
+
+         processInstance = this.runtimeService.createProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).singleResult();
+
+
+        Map<String, String> formProperties = new HashMap<String, String>();
+        for (FormProperty formProperty : formService.getTaskFormData(taskId).getFormProperties()) {
+
+        }
+        formService.submitTaskFormData(taskId, formProperties);
     }
 
 
@@ -123,6 +185,11 @@ public class EvaluationController {
                     weightedRatio = 0f;
                 }
                 reasonableLowPriceMunicipalEvaluation.setRatiosAndBenchmarkMethod(ratio, weightedRatio, strategySubType);
+
+
+            }else if (catagory == EvaluationFactory.TYPE_WATER) {
+                ReasonableLowPriceWaterEvaluation reasonableLowPriceWaterEvaluation = (ReasonableLowPriceWaterEvaluation) evalution;
+
 
 
             }

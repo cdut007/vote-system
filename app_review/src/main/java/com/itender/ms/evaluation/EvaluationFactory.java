@@ -25,6 +25,9 @@ public class EvaluationFactory {
 
     public static final int TYPE_TRAFFIC = 0x02;
 
+    public static final int TYPE_WATER = 0x04;
+
+
     public static IEvaluation createEvalution(int catagory, int strategyType) {
         IEvaluation evalution = null;
         switch (catagory) {
@@ -36,6 +39,9 @@ public class EvaluationFactory {
                 break;
             case TYPE_TRAFFIC:
                 evalution = TrafficEvaluation.createEvalution(strategyType);
+                break;
+            case TYPE_WATER:
+                evalution = WaterEvaluation.createEvalution(strategyType);
                 break;
             default:
                 evalution = null;
