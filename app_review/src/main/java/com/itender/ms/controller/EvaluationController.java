@@ -127,14 +127,14 @@ public class EvaluationController {
                 //使用accept()阻塞等待客户请求，有客户
                 //请求到来则产生一个Socket对象，并继续执行
             }catch(Exception e) {
-                System.out.println("Error."+e);
+                System.out.println("accept Error."+e);
                 //出错，打印出错信息
             }
             //3、获取输入流，并读取客户端信息
             String line;
             BufferedReader in=new BufferedReader(new InputStreamReader(socket.getInputStream(),"GBK"));
             //由Socket对象得到输入流，并构造相应的BufferedReader对象
-            PrintWriter writer=new PrintWriter(socket.getOutputStream());
+          //  PrintWriter writer=new PrintWriter(socket.getOutputStream());
 
             //在标准输出上打印从客户端读入的字符串
             line=in.readLine();
@@ -144,23 +144,26 @@ public class EvaluationController {
             //从标准输入读入一字符串
             //4、获取输出流，响应客户端的请求
             String result=line;
-            while(line!=null){
+            while(!StringUtils.isEmpty(line)){
                 //如果该字符串为 "bye"，则停止循环
-                writer.println(line);
+             //   writer.println(line);
                 //向客户端输出该字符串
-                writer.flush();
+             //   writer.flush();
                 //刷新输出流，使Client马上收到该字符串
                 System.out.println("Server:"+line);
                 //从Client读入一字符串，并打印到标准输出上
                 line=in.readLine();
-                result+=line;
+                if(!StringUtils.isEmpty(line)){
+                    result+=line;
+                }
+
                 //从系统标准输入读入一字符串
             } //继续循环
 
 
             System.out.println("result."+result);
             //5、关闭资源
-            writer.close(); //关闭Socket输出流
+           // writer.close(); //关闭Socket输出流
             in.close(); //关闭Socket输入流
             socket.close(); //关闭Socket
             server.close(); //关闭ServerSocket
