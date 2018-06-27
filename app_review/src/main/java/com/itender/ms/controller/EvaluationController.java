@@ -81,11 +81,7 @@ public class EvaluationController {
     ) throws APIException {
         Map<String, Object> result = new HashMap<>();
 
-        try {
-            testBankXmlRequest();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
         // testActivity();
         //设置是否切换算法平台
         TbDictionaryExample tbDictionaryExample = new TbDictionaryExample();
@@ -136,60 +132,66 @@ public class EvaluationController {
             }
             //3、获取输入流，并读取客户端信息
             String line;
-            BufferedReader in=new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            BufferedReader in=new BufferedReader(new InputStreamReader(socket.getInputStream(),"GBK"));
             //由Socket对象得到输入流，并构造相应的BufferedReader对象
             PrintWriter writer=new PrintWriter(socket.getOutputStream());
-            //由Socket对象得到输出流，并构造PrintWriter对象
-            BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
-            //由系统标准输入设备构造BufferedReader对象
-            System.out.println("Client:"+in.readLine());
+
             //在标准输出上打印从客户端读入的字符串
-            line=br.readLine();
+            line=in.readLine();
+
+            System.out.println("Client:"+line);
+
             //从标准输入读入一字符串
             //4、获取输出流，响应客户端的请求
-            while(!line.equals("end")){
+            String result=line;
+            while(line!=null){
                 //如果该字符串为 "bye"，则停止循环
                 writer.println(line);
                 //向客户端输出该字符串
                 writer.flush();
                 //刷新输出流，使Client马上收到该字符串
                 System.out.println("Server:"+line);
-                //在系统标准输出上打印读入的字符串
-                System.out.println("Client:"+in.readLine());
                 //从Client读入一字符串，并打印到标准输出上
-                line=br.readLine();
+                line=in.readLine();
+                result+=line;
                 //从系统标准输入读入一字符串
             } //继续循环
 
+
+            System.out.println("result."+result);
             //5、关闭资源
             writer.close(); //关闭Socket输出流
             in.close(); //关闭Socket输入流
             socket.close(); //关闭Socket
             server.close(); //关闭ServerSocket
+
+            if(!StringUtils.isEmpty(result)){
+                String headTail = "</head>";
+                int endHead = result.indexOf(headTail);
+                if(endHead>=0){
+                    String headContent=result.substring(0,endHead+headTail.length());
+                    testBankXmlRequest(headContent);
+                }else{
+                    System.out.println("not found ***===="+result);
+                }
+            }else{
+                System.out.println("not found ===="+result);
+            }
+
+            createReceviewServer();
         }catch(Exception e) {//出错，打印出错信息
             System.out.println("Error."+e);
+
         }
     }
 
-    private void testBankXmlRequest() throws Exception {
-        String body = "  000579<?xml version='1.0' encoding=\"GBK\"?>" +
-                "<root><head>" +
-                "<TransCode>G00001</TransCode>" +
-                "<TransDate>20180621</TransDate>" +
-                "<TransTime>191001</ TransTime>" +
-                "<SeqNo>CBPP1605406e1552018062119143600584</SeqNo>" +
-                "</head>" +
-                "<body>" +
-                "< AccBank >中信银行总行营业部账务中心</ AccBank >" +
-                "<AcctNo>7119910130900000001</AcctNo>" +
-                "<BZJEndDate>20180821</ BZJEndDate >" +
-                "<BZJEndTime>191000</ BZJEndTime >" +
-                "<BaseAcctNo>3111310001821643056</BaseAcctNo>" +
-                "<BaseAcctName>子账户名称</BaseAcctName>" +
-                "<IsRetire>no</IsRetire>" +
-                "<MatuDay>20180821</MatuDay>" +
-                "</body>" +
-                "</root>\n";
+    private void testBankXmlRequest(String headContent) throws Exception {
+        String body = headContent +
+                "\t<body>\n" +
+                "< TransResult >1</ TransResult >\n" +
+                "< Remark >备注</ Remark >\n" +
+                "\t</body>\n" +
+                "</root>";
         logger.info("数据内容：" + body);
 
         Socket socket = null;
