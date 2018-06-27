@@ -31,7 +31,11 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.math.BigDecimal;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.*;
 
 @Validated
@@ -44,6 +48,23 @@ public class EvaluationController {
     private TbDictionaryMapper tbDictionaryMapper;
 
     private static final Logger logger = LoggerFactory.getLogger(EvaluationController.class);
+
+
+
+    @ApiOperation(value = "启动监听服务", notes = "启动监听服务")
+    @RequestMapping(value = "/startServer", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> startServer(HttpServletRequest request,
+                                                               @RequestParam(required = true) boolean enable
+    ) throws APIException {
+        Map<String, Object> result = new HashMap<>();
+
+        createReceviewServer();
+
+
+        result.put("code", IEvaluation.CODE_ERROR_UNKONWN);
+
+        return ResponseEntity.ok(result);
+    }
 
 
     @ApiIgnore
@@ -59,15 +80,21 @@ public class EvaluationController {
                                                                @RequestParam(required = true) boolean enable
     ) throws APIException {
         Map<String, Object> result = new HashMap<>();
-        testActivity();
+
+        try {
+            testBankXmlRequest();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // testActivity();
         //设置是否切换算法平台
         TbDictionaryExample tbDictionaryExample = new TbDictionaryExample();
         tbDictionaryExample.createCriteria().andTypeNameEqualTo("平台配置");
         List<TbDictionary> tbDictionaries = tbDictionaryMapper.selectByExample(tbDictionaryExample);
         if (tbDictionaries.size() > 0) {
-            for (TbDictionary dictionary:tbDictionaries
-                 ) {
-                if(dictionary.getItemCode()!=null){
+            for (TbDictionary dictionary : tbDictionaries
+                    ) {
+                if (dictionary.getItemCode() != null) {
                     result.put("prevStatus", dictionary.getItemCode());
                     dictionary.setItemCode(String.valueOf(enable));
                     tbDictionaryMapper.updateByPrimaryKeySelective(dictionary);
@@ -79,10 +106,127 @@ public class EvaluationController {
 
         }
 
-        result.put("code",IEvaluation.CODE_ERROR_UNKONWN);
+        result.put("code", IEvaluation.CODE_ERROR_UNKONWN);
 
         return ResponseEntity.ok(result);
     }
+
+    ServerSocket server=null;
+    private void createReceviewServer() {
+        try{
+
+            try{
+                  server=new ServerSocket(6070);
+                //b)指定绑定的端口，并监听此端口。
+                System.out.println("服务器启动成功");
+                //创建一个ServerSocket在端口5209监听客户请求
+            }catch(Exception e) {
+                System.out.println("没有启动监听："+e);
+                //出错，打印出错信息
+            }
+            Socket socket=null;
+            try{
+                socket=server.accept();
+                //2、调用accept()方法开始监听，等待客户端的连接
+                //使用accept()阻塞等待客户请求，有客户
+                //请求到来则产生一个Socket对象，并继续执行
+            }catch(Exception e) {
+                System.out.println("Error."+e);
+                //出错，打印出错信息
+            }
+            //3、获取输入流，并读取客户端信息
+            String line;
+            BufferedReader in=new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            //由Socket对象得到输入流，并构造相应的BufferedReader对象
+            PrintWriter writer=new PrintWriter(socket.getOutputStream());
+            //由Socket对象得到输出流，并构造PrintWriter对象
+            BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+            //由系统标准输入设备构造BufferedReader对象
+            System.out.println("Client:"+in.readLine());
+            //在标准输出上打印从客户端读入的字符串
+            line=br.readLine();
+            //从标准输入读入一字符串
+            //4、获取输出流，响应客户端的请求
+            while(!line.equals("end")){
+                //如果该字符串为 "bye"，则停止循环
+                writer.println(line);
+                //向客户端输出该字符串
+                writer.flush();
+                //刷新输出流，使Client马上收到该字符串
+                System.out.println("Server:"+line);
+                //在系统标准输出上打印读入的字符串
+                System.out.println("Client:"+in.readLine());
+                //从Client读入一字符串，并打印到标准输出上
+                line=br.readLine();
+                //从系统标准输入读入一字符串
+            } //继续循环
+
+            //5、关闭资源
+            writer.close(); //关闭Socket输出流
+            in.close(); //关闭Socket输入流
+            socket.close(); //关闭Socket
+            server.close(); //关闭ServerSocket
+        }catch(Exception e) {//出错，打印出错信息
+            System.out.println("Error."+e);
+        }
+    }
+
+    private void testBankXmlRequest() throws Exception {
+        String body = "  000579<?xml version='1.0' encoding=\"GBK\"?>" +
+                "<root><head>" +
+                "<TransCode>G00001</TransCode>" +
+                "<TransDate>20180621</TransDate>" +
+                "<TransTime>191001</ TransTime>" +
+                "<SeqNo>CBPP1605406e1552018062119143600584</SeqNo>" +
+                "</head>" +
+                "<body>" +
+                "< AccBank >中信银行总行营业部账务中心</ AccBank >" +
+                "<AcctNo>7119910130900000001</AcctNo>" +
+                "<BZJEndDate>20180821</ BZJEndDate >" +
+                "<BZJEndTime>191000</ BZJEndTime >" +
+                "<BaseAcctNo>3111310001821643056</BaseAcctNo>" +
+                "<BaseAcctName>子账户名称</BaseAcctName>" +
+                "<IsRetire>no</IsRetire>" +
+                "<MatuDay>20180821</MatuDay>" +
+                "</body>" +
+                "</root>\n";
+        logger.info("数据内容：" + body);
+
+        Socket socket = null;
+        OutputStream outputStream = null;
+        InputStream inputStream = null;
+        BufferedReader br = null;
+        try {
+            //建立TCP连接
+            socket = new Socket("168.168.168.1", 30040);
+            logger.info("创建连接成功");
+            //写入数据
+            outputStream = socket.getOutputStream();
+            outputStream.write(body.getBytes("GBK"));
+            logger.info("发送数据结束");
+
+            //获取响应
+            inputStream = socket.getInputStream();
+            br = new BufferedReader(new InputStreamReader(inputStream,"GBK"));
+            String info = "", line;
+            while ((line = br.readLine()) != null) {
+                logger.info(line);
+                info += line;
+            }
+            logger.info(info);
+            br.close();
+            inputStream.close();
+            outputStream.close();
+            socket.close();
+            logger.info("断开连接");
+        } catch (UnknownHostException e1) {
+            logger.info("创建连接失败");
+        } catch (IOException e1) {
+            logger.info("发送数据失败");
+        }
+    }
+
+
     @Autowired
     private RuntimeService runtimeService;
     @Autowired
@@ -91,6 +235,7 @@ public class EvaluationController {
     private TaskService taskService;
     @Autowired
     private IWorkFlowService workFlowService;
+
     private void testActivity() {
         Map<String, Object> variableMap = new HashMap<String, Object>();
         variableMap.put("projectInstanceId", "projectInstanceId111");
@@ -104,9 +249,9 @@ public class EvaluationController {
         variableMap.put("expertApplyId", "expertApplyId111");
         variableMap.put("projectItemId", "projectItemId111");
 
-        variableMap.put("expertIdSign","expertIdSign111");
+        variableMap.put("expertIdSign", "expertIdSign111");
         //查询出监标人
-        variableMap.put("guardianIdSign","guardianIdSign111");
+        variableMap.put("guardianIdSign", "guardianIdSign111");
         variableMap.put("preliminaryReview", "0");
 
         variableMap.put("roleId", "roleId111");
@@ -118,7 +263,7 @@ public class EvaluationController {
         }
 
         ProcessInstance processInstance = this.runtimeService.startProcessInstanceByKey("yj_project_item_open", "expertApplyId111", variableMap);
-      String taskId = this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
+        String taskId = this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
         Task task = this.taskService.createTaskQuery().taskId(taskId).singleResult();
         TaskFormDataImpl taskFormData = (TaskFormDataImpl) formService.getTaskFormData(taskId);
         List<FormProperty> formPropertiesList = taskFormData.getFormProperties();
@@ -126,7 +271,7 @@ public class EvaluationController {
         for (FormProperty formProperty : formPropertiesList) {
         }
 
-         processInstance = this.runtimeService.createProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).singleResult();
+        processInstance = this.runtimeService.createProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).singleResult();
 
 
         Map<String, String> formProperties = new HashMap<String, String>();
@@ -187,9 +332,8 @@ public class EvaluationController {
                 reasonableLowPriceMunicipalEvaluation.setRatiosAndBenchmarkMethod(ratio, weightedRatio, strategySubType);
 
 
-            }else if (catagory == EvaluationFactory.TYPE_WATER) {
+            } else if (catagory == EvaluationFactory.TYPE_WATER) {
                 ReasonableLowPriceWaterEvaluation reasonableLowPriceWaterEvaluation = (ReasonableLowPriceWaterEvaluation) evalution;
-
 
 
             }
