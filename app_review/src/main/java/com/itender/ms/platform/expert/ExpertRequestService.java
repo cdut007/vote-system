@@ -27,7 +27,7 @@ public class ExpertRequestService {
     private static Logger logger = LoggerFactory.getLogger(ExpertRequestService.class);
     private static final String requestDomain = "http://218.26.169.140:8081/pspde/services/pspdews?wsdl";
 
-    public String apply(EXPERTAPPLY expertapply) {
+    public Result apply(EXPERTAPPLY expertapply) {
         boolean success = false;
         String msg = null;
         PspdeWS testWSPort = createRequestPort();
@@ -42,7 +42,7 @@ public class ExpertRequestService {
             System.out.println("错误原因:" + msg);
         }
         System.out.println("============================================================");
-        return null;
+        return result;
     }
 
     private static String getJCPlatformCreditCode() {
@@ -66,7 +66,7 @@ public class ExpertRequestService {
         return sn;
     }
 
-    public String expertSpecialtyEdit(EXPERTAPPLYEDIT expertapplyedit,String platId) {
+    public Result expertSpecialtyEdit(EXPERTAPPLYEDIT expertapplyedit) {
         PspdeWS testWSPort = createRequestPort();
         boolean success = false;
         String msg = null;
@@ -83,12 +83,13 @@ public class ExpertRequestService {
             System.out.println("错误原因:" + msg);
         }
         System.out.println("============================================================");
-        return null;
+        return result;
     }
 
 
-    public String extract(String platId) {
+    public Result extract(String platId) {
         // 调用ws方法
+        System.out.println("platId="+platId);
         PspdeWS testWSPort = createRequestPort();
         Result result = testWSPort.extract(getAppKey(), getAppSecerety(),
                 getPlatfromSerialNumber(), platId);
@@ -100,10 +101,11 @@ public class ExpertRequestService {
             System.out.println("错误原因:" + msg);
         }
         System.out.println("============================================================");
-        return null;
+        return result;
     }
 
-    public String getExtractResult(String platId) {
+    public ExtractResult getExtractResult(String platId) {
+        System.out.println("platId="+platId);
         // 调用ws方法
         boolean success = false;
         String msg = null;
@@ -131,13 +133,14 @@ public class ExpertRequestService {
             System.out.println("错误原因:" + msg);
         }
         System.out.println("============================================================");
-        return null;
+        return result;
     }
 
-    public String getApplyStatus(String platId) {
+    public ExpertApplyStatusResult getApplyStatus(String platId) {
         // 调用ws方法
         boolean success = false;
         String msg = null;
+        System.out.println("platId="+platId);
 
         PspdeWS testWSPort = createRequestPort();
         ExpertApplyStatusResult result = testWSPort.getExpertApplyStatus(getAppKey(), getAppSecerety(),
@@ -152,7 +155,7 @@ public class ExpertRequestService {
             System.out.println("错误原因:" + msg);
         }
         System.out.println("============================================================");
-        return null;
+        return result;
     }
 
 
@@ -286,6 +289,7 @@ public class ExpertRequestService {
             StringWriter writer = new StringWriter();
             marshaller.marshal(obj, writer);
             result = writer.toString();
+            logger.info("Expert XML：=="+result);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

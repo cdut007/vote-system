@@ -9,6 +9,9 @@ import com.itender.ms.platform.expert.EXPERTAPPLY;
 import com.itender.ms.platform.expert.EXPERTAPPLYEDIT;
 import com.itender.ms.platform.expert.ExpertRequestService;
 import com.itender.ms.workflow.service.IWorkFlowService;
+import com.sxca.pspde.webservice.server.ExpertApplyStatusResult;
+import com.sxca.pspde.webservice.server.ExtractResult;
+import com.sxca.pspde.webservice.server.Result;
 import io.swagger.annotations.ApiOperation;
 import org.activiti.engine.FormService;
 import org.activiti.engine.RuntimeService;
@@ -51,63 +54,65 @@ public class ExpertController {
     private static final Logger logger = LoggerFactory.getLogger(ExpertController.class);
 
 
+    @ApiIgnore
+    @RequestMapping("")
+    public String index(HttpServletRequest request, HttpServletResponse response) {
+        return "expert/expert";
+    }
+
+
     @Autowired
     private ExpertRequestService expertRequestService;
 
     @ApiOperation(value = "抽取专家申请表", notes = "抽取专家申请表")
     @RequestMapping(value = "/apply", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> startServer(HttpServletRequest request,
+    public ResponseEntity<Result> startServer(HttpServletRequest request,
                                                            @RequestBody(required = true) EXPERTAPPLY expertapply
     ) throws APIException {
-        Map<String, Object> result = new HashMap<>();
-        expertRequestService.apply(expertapply);
-        return ResponseEntity.ok(result);
+        Result response =  expertRequestService.apply(expertapply);
+        return ResponseEntity.ok(response);
     }
 
     @ApiOperation(value = "修改抽取专家条件", notes = "修改抽取专家条件")
     @RequestMapping(value = "/expertSpecialtyEdit", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> expertSpecialtyEdit(HttpServletRequest request,
-                                                                   @RequestParam(required = true) String platId,
-                                                                   @RequestBody(required = true) EXPERTAPPLYEDIT expertapplyedit
+    public ResponseEntity<Result> expertSpecialtyEdit(HttpServletRequest request,
+                                                      @RequestBody(required = true) EXPERTAPPLYEDIT expertapplyedit
     ) throws APIException {
-        Map<String, Object> result = new HashMap<>();
-        expertRequestService.expertSpecialtyEdit(expertapplyedit, platId);
-        return ResponseEntity.ok(result);
+        Result response = expertRequestService.expertSpecialtyEdit(expertapplyedit);
+        return ResponseEntity.ok(response);
     }
 
     @ApiOperation(value = "查询抽取专家申请表状态", notes = "查询抽取专家申请表状态")
     @RequestMapping(value = "/getApplyStatus", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> getApplyStatus(HttpServletRequest request,
-                                                              @RequestParam(required = true) String platId
+    public ResponseEntity<ExpertApplyStatusResult> getApplyStatus(HttpServletRequest request,
+                                                                  @RequestParam(required = true) String platId
 
     ) throws APIException {
-        Map<String, Object> result = new HashMap<>();
-        expertRequestService.getApplyStatus(platId);
-        return ResponseEntity.ok(result);
+
+        ExpertApplyStatusResult response = expertRequestService.getApplyStatus(platId);
+        return ResponseEntity.ok(response);
     }
 
     @ApiOperation(value = "发送抽取请求", notes = "发送抽取请求")
     @RequestMapping(value = "/extract", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> extract(HttpServletRequest request,
-                                                                @RequestParam(required = true) String platId
+    public ResponseEntity<Result> extract(HttpServletRequest request,
+                                                       @RequestParam(required = true) String platId
 
     ) throws APIException {
-        Map<String, Object> result = new HashMap<>();
-        expertRequestService.extract(platId);
-        return ResponseEntity.ok(result);
-    }
 
+        Result response = expertRequestService.extract(platId);
+        return ResponseEntity.ok(response);
+    }
 
 
     @ApiOperation(value = "获取抽取结果", notes = "获取抽取结果")
     @RequestMapping(value = "/getExtractResult", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> getExtractResult(HttpServletRequest request,
-                                                              @RequestParam(required = true) String platId
+    public ResponseEntity<ExtractResult> getExtractResult(HttpServletRequest request,
+                                                                @RequestParam(required = true) String platId
 
     ) throws APIException {
-        Map<String, Object> result = new HashMap<>();
-        expertRequestService.getExtractResult(platId);
-        return ResponseEntity.ok(result);
+       ExtractResult response = expertRequestService.getExtractResult(platId);
+        return ResponseEntity.ok(response);
     }
 
 }
