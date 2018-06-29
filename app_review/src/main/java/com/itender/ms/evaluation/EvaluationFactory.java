@@ -75,6 +75,7 @@ public class EvaluationFactory {
     public static void main(String[] args) {
 
 
+
         IEvaluation evalution = EvaluationFactory.createEvalution(TYPE_TRAFFIC, TrafficEvaluation.TYPE_LOW_PRICE);
 
         ReasonableLowPriceTrafficEvaluation reasonableLowPriceTrafficEvalution = (ReasonableLowPriceTrafficEvaluation) evalution;
