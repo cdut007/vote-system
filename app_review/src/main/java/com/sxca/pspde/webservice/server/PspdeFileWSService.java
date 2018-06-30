@@ -1,5 +1,7 @@
 package com.sxca.pspde.webservice.server;
 
+import com.itender.ms.platform.Config;
+
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebEndpoint;
@@ -15,7 +17,7 @@ import java.net.URL;
  * 
  */
 @WebServiceClient(name = "PspdeFileWSService", 
-                  wsdlLocation = "http://218.26.169.140:8081/pspde/services/pspdefilews?wsdl",
+                  wsdlLocation = Config.shanxiDomain+"/pspde/services/pspdefilews?wsdl",
                   targetNamespace = "http://server.webservice.pspde.sxca.com/") 
 public class PspdeFileWSService extends Service {
 
@@ -26,11 +28,11 @@ public class PspdeFileWSService extends Service {
     static {
         URL url = null;
         try {
-            url = new URL("http://218.26.169.140:8081/pspde/services/pspdefilews?wsdl");
+            url = new URL(Config.shanxiDomain+"/pspde/services/pspdefilews?wsdl");
         } catch (MalformedURLException e) {
             java.util.logging.Logger.getLogger(PspdeFileWSService.class.getName())
                 .log(java.util.logging.Level.INFO, 
-                     "Can not initialize the default wsdl from {0}", "http://218.26.169.140:8081/pspde/services/pspdefilews?wsdl");
+                     "Can not initialize the default wsdl from {0}", Config.shanxiDomain+"/pspde/services/pspdefilews?wsdl");
         }
         WSDL_LOCATION = url;
     }

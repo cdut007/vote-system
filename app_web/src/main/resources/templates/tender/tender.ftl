@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>交易平台 - 抽专家服务</title>
+    <title>交易平台 - 投标公告服务</title>
     <#include "../resource.ftl">
     <script src="/js/encryption.js"></script>
     <script src="/js/md5.js"></script>
@@ -50,31 +50,12 @@
 
         <div style="width: 900px">
 
-            <button id="apply_btn" class="layui-btn layui-btn-default layui-btn-block"
+            <button id="transferContractPerformance_btn" class="layui-btn layui-btn-default layui-btn-block"
                     style="width: 45%;margin-top: 60px;margin-bottom: 60px">
-                抽取专家申请表
+                履约合同
             </button>
 
-            <button id="expertSpecialtyEdit_btn" class="layui-btn layui-btn-default layui-btn-block"
-                    style="width: 45%;margin-top: 60px;margin-bottom: 60px">
-                修改抽取专家条件
-            </button>
 
-            <button id="getApplyStatus_btn" class="layui-btn layui-btn-default layui-btn-block"
-                    style="width: 45%;margin-top: 60px;margin-bottom: 60px">
-                查询抽取专家申请表状态
-            </button>
-
-            <button id="extract_btn" class="layui-btn layui-btn-default layui-btn-block"
-                    style="width: 45%;margin-top: 60px;margin-bottom: 60px">
-                发送抽取请求
-            </button>
-
-            <button id="getExtractResult_btn" class="layui-btn layui-btn-default layui-btn-block"
-                    style="width: 45%;margin-top: 60px;margin-bottom: 60px">
-                获取抽取结果
-
-            </button>
 
 
             <div id="add_item" class="layui-form-item">
@@ -95,21 +76,6 @@
 
             </div>
 
-            <div class="layui-inline">
-                <label class="layui-form-label">标段名称</label>
-                <div class="layui-input-inline">
-                    <input type="text" class="layui-input" id="projectItemName" placeholder="输入标段名称...">
-                </div>
-
-            </div>
-
-            <div class="layui-inline">
-                <label class="layui-form-label">公告id</label>
-                <div class="layui-input-inline">
-                    <input type="text" class="layui-input" id="noticeId" placeholder="输入公告Id...">
-                </div>
-
-            </div>
 
 
         </div>
@@ -265,17 +231,16 @@
 
 
 
-        $("#expertSpecialtyEdit_btn").click(function () {
+        $("#transferContractPerformance_btn").click(function () {
 
-            var data = {}
-            var editExpert={platId:$("#platId").val()};
-            editExpert.expertSpecialtyWSList = expertSpecialtyWSList;
+            var data = {platId:$("#platId").val()}
+            var transferContractPerformance={};;
             $.ajax({
-                url: createURL("/expertSpecialtyEdit", data),
+                url: createURL("/transferContractPerformance", data),
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json",
-                data: JSON.stringify(editExpert),
+                data: JSON.stringify(transferContractPerformance),
                 success: function (res) {
 
                     alert(JSON.stringify(res));
@@ -287,110 +252,6 @@
             })
         });
 
-
-        $("#apply_btn").click(function () {
-//设置绑定数据，content内容需严格遵守规范
-            var signStr = createSignData(signData);
-            console.log("signStr==" + signStr);
-            //清空印章原绑定内容
-            document.all.DWebSignSeal.SetSignData("-");
-
-            document.all.DWebSignSeal.SetSignData("+DATA:" + signStr);
-//设置盖章人，可以是任意值
-            document.all.DWebSignSeal.SetCurrUser("盖章人");
-//设置印章的位置，参数内容参考点聚WebSign开发文档
-            document.all.DWebSignSeal.SetPosition(100, 10, "sealPos");
-//调用盖章接口，sealName内容需严格遵守规范
-            document.all.DWebSignSeal.AddSeal("", "seal");
-//该方法返回签章数据，即为申请表XML节点signature 的值
-            var signature = document.all.DWebSignSeal.GetStoreData();
-
-            console.log("signature==" + signature);
-            var signature = signature;
-            signData.signature = signature;
-            signData.remarks = $('#projectItemName').val();
-            signData.expertSpecialtyWSList = expertSpecialtyWSList;
-            signData.avoidOrgWSList = avoidOrgWSList;
-
-            var relateNoticeList=[];
-            var noticeId = $("#noticeId").val();
-            relateNoticeList.push(noticeId);
-            signData.relateNoticeList = relateNoticeList;
-
-            var data = {platId: $("#platId").val()}
-            $.ajax({
-                url: createURL("/apply", data),
-                type: "POST",
-                dataType: "json",
-                contentType: "application/json",
-                data: JSON.stringify(signData),
-                success: function (res) {
-
-                    alert(JSON.stringify(res));
-                },
-                error: function (xmlHttpReq, error, ex) {
-
-                    alert("error!=" + error);
-                }
-            })
-        });
-
-
-        $("#getApplyStatus_btn").click(function () {
-
-            var data = {platId: $("#platId").val()}
-            $.ajax({
-                url: createURL("/getApplyStatus", data),
-                type: "POST",
-                dataType: "json",
-                contentType: "application/json",
-                success: function (res) {
-                    alert(JSON.stringify(res));
-                },
-                error: function (xmlHttpReq, error, ex) {
-
-                    alert("error!=" + error);
-                }
-            })
-        });
-
-        $("#getExtractResult_btn").click(function () {
-
-            var data = {platId: $("#platId").val()}
-            $.ajax({
-                url: createURL("/getExtractResult", data),
-                type: "POST",
-                dataType: "json",
-                contentType: "application/json",
-                success: function (res) {
-
-                    alert(JSON.stringify(res));
-                },
-                error: function (xmlHttpReq, error, ex) {
-
-                    alert("error!=" + error);
-                }
-            })
-        });
-
-        $("#extract_btn").click(function () {
-
-            var data = {platId: $("#platId").val()}
-            $.ajax({
-                url: createURL("/extract", data),
-                type: "POST",
-                dataType: "json",
-                contentType: "application/json",
-                success: function (res) {
-
-                    alert(JSON.stringify(res));
-                },
-                error: function (xmlHttpReq, error, ex) {
-
-                    alert("error!=" + error);
-                }
-            })
-        });
 
 
     });

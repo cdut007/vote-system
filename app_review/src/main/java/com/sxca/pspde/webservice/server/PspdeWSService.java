@@ -1,5 +1,7 @@
 package com.sxca.pspde.webservice.server;
 
+import com.itender.ms.platform.Config;
+
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebEndpoint;
@@ -23,7 +25,7 @@ import java.util.logging.Logger;
  * </p>
  * 
  */
-@WebServiceClient(name = "PspdeWSService", targetNamespace = "http://server.webservice.pspde.sxca.com/", wsdlLocation = "http://218.26.169.140:8081/pspde/services/pspdews?wsdl")
+@WebServiceClient(name = "PspdeWSService", targetNamespace = "http://server.webservice.pspde.sxca.com/", wsdlLocation = Config.shanxiDomain+"/pspde/services/pspdews?wsdl")
 public class PspdeWSService extends Service {
 
 	private final static URL PSPDEWSSERVICE_WSDL_LOCATION;
@@ -38,9 +40,9 @@ public class PspdeWSService extends Service {
 			baseUrl = com.sxca.pspde.webservice.server.PspdeWSService.class
 					.getResource(".");
 			url = new URL(baseUrl,
-					"http://218.26.169.140:8081/pspde/services/pspdews?wsdl");
+					Config.shanxiDomain+"/pspde/services/pspdews?wsdl");
 		} catch (MalformedURLException e) {
-			logger.warning("Failed to create URL for the wsdl Location: 'http://218.26.169.140:8081/pspde/services/pspdews?wsdl', retrying as a local file");
+			logger.warning("Failed to create URL for the wsdl Location: '"+Config.shanxiDomain+"/pspde/services/pspdews?wsdl', retrying as a local file");
 			logger.warning(e.getMessage());
 		}
 		PSPDEWSSERVICE_WSDL_LOCATION = url;

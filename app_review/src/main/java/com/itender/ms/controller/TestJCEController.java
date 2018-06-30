@@ -1172,7 +1172,7 @@ public class TestJCEController {
         //上传附件 id="sign"
         if (doc.getElementById("sign") != null) {
             boolean completeTask = false;
-            String uploadUrl = getDomain() + "/notice/noticeReviewTOrA";
+            String uploadUrl = getDomain() + "/shanxi/noticeReviewTOrA";
             if (type.equals("招标文件代理机构审核")) {
                 uploadUrl = getDomain() + "/recruitFile/updateRecruitFilePdf";
                 String html = doc.html();
@@ -1405,7 +1405,7 @@ public class TestJCEController {
 
         //检查当前已经创建的通知是否存在并审核通过
 
-        String currentNoticesStatusUrl = getDomain() + "/notice/bidNoticeList";
+        String currentNoticesStatusUrl = getDomain() + "/shanxi/bidNoticeList";
         JsonObjectIgnoreDuplicates queryNoticeStatusJsonObject = new JsonObjectIgnoreDuplicates();
 
         queryNoticeStatusJsonObject.put("projectInstanceId", projectInstanceId);
@@ -1536,7 +1536,7 @@ public class TestJCEController {
         }
 
 
-        String noticePageUrl = getDomain() + "/notice/addOrEditBidNotice?projectInstanceId=" + projectInstanceId + "&ggxzdm=1&gglxdm=1";
+        String noticePageUrl = getDomain() + "/shanxi/addOrEditBidNotice?projectInstanceId=" + projectInstanceId + "&ggxzdm=1&gglxdm=1";
 
         //       ResponseEntity noticePageResultInfo = clientForm(getUserSessionCache(userId), noticePageUrl, HttpMethod.GET, new JsonObjectIgnoreDuplicates());
         String attachmentSsztId = "", token = "";
@@ -1550,7 +1550,7 @@ public class TestJCEController {
 
         //创建资格后审公告 默认
         JsonObjectIgnoreDuplicates noticeJsonObject = new JsonObjectIgnoreDuplicates();
-        String noticeUrl = getDomain() + "/notice/saveOrUpdateBidNotice";
+        String noticeUrl = getDomain() + "/shanxi/saveOrUpdateBidNotice";
         noticeJsonObject.put("changeContent", "<br/>程序自动测试<br/>");
 
         noticeJsonObject.put("ggnrwbverify", "");

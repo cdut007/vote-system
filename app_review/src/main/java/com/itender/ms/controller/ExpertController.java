@@ -76,7 +76,7 @@ public class ExpertController {
     @ApiOperation(value = "修改抽取专家条件", notes = "修改抽取专家条件")
     @RequestMapping(value = "/expertSpecialtyEdit", method = RequestMethod.POST)
     public ResponseEntity<Result> expertSpecialtyEdit(HttpServletRequest request,
-                                                      @RequestBody(required = true) EXPERTAPPLYEDIT expertapplyedit
+                                                      @RequestBody(required = true) EXPERTAPPLY expertapplyedit
     ) throws APIException {
         Result response = expertRequestService.expertSpecialtyEdit(expertapplyedit);
         return ResponseEntity.ok(response);
