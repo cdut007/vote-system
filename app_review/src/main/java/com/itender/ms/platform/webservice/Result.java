@@ -1,189 +1,133 @@
-/**
- * Result.java
- *
- * This file was auto-generated from WSDL
- * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
- */
 
 package com.itender.ms.platform.webservice;
 
-public class Result  implements java.io.Serializable {
-    private String errorCode;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
-    private String errorMessage;
 
-    private boolean success;
+/**
+ * <p>result complex type的 Java 类。
+ * 
+ * <p>以下模式片段指定包含在此类中的预期内容。
+ * 
+ * <pre>
+ * &lt;complexType name="result">
+ *   &lt;complexContent>
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;sequence>
+ *         &lt;element name="errorCode" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="errorMessage" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="receiveTime" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="success" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
+ *       &lt;/sequence>
+ *     &lt;/restriction>
+ *   &lt;/complexContent>
+ * &lt;/complexType>
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "result", propOrder = {
+    "errorCode",
+    "errorMessage",
+    "receiveTime",
+    "success"
+})
+public class Result {
 
-    public Result() {
-    }
-
-    public Result(
-           String errorCode,
-           String errorMessage,
-           boolean success) {
-           this.errorCode = errorCode;
-           this.errorMessage = errorMessage;
-           this.success = success;
-    }
-
+    protected String errorCode;
+    protected String errorMessage;
+    protected String receiveTime;//数据接收时间::（如果推送的是招标公告/资格预审公告、中标候选人公示、中标结果公告，数据接收时间即公告公示的实际发布时间）
+    protected boolean success;
 
     /**
-     * Gets the errorCode value for this Result.
-     *
-     * @return errorCode
+     * 获取errorCode属性的值。
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
     public String getErrorCode() {
         return errorCode;
     }
 
-
     /**
-     * Sets the errorCode value for this Result.
-     *
-     * @param errorCode
+     * 设置errorCode属性的值。
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
+    public void setErrorCode(String value) {
+        this.errorCode = value;
     }
 
-
     /**
-     * Gets the errorMessage value for this Result.
-     *
-     * @return errorMessage
+     * 获取errorMessage属性的值。
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
      */
     public String getErrorMessage() {
         return errorMessage;
     }
 
-
     /**
-     * Sets the errorMessage value for this Result.
-     *
-     * @param errorMessage
+     * 设置errorMessage属性的值。
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
      */
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+    public void setErrorMessage(String value) {
+        this.errorMessage = value;
     }
 
+    /**
+     * 获取receiveTime属性的值。
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getReceiveTime() {
+        return receiveTime;
+    }
 
     /**
-     * Gets the success value for this Result.
-     *
-     * @return success
+     * 设置receiveTime属性的值。
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setReceiveTime(String value) {
+        this.receiveTime = value;
+    }
+
+    /**
+     * 获取success属性的值。
+     * 
      */
     public boolean isSuccess() {
         return success;
     }
 
-
     /**
-     * Sets the success value for this Result.
-     *
-     * @param success
+     * 设置success属性的值。
+     * 
      */
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
-    private Object __equalsCalc = null;
-    public synchronized boolean equals(Object obj) {
-        if (!(obj instanceof Result)) return false;
-        Result other = (Result) obj;
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (__equalsCalc != null) {
-            return (__equalsCalc == obj);
-        }
-        __equalsCalc = obj;
-        boolean _equals;
-        _equals = true &&
-            ((this.errorCode==null && other.getErrorCode()==null) ||
-             (this.errorCode!=null &&
-              this.errorCode.equals(other.getErrorCode()))) &&
-            ((this.errorMessage==null && other.getErrorMessage()==null) ||
-             (this.errorMessage!=null &&
-              this.errorMessage.equals(other.getErrorMessage()))) &&
-            this.success == other.isSuccess();
-        __equalsCalc = null;
-        return _equals;
-    }
-
-    private boolean __hashCodeCalc = false;
-    public synchronized int hashCode() {
-        if (__hashCodeCalc) {
-            return 0;
-        }
-        __hashCodeCalc = true;
-        int _hashCode = 1;
-        if (getErrorCode() != null) {
-            _hashCode += getErrorCode().hashCode();
-        }
-        if (getErrorMessage() != null) {
-            _hashCode += getErrorMessage().hashCode();
-        }
-        _hashCode += (isSuccess() ? Boolean.TRUE : Boolean.FALSE).hashCode();
-        __hashCodeCalc = false;
-        return _hashCode;
-    }
-
-    // Type metadata
-    private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(Result.class, true);
-
-    static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://server.webservice.pspde.sxca.com/", "result"));
-        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("errorCode");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "errorCode"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("errorMessage");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "errorMessage"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        elemField.setMinOccurs(0);
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("success");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "success"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
-        elemField.setNillable(false);
-        typeDesc.addFieldDesc(elemField);
-    }
-
-    /**
-     * Return type metadata object
-     */
-    public static org.apache.axis.description.TypeDesc getTypeDesc() {
-        return typeDesc;
-    }
-
-    /**
-     * Get Custom Serializer
-     */
-    public static org.apache.axis.encoding.Serializer getSerializer(
-           String mechType,
-           Class _javaType,
-           javax.xml.namespace.QName _xmlType) {
-        return
-          new  org.apache.axis.encoding.ser.BeanSerializer(
-            _javaType, _xmlType, typeDesc);
-    }
-
-    /**
-     * Get Custom Deserializer
-     */
-    public static org.apache.axis.encoding.Deserializer getDeserializer(
-           String mechType,
-           Class _javaType,
-           javax.xml.namespace.QName _xmlType) {
-        return 
-          new  org.apache.axis.encoding.ser.BeanDeserializer(
-            _javaType, _xmlType, typeDesc);
+    public void setSuccess(boolean value) {
+        this.success = value;
     }
 
 }

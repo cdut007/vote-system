@@ -1,5 +1,6 @@
 package com.itender.ms.platform.webservice;
 
+import com.sxca.pspde.webservice.server.PspdeWS;
 import org.apache.axis.AxisFault;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ public class ServiceClient {
     private String appKey;
     private PspdeWSServiceLocator service = null;
     private PspdeWSServiceSoapBindingStub stub = null;
+    private PspdeWS psp = null;
 
     public ServiceClient(String url, String userId, String key) throws AxisFault, MalformedURLException {
         this.requestUrl = url;
@@ -44,8 +46,7 @@ public class ServiceClient {
      * @return
      * @throws RemoteException
      */
-    public Result receiveInfo(String SERIALNUMBER, String DATASETCODE, Object obj, String platId,String creditCode)
-            throws RemoteException {
+    public Result receiveInfo(String SERIALNUMBER, String DATASETCODE, Object obj, String platId,String creditCode) throws RemoteException {
         // serLogic.ReceiveInfo(USERID, KEY, SERIALNUMBER, DATASETCODE,
         // XMLCONTENT, REQUESTTIME,VERSIONNUMBER, PLATID);
         // stub.receiveInfo(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
@@ -58,9 +59,20 @@ public class ServiceClient {
 
 //        return stub.receiveInfo(this.appId, this.appKey, SERIALNUMBER, DATASETCODE, convertToXml(obj, "UTF-8"),
 //                REQUESTTIME, VERSIONNUMBER, platId, null);
-
-        return stub.receiveInfo(this.appId, this.appKey, SERIALNUMBER, DATASETCODE, convertToXml(obj, "UTF-8"),
-                REQUESTTIME, VERSIONNUMBER, platId, creditCode);
+//        logger.info("========================= xml :" + convertToXml(obj, "UTF-8"));
+        return stub.receiveInfo(this.appId, this.appKey, SERIALNUMBER, DATASETCODE, convertToXml(obj, "UTF-8"), REQUESTTIME, VERSIONNUMBER, platId, creditCode);
+    }
+    
+    /**
+     * @param SERIALNUMBER 10位用户ID+8位日期(yyyyMMdd)+6位自增长整数
+     * @param obj          业务对象
+     * @param creditCode   用户在公共服务平台注册的组织机构代码
+     * @return
+     * @throws RemoteException
+     */
+    public com.sxca.pspde.webservice.server.Result expertApply(String SERIALNUMBER, Object obj, String creditCode)
+            throws RemoteException {
+        return psp.expertApply(this.appId, this.appKey, SERIALNUMBER, convertToXml(obj, "UTF-8"), creditCode);
     }
 
     public static String convertToXml(Object obj, String encoding) {

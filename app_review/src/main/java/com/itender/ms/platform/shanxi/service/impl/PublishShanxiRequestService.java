@@ -8,8 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-
 @Service
 public class PublishShanxiRequestService {
 
@@ -18,26 +16,29 @@ public class PublishShanxiRequestService {
     /**
      * 合同与履约
      */
-    public Result transferContractPerformance(String platId,GCJSCONTRACTPERFORMANCE cpws) {
+    public Result transferContractPerformance(String platId, GCJSCONTRACTPERFORMANCE cpws) {
         {
 
-
+            Result result;
             ServiceClient client;
             boolean success = false;
             String msg = null;
             try {
                 client = new ServiceClient(Config.getAddress(), Config.getAppKey(), Config.getAppSecerety());
-                Result result = client.receiveInfo(Config.getPlatfromSerialNumber(), "GCJS_CONTRACT_PERFORMANCE",
+                 result = client.receiveInfo(Config.getPlatfromSerialNumber(), "GCJS_CONTRACT_PERFORMANCE",
                         cpws, platId, Config.getJCPlatformCreditCode());
                 success = result.isSuccess();
                 msg = result.getErrorMessage();
                 this.logger.info("提交【保存合同与履约实体: " + cpws.getCONTRACTNAME() + "】到公共服务平台" + (success ? "成功" : "失败") + "！&& msg: " + msg);
 
-                return result;
             } catch (Exception e) {
+                 result =new Result();
+                result.setSuccess(false);
+                result.setErrorCode("-1001");
+                result.setErrorMessage(e.getMessage());
                 logger.error(e.getMessage(), e);
             }
-            return null;
+            return result;
         }
     }
 

@@ -7,11 +7,15 @@
 
 package com.itender.ms.platform.webservice;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class PspdeWSServiceSoapBindingStub extends org.apache.axis.client.Stub implements PspdeWS {
     private java.util.Vector cachedSerClasses = new java.util.Vector();
     private java.util.Vector cachedSerQNames = new java.util.Vector();
     private java.util.Vector cachedSerFactories = new java.util.Vector();
     private java.util.Vector cachedDeserFactories = new java.util.Vector();
+	private Logger logger = LoggerFactory.getLogger(PspdeWSServiceSoapBindingStub.class);
 
     static org.apache.axis.description.OperationDesc [] _operations;
 
@@ -163,38 +167,42 @@ public class PspdeWSServiceSoapBindingStub extends org.apache.axis.client.Stub i
         }
     }
 
-    public Result receiveInfo(String arg0, String arg1, String arg2, String arg3, String arg4, String arg5, String arg6, String arg7, String arg8) throws java.rmi.RemoteException {
-        if (super.cachedEndpoint == null) {
-            throw new org.apache.axis.NoEndPointException();
-        }
-        org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[0]);
-        _call.setUseSOAPAction(true);
-        _call.setSOAPActionURI("");
-        _call.setEncodingStyle(null);
-        _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
-        _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
-        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("http://server.webservice.pspde.sxca.com/", "receiveInfo"));
+	public Result receiveInfo(String arg0, String arg1,
+			String arg2, String arg3, String arg4, String arg5,
+			String arg6, String arg7, String arg8) throws java.rmi.RemoteException {
+		if (super.cachedEndpoint == null) {
+			throw new org.apache.axis.NoEndPointException();
+		}
+		org.apache.axis.client.Call _call = createCall();
+		_call.setOperation(_operations[0]);
+		_call.setUseSOAPAction(true);
+		_call.setSOAPActionURI("");
+		_call.setEncodingStyle(null);
+		_call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
+		_call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
+		_call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+		_call.setOperationName(	new javax.xml.namespace.QName("http://server.webservice.pspde.sxca.com/", "receiveInfo"));
+		_call.setTimeout(60000);
 
-        setRequestHeaders(_call);
-        setAttachments(_call);
- try {        Object _resp = _call.invoke(new Object[] {arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8});
+		setRequestHeaders(_call);
+		setAttachments(_call);
+		try {
+			Object _resp = _call.invoke(new Object[] { arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8 });
 
-        if (_resp instanceof java.rmi.RemoteException) {
-            throw (java.rmi.RemoteException)_resp;
-        }
-        else {
-            extractAttachments(_call);
-            try {
-                return (Result) _resp;
-            } catch (Exception _exception) {
-                return (Result) org.apache.axis.utils.JavaUtils.convert(_resp,Result.class);
-            }
-        }
-  } catch (org.apache.axis.AxisFault axisFaultException) {
-  throw axisFaultException;
-}
-    }
+			if (_resp instanceof java.rmi.RemoteException) {
+				throw (java.rmi.RemoteException) _resp;
+			} else {
+				extractAttachments(_call);
+				try {
+					return (Result) _resp;
+				} catch (Exception _exception) {
+					logger.error("ws called failed", _exception);
+					return (Result) org.apache.axis.utils.JavaUtils.convert(_resp, Result.class);
+				}
+			}
+		} catch (org.apache.axis.AxisFault axisFaultException) {
+			throw axisFaultException;
+		}
+	}
 
 }

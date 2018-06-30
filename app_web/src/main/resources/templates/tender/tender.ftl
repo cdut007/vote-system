@@ -173,7 +173,7 @@
                 var link = '&' + item + "=" + key;
                 urlLink += link;
             })
-            urlLink = "/expert" + url + "?" + urlLink.substr(1);
+            urlLink = "/tender" + url + "?" + urlLink.substr(1);
             return urlLink.replace(' ', '');
         }
 
