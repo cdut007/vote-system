@@ -298,6 +298,7 @@ public class EvaluationController {
                                                          @RequestParam(required = false) Float LowERatio,
                                                          @RequestParam(required = false) Float HighERatio,
                                                          @RequestParam(required = true) Integer catagory,
+                                                         @RequestParam(required = false) Float calTotalScore,
                                                          @RequestParam(required = true) Integer strategyType,
                                                          @RequestParam(required = false) Integer strategySubType
     ) throws APIException {
@@ -313,6 +314,7 @@ public class EvaluationController {
                 if (weightedRatio == null) {
                     weightedRatio = 0f;
                 }
+                reasonableLowPriceTrafficEvalution.setCalTotalScore(calTotalScore);
                 reasonableLowPriceTrafficEvalution.setRatiosAndBenchmarkMethod(ratio, weightedRatio, strategySubType);
                 reasonableLowPriceTrafficEvalution.setHighERatio(HighERatio);
                 reasonableLowPriceTrafficEvalution.setLowERatio(LowERatio);

@@ -8,6 +8,7 @@ import javax.jws.WebService;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.ws.RequestWrapper;
 import javax.xml.ws.ResponseWrapper;
+import java.util.List;
 
 
 /**
@@ -21,7 +22,19 @@ import javax.xml.ws.ResponseWrapper;
     ObjectFactory.class
 })
 public interface PspdeWS {
-
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getExtractResultInform", targetNamespace = "http://server.webservice.pspde.sxca.com/", className = "com.sxca.pspde.webservice.server.GetExtractResultInform")
+    @ResponseWrapper(localName = "getExtractResultInformResponse", targetNamespace = "http://server.webservice.pspde.sxca.com/", className = "com.sxca.pspde.webservice.server.GetExtractResultInformResponse")
+    public String getExtractResultInform(
+            @WebParam(name = "arg0", targetNamespace = "")
+                    String arg0,
+            @WebParam(name = "arg1", targetNamespace = "")
+                    String arg1,
+            @WebParam(name = "arg2", targetNamespace = "")
+                    String arg2,
+            @WebParam(name = "arg3", targetNamespace = "")
+                    String arg3);
 
     /**
      * 
@@ -201,5 +214,20 @@ public interface PspdeWS {
                     String arg2,
             @WebParam(name = "arg3", targetNamespace = "")
                     String arg3);
+
+
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "findUnitList", targetNamespace = "http://server.webservice.pspde.sxca.com/", className = "com.sxca.pspde.webservice.server.FindUnitList")
+    @ResponseWrapper(localName = "findUnitListResponse", targetNamespace = "http://server.webservice.pspde.sxca.com/", className = "com.sxca.pspde.webservice.server.FindUnitListResponse")
+    public List<String> findUnitList(
+            @WebParam(name = "arg0", targetNamespace = "")
+                    String arg0,
+            @WebParam(name = "arg1", targetNamespace = "")
+                    String arg1,
+            @WebParam(name = "arg2", targetNamespace = "")
+                    String arg2);
+
+
 
 }

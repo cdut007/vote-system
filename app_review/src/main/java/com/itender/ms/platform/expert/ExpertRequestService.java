@@ -48,6 +48,43 @@ public class ExpertRequestService {
 
 
 
+    public String getExtractResultInform(String platId) {
+        PspdeWS testWSPort = createRequestPort();
+        boolean success = false;
+        String msg = null;
+
+
+        // 调用ws方法
+        String result = testWSPort.getExtractResultInform(Config.getAppKey(), Config.getAppSecerety(),
+                Config.getPlatfromSerialNumber(),platId);
+
+        System.out.println("============================================================");
+        System.out.println("【获取抽取结果通知单】省公共服务平台" + result);
+
+        System.out.println("============================================================");
+        return result;
+    }
+
+    public List<String> findUnitList() {
+        PspdeWS testWSPort = createRequestPort();
+        boolean success = false;
+        String msg = null;
+
+
+        // 调用ws方法
+        List<String> result = testWSPort.findUnitList(Config.getAppKey(), Config.getAppSecerety(),
+                Config.getPlatfromSerialNumber());
+
+        System.out.println("============================================================");
+        System.out.println("【获取专家库标准单位名称】到省公共服务平台" + (success ? "成功" : "失败") + "！");
+        if (StringUtils.isNotBlank(msg)) {
+            System.out.println("错误原因:" + msg);
+        }
+        System.out.println("============================================================");
+        return result;
+    }
+
+
     public Result expertSpecialtyEdit(EXPERTAPPLY expertapplyedit) {
         PspdeWS testWSPort = createRequestPort();
         boolean success = false;

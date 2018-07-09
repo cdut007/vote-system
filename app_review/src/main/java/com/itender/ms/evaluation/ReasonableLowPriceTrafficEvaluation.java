@@ -30,6 +30,7 @@ public class ReasonableLowPriceTrafficEvaluation extends TrafficEvaluation {
     private BigDecimal reasonableCostPrice;
 
     private int selectedNum;
+    private float calTotalScore = 100.0f;//default
 
     public int getSelectedNum() {
         return selectedNum;
@@ -433,7 +434,7 @@ public class ReasonableLowPriceTrafficEvaluation extends TrafficEvaluation {
             if (tender.getPrice().compareTo(benchmarkPrice) > 0) {
                 E = HighERatio;
             }
-            tender.setScore(MathTool.getFormatValue(100 - 100 * E * deviationValue.floatValue(), 3));
+            tender.setScore(MathTool.getFormatValue(calTotalScore - 100 * E * deviationValue.floatValue(), 3));
         }
         return CODE_OK;
     }
@@ -449,5 +450,9 @@ public class ReasonableLowPriceTrafficEvaluation extends TrafficEvaluation {
     @Override
     public BigDecimal getFinalControlPrice() {
         return finalControlPrice;
+    }
+
+    public void setCalTotalScore(Float calTotalScore) {
+        this.calTotalScore =calTotalScore;
     }
 }

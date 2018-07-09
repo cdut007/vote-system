@@ -3,11 +3,12 @@ package com.itender.ms.platform;
 import java.util.Date;
 
 public class Config {
-    public static final String shanxiDomain="http://218.26.169.140:8081";
+    public static final String shanxiDomain="http://www.sxbid.com.cn:8080";//"http://218.26.169.140:8081";
 
 
     public static String getJCPlatformCreditCode() {
-        return "999999999999999000";
+
+        return "91140100MA0GTCLY49";//"999999999999999000";
     }
 
 
@@ -34,11 +35,11 @@ public class Config {
     public static String getAppKey() {
 
 
-        return "1400000009";
+        return "1400000002";//"1400000009";
     }
 
     public static String getAppSecerety() {
 
-        return "111111";
+        return "sxjinchan5258";//"111111";
     }
 }

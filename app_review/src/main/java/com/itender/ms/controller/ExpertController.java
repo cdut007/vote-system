@@ -20,6 +20,7 @@ import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.impl.form.TaskFormDataImpl;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +41,7 @@ import java.math.BigDecimal;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Validated
 @Controller
@@ -57,6 +55,8 @@ public class ExpertController {
     @ApiIgnore
     @RequestMapping("")
     public String index(HttpServletRequest request, HttpServletResponse response) {
+
+
         return "expert/expert";
     }
 
@@ -64,9 +64,30 @@ public class ExpertController {
     @Autowired
     private ExpertRequestService expertRequestService;
 
+
+    @ApiOperation(value = "获取专家库标准单位名称", notes = "获取专家库标准单位名称")
+    @RequestMapping(value = "/findUnitList", method = RequestMethod.GET)
+    public ResponseEntity<List<String>> findUnitList(HttpServletRequest request
+    ) throws APIException {
+        List<String> response =  expertRequestService.findUnitList();
+        return ResponseEntity.ok(response);
+    }
+
+    @ApiOperation(value = "获取抽取结果通知单", notes = "获取抽取结果通知单")
+    @RequestMapping(value = "/getExtractResultInform", method = RequestMethod.GET)
+    public ResponseEntity<String> getExtractResultInform(HttpServletRequest request,
+                                                         @RequestParam(required = true) String platId
+    ) throws APIException {
+        String response =  expertRequestService.getExtractResultInform(platId);
+        return ResponseEntity.ok(response);
+    }
+
+
+
+
     @ApiOperation(value = "抽取专家申请表", notes = "抽取专家申请表")
     @RequestMapping(value = "/apply", method = RequestMethod.POST)
-    public ResponseEntity<Result> startServer(HttpServletRequest request,
+    public ResponseEntity<Result> apply(HttpServletRequest request,
                                                            @RequestBody(required = true) EXPERTAPPLY expertapply
     ) throws APIException {
         Result response =  expertRequestService.apply(expertapply);
