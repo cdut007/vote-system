@@ -64,7 +64,13 @@ public class BankController {
     ) throws APIException {
         Map<String, Object> result = new HashMap<>();
 
-        createReceviewServer();
+       new Thread(new Runnable() {
+           @Override
+           public void run() {
+               createReceviewServer();
+
+           }
+       }).start();
 
 
         result.put("code", IEvaluation.CODE_ERROR_UNKONWN);
