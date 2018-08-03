@@ -206,7 +206,15 @@ public class BankService {
                 //</root>
             String result = callBankXmlRequest(requestXML);
             String resultCode = parseXMLValueByName(result,"TransResult");
-            ajax.setSuccess(resultCode.equals("1"));
+            if(StringUtils.isEmpty(resultCode)){
+                ajax.setSuccess(false);
+                String retcode = parseXMLValueByName(result,"retcode");
+                ajax.setData(retcode);
+                ajax.setMsg(parseXMLValueByName(result,"retmsg"));
+            }else{
+                ajax.setSuccess(resultCode.equals("1"));
+            }
+
             return ajax;
         } catch (Exception e) {
             e.printStackTrace();
@@ -241,6 +249,7 @@ public class BankService {
         try {
 
             String result = callBankXmlRequest(requestXML);
+            ajax.setMsg(result);
             return ajax;
         } catch (Exception e) {
             e.printStackTrace();
@@ -287,6 +296,13 @@ public class BankService {
             ajax.setSuccess(resultCode.equals("1"));
             String remark = parseXMLValueByName(result,"Remark");
             ajax.setMsg(remark);
+
+            if(StringUtils.isEmpty(resultCode)){
+                ajax.setSuccess(false);
+                String retcode = parseXMLValueByName(result,"retcode");
+                ajax.setData(retcode);
+                ajax.setMsg(parseXMLValueByName(result,"retmsg"));
+            }
             return ajax;
         } catch (Exception e) {
             e.printStackTrace();
