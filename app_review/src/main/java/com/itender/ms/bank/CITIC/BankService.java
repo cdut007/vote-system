@@ -32,6 +32,7 @@ public class BankService {
             //写入数据
             outputStream = socket.getOutputStream();
             outputStream.write(body.getBytes("GBK"));
+            outputStream.flush();
             logger.info("发送数据结束");
 
             //获取响应
@@ -65,7 +66,7 @@ public class BankService {
                 long len = content.getBytes().length;
                 String byteSize = String.format("%06d",len);
                  logger.info(len+"获取到XML长度为"+byteSize);
-                return  "  "+byteSize+XML;
+                return  ""+byteSize+XML;
 
     }
 
