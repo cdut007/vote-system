@@ -75,7 +75,7 @@ public class BankController {
     @ApiImplicitParams({
           @ApiImplicitParam(paramType = "form",name = "projectItemName", value = "子账户标识：标段编号+交易流水号（重复发送，不重复生成）", required = true, dataType = "String", defaultValue = "标段1"),
           @ApiImplicitParam(paramType = "form",name = "tenderUnitName", value = "子账户名称", required = true, dataType = "String", defaultValue = "投标单位1"),
-          @ApiImplicitParam(paramType = "form",name = "depositEndTimeInMillis", value = "保证金截止日期", required = true, dataType = "String",  defaultValue = "20180803113723"),
+          @ApiImplicitParam(paramType = "form",name = "depositEndTimeInMillis", value = "保证金截止日期", required = true, dataType = "String",  defaultValue = "1533270183000"),
           @ApiImplicitParam(paramType = "form",name = "IsRetire", value = "是否退息", required = true, dataType = "String",  defaultValue = "1")
 
     })
@@ -96,7 +96,7 @@ public class BankController {
           @ApiImplicitParam(paramType = "form",name = "bankNo", value = "付款人账户", required = true, dataType = "String", defaultValue = "7119910130900000001"),
           @ApiImplicitParam(paramType = "form",name = "bankName", value = "付款人银行名称", required = true, dataType = "String", defaultValue = "中信银行总行营业部账务中心"),
           @ApiImplicitParam(paramType = "form",name = "name", value = "付款人户名", required = true, dataType = "String", defaultValue = "桐驰钞烦椭墒拼光"),
-          @ApiImplicitParam(paramType = "form",name = "timeMillis", value = "到账日期", required = true, dataType = "String", defaultValue = "20180622095844"),
+          @ApiImplicitParam(paramType = "form",name = "timeMillis", value = "到账日期", required = true, dataType = "String", defaultValue = "1533270183000"),
           @ApiImplicitParam(paramType = "form",name = "depositTransSeqNo", value = "来账序号，从银行回调中获取", required = true, dataType = "String", defaultValue = "20180622J0000000567269"),
           @ApiImplicitParam(paramType = "form",name = "remark", value = "附言", required = true, dataType = "String", defaultValue = "保证金"),
           @ApiImplicitParam(paramType = "form",name = "Amount", value = "到账金额", required = true, dataType = "String", defaultValue = "200.00"),
