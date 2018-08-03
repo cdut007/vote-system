@@ -1,5 +1,9 @@
 package com.itender.ms.bank.CITIC;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -9,6 +13,8 @@ import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class BankService {
@@ -255,6 +261,34 @@ public class BankService {
         try {
 
             String result = callBankXmlRequest(requestXML);
+            List<Bank> banks = new ArrayList<Bank>();
+            Bank bank = null;
+            try {
+                Document doc = DocumentHelper.parseText(result);
+                //指向根节点
+                Element root = doc.getRootElement();
+//            Element book = XMLString2.getChildElement(root, "book");
+                //获取book的属性值
+//            String id = book.attributeValue("id");
+//            kBook.setId(id);
+                List<Element> elements = root.elements();
+                for (Element element : elements) {
+                    bank = new Bank();
+//                    bank.setId(element.attributeValue("id"));
+//                    bank.setName(element.element("name").getStringValue());
+//                    bank.setAuthor(element.element("author").getStringValue());
+//                    bank.setPrice(element.element("price").getStringValue());
+//                    bank.setYear(element.element("year").getStringValue());
+                    banks.add(bank);
+                    bank = null;
+                }
+
+
+            } catch (DocumentException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
             ajax.setMsg(result);
             return ajax;
         } catch (Exception e) {
