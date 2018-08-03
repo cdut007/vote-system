@@ -63,10 +63,15 @@ public class BankService {
 
     private  String getStringByteLen(String content){
                 String XML=content;
-                long len = content.getBytes().length;
-                String byteSize = String.format("%06d",len);
+        long len = 0;
+        try {
+            len = content.getBytes("GBK").length;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String byteSize = String.format("%08d",len);
                  logger.info(len+"获取到XML长度为"+byteSize);
-                return  ""+byteSize+XML;
+                return  byteSize+XML;
 
     }
 
