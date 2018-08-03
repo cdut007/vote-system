@@ -1,5 +1,6 @@
 package com.itender.ms.controller;
 
+import com.itender.ms.bank.CITIC.BankService;
 import com.itender.ms.domain.TbDictionary;
 import com.itender.ms.domain.TbDictionaryExample;
 import com.itender.ms.evaluation.*;
@@ -47,24 +48,9 @@ public class EvaluationController {
     @Autowired
     private TbDictionaryMapper tbDictionaryMapper;
 
+
+
     private static final Logger logger = LoggerFactory.getLogger(EvaluationController.class);
-
-
-
-    @ApiOperation(value = "启动监听服务", notes = "启动监听服务")
-    @RequestMapping(value = "/startServer", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> startServer(HttpServletRequest request,
-                                                               @RequestParam(required = true) boolean enable
-    ) throws APIException {
-        Map<String, Object> result = new HashMap<>();
-
-        createReceviewServer();
-
-
-        result.put("code", IEvaluation.CODE_ERROR_UNKONWN);
-
-        return ResponseEntity.ok(result);
-    }
 
 
     @ApiIgnore
@@ -107,129 +93,7 @@ public class EvaluationController {
         return ResponseEntity.ok(result);
     }
 
-    ServerSocket server=null;
-    private void createReceviewServer() {
-        try{
 
-            try{
-                  server=new ServerSocket(6070);
-                //b)指定绑定的端口，并监听此端口。
-                System.out.println("服务器启动成功");
-                //创建一个ServerSocket在端口5209监听客户请求
-            }catch(Exception e) {
-                System.out.println("没有启动监听："+e);
-                //出错，打印出错信息
-            }
-            Socket socket=null;
-            try{
-                socket=server.accept();
-                //2、调用accept()方法开始监听，等待客户端的连接
-                //使用accept()阻塞等待客户请求，有客户
-                //请求到来则产生一个Socket对象，并继续执行
-            }catch(Exception e) {
-                System.out.println("accept Error."+e);
-                //出错，打印出错信息
-            }
-            //3、获取输入流，并读取客户端信息
-            String line;
-            BufferedReader in=new BufferedReader(new InputStreamReader(socket.getInputStream(),"GBK"));
-            //由Socket对象得到输入流，并构造相应的BufferedReader对象
-          //  PrintWriter writer=new PrintWriter(socket.getOutputStream());
-
-            //在标准输出上打印从客户端读入的字符串
-            line=in.readLine();
-
-            System.out.println("Client:"+line);
-
-            //从标准输入读入一字符串
-            //4、获取输出流，响应客户端的请求
-            String result=line;
-            while(!StringUtils.isEmpty(line)){
-                //如果该字符串为 "bye"，则停止循环
-             //   writer.println(line);
-                //向客户端输出该字符串
-             //   writer.flush();
-                //刷新输出流，使Client马上收到该字符串
-                System.out.println("Server:"+line);
-                //从Client读入一字符串，并打印到标准输出上
-                line=in.readLine();
-                if(!StringUtils.isEmpty(line)){
-                    result+=line;
-                }
-
-                //从系统标准输入读入一字符串
-            } //继续循环
-
-
-            System.out.println("result."+result);
-            //5、关闭资源
-           // writer.close(); //关闭Socket输出流
-            in.close(); //关闭Socket输入流
-            socket.close(); //关闭Socket
-            server.close(); //关闭ServerSocket
-
-            if(!StringUtils.isEmpty(result)){
-                String headTail = "</head>";
-                int endHead = result.indexOf(headTail);
-                if(endHead>=0){
-                    String headContent=result.substring(0,endHead+headTail.length());
-                    testBankXmlRequest(headContent);
-                }else{
-                    System.out.println("not found ***===="+result);
-                }
-            }else{
-                System.out.println("not found ===="+result);
-            }
-
-            createReceviewServer();
-        }catch(Exception e) {//出错，打印出错信息
-            System.out.println("Error."+e);
-
-        }
-    }
-
-    private void testBankXmlRequest(String headContent) throws Exception {
-        String body = headContent +
-                "\t<body>\n" +
-                "< TransResult >1</ TransResult >\n" +
-                "< Remark >备注</ Remark >\n" +
-                "\t</body>\n" +
-                "</root>";
-        logger.info("数据内容：" + body);
-
-        Socket socket = null;
-        OutputStream outputStream = null;
-        InputStream inputStream = null;
-        BufferedReader br = null;
-        try {
-            //建立TCP连接
-            socket = new Socket("168.168.168.1", 30040);
-            logger.info("创建连接成功");
-            //写入数据
-            outputStream = socket.getOutputStream();
-            outputStream.write(body.getBytes("GBK"));
-            logger.info("发送数据结束");
-
-            //获取响应
-            inputStream = socket.getInputStream();
-            br = new BufferedReader(new InputStreamReader(inputStream,"GBK"));
-            String info = "", line;
-            while ((line = br.readLine()) != null) {
-                logger.info(line);
-                info += line;
-            }
-            logger.info(info);
-            br.close();
-            inputStream.close();
-            outputStream.close();
-            socket.close();
-            logger.info("断开连接");
-        } catch (UnknownHostException e1) {
-            logger.info("创建连接失败");
-        } catch (IOException e1) {
-            logger.info("发送数据失败");
-        }
-    }
 
 
     @Autowired
@@ -313,6 +177,9 @@ public class EvaluationController {
                 reasonableLowPriceTrafficEvalution.setControlPriceAndRatio(new BigDecimal(controlPrice), controlRatio);
                 if (weightedRatio == null) {
                     weightedRatio = 0f;
+                }
+                if(calTotalScore == null){
+                    calTotalScore = 40f;
                 }
                 reasonableLowPriceTrafficEvalution.setCalTotalScore(calTotalScore);
                 reasonableLowPriceTrafficEvalution.setRatiosAndBenchmarkMethod(ratio, weightedRatio, strategySubType);

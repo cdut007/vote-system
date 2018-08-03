@@ -32,7 +32,8 @@ public class ExpertRequestService {
         boolean success = false;
         String msg = null;
         PspdeWS testWSPort = createRequestPort();
-        // 调用ws方法
+        // 调
+        // 用ws方法
         Result result = testWSPort.expertApply(Config.getAppKey(), Config.getAppSecerety(), Config.getPlatfromSerialNumber(), convertToXml(expertapply, "utf-8"), Config.getJCPlatformCreditCode()
         );
         success = result.isSuccess();
