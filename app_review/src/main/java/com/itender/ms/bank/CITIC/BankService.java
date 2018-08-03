@@ -65,7 +65,7 @@ public class BankService {
                 long len = content.getBytes().length;
                 String byteSize = String.format("%06d",len);
                  logger.info(len+"获取到XML长度为"+byteSize);
-                return  byteSize+XML;
+                return  "  "+byteSize+XML;
 
     }
 
@@ -118,8 +118,16 @@ public class BankService {
                 //</root>
             String result = callBankXmlRequest(requestXML);
             String IaccountNo = parseXMLValueByName(result,"IAcctNo");
-            ajax.setSuccess(true);
-            ajax.setData(IaccountNo);
+            if(StringUtils.isEmpty(IaccountNo)){
+                ajax.setSuccess(false);
+                String retcode = parseXMLValueByName(result,"retcode");
+                ajax.setData(retcode);
+                ajax.setMsg(parseXMLValueByName(result,"retmsg"));
+            }else{
+                ajax.setSuccess(true);
+                ajax.setData(IaccountNo);
+            }
+
             return ajax;
         } catch (Exception e) {
             e.printStackTrace();
