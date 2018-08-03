@@ -63,7 +63,7 @@ public class BankService {
     private  String getStringByteLen(String content){
                 String XML=content;
                 long len = content.getBytes().length;
-                String byteSize = String.format("%06",len);
+                String byteSize = String.format("%06d",len);
                  logger.info(len+"获取到XML长度为"+byteSize);
                 return  byteSize+XML;
 

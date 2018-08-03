@@ -73,10 +73,10 @@ public class BankController {
     }
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "projectItemName", value = "子账户标识：标段编号+交易流水号（重复发送，不重复生成）", required = true, dataType = "String", defaultValue = "标段1"),
-            @ApiImplicitParam(name = "tenderUnitName", value = "子账户名称", required = true, dataType = "String", defaultValue = "投标单位1"),
-            @ApiImplicitParam(name = "depositEndTimeInMillis", value = "保证金截止日期", required = true, dataType = "String",  defaultValue = "20180803113723"),
-            @ApiImplicitParam(name = "IsRetire", value = "是否退息", required = true, dataType = "String",  defaultValue = "1")
+          @ApiImplicitParam(paramType = "form",name = "projectItemName", value = "子账户标识：标段编号+交易流水号（重复发送，不重复生成）", required = true, dataType = "String", defaultValue = "标段1"),
+          @ApiImplicitParam(paramType = "form",name = "tenderUnitName", value = "子账户名称", required = true, dataType = "String", defaultValue = "投标单位1"),
+          @ApiImplicitParam(paramType = "form",name = "depositEndTimeInMillis", value = "保证金截止日期", required = true, dataType = "String",  defaultValue = "20180803113723"),
+          @ApiImplicitParam(paramType = "form",name = "IsRetire", value = "是否退息", required = true, dataType = "String",  defaultValue = "1")
 
     })
     @ApiOperation(value = "创建虚拟账户", notes = "创建虚拟账户,返回子账户")
@@ -92,14 +92,14 @@ public class BankController {
 
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "subAccount", value = "子账户标识", required = true, dataType = "String", defaultValue = "3113710004951386970"),
-            @ApiImplicitParam(name = "bankNo", value = "付款人账户", required = true, dataType = "String", defaultValue = "7119910130900000001"),
-            @ApiImplicitParam(name = "bankName", value = "付款人银行名称", required = true, dataType = "String", defaultValue = "中信银行总行营业部账务中心"),
-            @ApiImplicitParam(name = "name", value = "付款人户名", required = true, dataType = "String", defaultValue = "桐驰钞烦椭墒拼光"),
-            @ApiImplicitParam(name = "timeMillis", value = "到账日期", required = true, dataType = "String", defaultValue = "20180622095844"),
-            @ApiImplicitParam(name = "depositTransSeqNo", value = "来账序号，从银行回调中获取", required = true, dataType = "String", defaultValue = "20180622J0000000567269"),
-            @ApiImplicitParam(name = "remark", value = "附言", required = true, dataType = "String", defaultValue = "保证金"),
-            @ApiImplicitParam(name = "Amount", value = "到账金额", required = true, dataType = "String", defaultValue = "200.00"),
+          @ApiImplicitParam(paramType = "form",name = "subAccount", value = "子账户标识", required = true, dataType = "String", defaultValue = "3113710004951386970"),
+          @ApiImplicitParam(paramType = "form",name = "bankNo", value = "付款人账户", required = true, dataType = "String", defaultValue = "7119910130900000001"),
+          @ApiImplicitParam(paramType = "form",name = "bankName", value = "付款人银行名称", required = true, dataType = "String", defaultValue = "中信银行总行营业部账务中心"),
+          @ApiImplicitParam(paramType = "form",name = "name", value = "付款人户名", required = true, dataType = "String", defaultValue = "桐驰钞烦椭墒拼光"),
+          @ApiImplicitParam(paramType = "form",name = "timeMillis", value = "到账日期", required = true, dataType = "String", defaultValue = "20180622095844"),
+          @ApiImplicitParam(paramType = "form",name = "depositTransSeqNo", value = "来账序号，从银行回调中获取", required = true, dataType = "String", defaultValue = "20180622J0000000567269"),
+          @ApiImplicitParam(paramType = "form",name = "remark", value = "附言", required = true, dataType = "String", defaultValue = "保证金"),
+          @ApiImplicitParam(paramType = "form",name = "Amount", value = "到账金额", required = true, dataType = "String", defaultValue = "200.00"),
 
     })
     @ApiOperation(value = "保证金到账通知", notes = "保证金到账通知")
@@ -118,14 +118,14 @@ public class BankController {
 
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "subAccount", value = "子账户标识", required = true, dataType = "String", defaultValue = "3113710004951386970"),
-            @ApiImplicitParam(name = "transInAccount", value = "转入账户", required = true, dataType = "String", defaultValue = "7119910130900000001"),
-            @ApiImplicitParam(name = "transInAccountBank", value = "转入银行名称", required = true, dataType = "String", defaultValue = "中信银行总行营业部账务中心"),
-            @ApiImplicitParam(name = "transInAccountName", value = "转入户名", required = true, dataType = "String", defaultValue = "桐驰钞烦椭墒拼光"),
-            @ApiImplicitParam(name = "transInAmt", value = "转入本金金额", required = true, dataType = "String", defaultValue = "100.00"),
-            @ApiImplicitParam(name = "isRetire", value = "是否结息", required = true, dataType = "String", defaultValue = "1"),
-            @ApiImplicitParam(name = "bankType", value = "退款类别", required = true, dataType = "String", defaultValue = "1"),
-            @ApiImplicitParam(name = "reason", value = "扣款原因", required = true, dataType = "String", defaultValue = ""),
+          @ApiImplicitParam(paramType = "form",name = "subAccount", value = "子账户标识", required = true, dataType = "String", defaultValue = "3113710004951386970"),
+          @ApiImplicitParam(paramType = "form",name = "transInAccount", value = "转入账户", required = true, dataType = "String", defaultValue = "7119910130900000001"),
+          @ApiImplicitParam(paramType = "form",name = "transInAccountBank", value = "转入银行名称", required = true, dataType = "String", defaultValue = "中信银行总行营业部账务中心"),
+          @ApiImplicitParam(paramType = "form",name = "transInAccountName", value = "转入户名", required = true, dataType = "String", defaultValue = "桐驰钞烦椭墒拼光"),
+          @ApiImplicitParam(paramType = "form",name = "transInAmt", value = "转入本金金额", required = true, dataType = "String", defaultValue = "100.00"),
+          @ApiImplicitParam(paramType = "form",name = "isRetire", value = "是否结息", required = true, dataType = "String", defaultValue = "1"),
+          @ApiImplicitParam(paramType = "form",name = "bankType", value = "退款类别", required = true, dataType = "String", defaultValue = "1"),
+          @ApiImplicitParam(paramType = "form",name = "reason", value = "扣款原因", required = true, dataType = "String", defaultValue = ""),
 
     })
     @ApiOperation(value = "保证金退回", notes = "保证金退回")
@@ -145,7 +145,7 @@ public class BankController {
 
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "subAccount", value = "子账户标识", required = true, dataType = "String", defaultValue = ""),
+          @ApiImplicitParam(paramType = "form",name = "subAccount", value = "子账户标识", required = true, dataType = "String", defaultValue = ""),
 
     })
     @ApiOperation(value = "查询虚拟账户", notes = "查询虚拟账户")
