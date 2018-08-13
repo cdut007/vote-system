@@ -18,6 +18,9 @@ import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.impl.form.TaskFormDataImpl;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -220,19 +223,39 @@ public class BankController {
             } //继续循环
 
 
-            System.out.println("result."+result);
+            logger.info("收到银行到账result."+result);
             //5、关闭资源
            // writer.close(); //关闭Socket输出流
             in.close(); //关闭Socket输入流
             socket.close(); //关闭Socket
             server.close(); //关闭ServerSocket
+//          	<body>
+//< Lzxh >来帐序号</ Lzxh >
+//< InDate >到账日期</ InDate >
+//< InTime >到账时间</ InTime >
+//< InAmount >到账金额</ InAmount >
+//< InBankNo >付款人银行帐号</ InBankNo >
+//< InBankName >付款人银行行名</ InBankName >
+//< InName >付款人户名</ InName >
+//< IAcctNo >收款账号</ IAcctNo >
+//< Fy >附言</ Fy >
+//	</body>
+            Document doc = DocumentHelper.parseText(result);
+            //指向根节点
+            Element root = doc.getRootElement();
+
 
             if(!StringUtils.isEmpty(result)){
                 String headTail = "</head>";
                 int endHead = result.indexOf(headTail);
                 if(endHead>=0){
-                    String headContent=result.substring(0,endHead+headTail.length());
-                    testBankXmlRequest(headContent);
+                    Element headElement = root.element("head");
+
+                    bankService.depositReceiveNotify(headElement.attributeValue("TransCode"),
+                            headElement.attributeValue("TransDate"),headElement.attributeValue("TransTime"),headElement.attributeValue("SeqNo"));
+//                    String headContent=result.substring(0,endHead+headTail.length());
+//                    testBankXmlRequest(headContent);
+
                 }else{
                     System.out.println("not found ***===="+result);
                 }
@@ -242,7 +265,9 @@ public class BankController {
 
             createReceviewServer();
         }catch(Exception e) {//出错，打印出错信息
-            System.out.println("Error."+e);
+            e.printStackTrace();
+            System.out.println("Error."+e.getLocalizedMessage());
+            logger.info("收到银行到账result Error."+e.getLocalizedMessage());
 
         }
     }

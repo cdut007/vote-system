@@ -169,6 +169,64 @@ public class BankService {
         return null;
     }
 
+
+    public Ajax depositReceiveNotify(String transferDate,String transferTime,String SeqNo,String remark){
+        Ajax ajax = new Ajax();
+
+
+        String requestXML="<?xml version=\"1.0\" encoding=\"GBK\"?>\n" +
+                "<root>\n" +
+                "  <head>\n" +
+                "    <TransCode>G00002</TransCode>\n" +
+                "    <TransDate>"+transferDate+"</TransDate>\n" +
+                "    <TransTime>"+transferTime+"</TransTime>\n" +
+                "    <SeqNo>"+SeqNo+"</SeqNo>\n" +
+                "  </head>\n" +
+               "  <body>\n" +
+                "<TransResult>1</TransResult>\n" +
+                "<Remark>成功</Remark>\n" +
+                "</body>"+
+                "</root>";
+
+        try {
+            // 响应报文：
+            //<?xml version='1.0' encoding='gb2312'?>
+            //<root>
+            //<head>
+            //<TransCode>G00002</TransCode>
+            //<TransDate>20180622</TransDate>
+            //<TransTime>103234</TransTime>
+            //<SeqNo>CBPP1605406e1552018062210405001239</SeqNo>
+            //</head>
+            //<body>
+            //<TransResult>1</TransResult>
+            //<Remark></Remark>
+            //</body>
+            //</root>
+            String result = callBankXmlRequest(requestXML);
+            String resultCode = parseXMLValueByName(result,"TransResult");
+            if(StringUtils.isEmpty(resultCode)){
+                ajax.setSuccess(false);
+                String retcode = parseXMLValueByName(result,"retcode");
+                ajax.setData(retcode);
+                ajax.setMsg(parseXMLValueByName(result,"retmsg"));
+            }else{
+                ajax.setSuccess(true);
+            }
+
+            return ajax;
+        } catch (Exception e) {
+            e.printStackTrace();
+            ajax.setMsg(e.getLocalizedMessage());
+        }
+
+        ajax.setSuccess(false);
+        return  ajax;
+    }
+
+
+
+    //dead
     public Ajax depositReceiveNotify(String depositTransSeqNo,long timeMillis,String Amount,String bankNo,String bankName,String name,String subAccount,String remark){
         Ajax ajax = new Ajax();
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
@@ -271,9 +329,11 @@ public class BankService {
                 //获取book的属性值
 //            String id = book.attributeValue("id");
 //            kBook.setId(id);
+
                 List<Element> elements = root.elements();
                 for (Element element : elements) {
                     bank = new Bank();
+                    logger.info("id===="+element.attributeValue("id"));
 //                    bank.setId(element.attributeValue("id"));
 //                    bank.setName(element.element("name").getStringValue());
 //                    bank.setAuthor(element.element("author").getStringValue());
