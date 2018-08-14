@@ -250,11 +250,7 @@ public class BankController {
 
 
             logger.info("收到银行到账result." + result);
-            //5、关闭资源
-            // writer.close(); //关闭Socket输出流
-            in.close(); //关闭Socket输入流
-            socket.close(); //关闭Socket
-            server.close(); //关闭ServerSocket
+
 //          	<body>
 //< Lzxh >来帐序号</ Lzxh >
 //< InDate >到账日期</ InDate >
@@ -278,7 +274,7 @@ public class BankController {
 
                     Element headElement = root.element("head");
 
-                    bankService.depositReceiveNotify(
+                    bankService.depositReceiveNotify(socket,
                             headElement.elementTextTrim("TransDate"), headElement.elementTextTrim("TransTime"), headElement.elementTextTrim("SeqNo"), null);
 //                    String headContent=result.substring(0,endHead+headTail.length());
 //                    testBankXmlRequest(headContent);
@@ -290,6 +286,12 @@ public class BankController {
                 System.out.println("not found ====" + result);
             }
 
+            //5、关闭资源
+            // writer.close(); //关闭Socket输出流
+            in.close(); //关闭Socket输入流
+            socket.close(); //关闭Socket
+            server.close(); //关闭ServerSocket
+
             createReceviewServer();
         } catch (Exception e) {//出错，打印出错信息
             e.printStackTrace();
@@ -299,48 +301,6 @@ public class BankController {
         }
     }
 
-    private void testBankXmlRequest(String headContent) throws Exception {
-        String body = headContent +
-                "\t<body>\n" +
-                "< TransResult >1</ TransResult >\n" +
-                "< Remark >备注</ Remark >\n" +
-                "\t</body>\n" +
-                "</root>";
-        logger.info("数据内容：" + body);
-
-        Socket socket = null;
-        OutputStream outputStream = null;
-        InputStream inputStream = null;
-        BufferedReader br = null;
-        try {
-            //建立TCP连接
-            socket = new Socket("168.168.168.1", 30040);
-            logger.info("创建连接成功");
-            //写入数据
-            outputStream = socket.getOutputStream();
-            outputStream.write(body.getBytes("GBK"));
-            logger.info("发送数据结束");
-
-            //获取响应
-            inputStream = socket.getInputStream();
-            br = new BufferedReader(new InputStreamReader(inputStream, "GBK"));
-            String info = "", line;
-            while ((line = br.readLine()) != null) {
-                logger.info(line);
-                info += line;
-            }
-            logger.info(info);
-            br.close();
-            inputStream.close();
-            outputStream.close();
-            socket.close();
-            logger.info("断开连接");
-        } catch (UnknownHostException e1) {
-            logger.info("创建连接失败");
-        } catch (IOException e1) {
-            logger.info("发送数据失败");
-        }
-    }
 
 
 }
