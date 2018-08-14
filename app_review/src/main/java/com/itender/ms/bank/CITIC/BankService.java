@@ -19,7 +19,7 @@ import java.util.List;
 @Service
 public class BankService {
 
-    private static String AcctNo="8113701015700000004";
+    private static String AcctNo="7275210183100000455";//"8113701015700000004";
     private static final Logger logger = LoggerFactory.getLogger(BankService.class);
 
 
@@ -81,7 +81,38 @@ public class BankService {
 
     }
 
-    public Ajax createSubAccount(String projectItemName,String tenderUnitName,long depositEndTimeInMillis,String IsRetire){
+    public static void main(String[] args) {
+
+        String result="00000579<?xml version=\"1.0\" encoding=\"GBK\"?><root>  <head>    <TransCode>G00002</TransCode>    <TransDate>20180814</TransDate>    <TransTime>153203</TransTime>    <SeqNo>CBPP1605f4940082018081415320302956</SeqNo>  </head>  <body>    <Lzxh>20180814J0000000031528</Lzxh>    <InDate>20180814</InDate>    <InTime>135908</InTime>    <InAmount>500.00</InAmount>    <InBankNo>7119910130900000001</InBankNo>    <InBankName>中信银行总行营业部账务中心</InBankName>    <InName>桐驰钞烦椭墒拼光</InName>    <InAccNo>3115610013311116205</InAccNo>    <Fy>保证金</Fy>  </body></root>";
+        if(!StringUtils.isEmpty(result)){
+            String headTail = "</head>";
+            int endHead = result.indexOf(headTail);
+            if(endHead>=0){
+                Document doc = null;
+                try {
+                    doc = DocumentHelper.parseText(result.substring(8));
+                } catch (DocumentException e) {
+                    e.printStackTrace();
+                }
+                //指向根节点
+                Element root = doc.getRootElement();
+
+                Element headElement = root.element("head");
+
+            String aa= headElement.elementTextTrim("TransCode");
+                String bb=        headElement.elementTextTrim("TransDate");
+                String cc=        headElement.elementTextTrim("TransTime");
+                String dd=  headElement.elementTextTrim("SeqNo");
+                String w=1+""+1;
+//                    String headContent=result.substring(0,endHead+headTail.length());
+//                    testBankXmlRequest(headContent);
+
+            }else{
+            }
+        }
+    }
+
+        public Ajax createSubAccount(String projectItemName,String tenderUnitName,long depositEndTimeInMillis,String IsRetire){
 
         Ajax ajax = new Ajax();
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
@@ -322,26 +353,30 @@ public class BankService {
             List<Bank> banks = new ArrayList<Bank>();
             Bank bank = null;
             try {
-                Document doc = DocumentHelper.parseText(result);
+                //丢掉前8位
+
+                Document doc = DocumentHelper.parseText(result.substring(8));
                 //指向根节点
                 Element root = doc.getRootElement();
-//            Element book = XMLString2.getChildElement(root, "book");
                 //获取book的属性值
 //            String id = book.attributeValue("id");
 //            kBook.setId(id);
 
-                List<Element> elements = root.elements();
-                for (Element element : elements) {
-                    bank = new Bank();
-                    logger.info("id===="+element.attributeValue("id"));
+                List<Element> elements = root.elements("bank");
+                if(elements!=null){
+                    for (Element element : elements) {
+                        bank = new Bank();
+                        logger.info("id===="+element.elementTextTrim("id"));
 //                    bank.setId(element.attributeValue("id"));
 //                    bank.setName(element.element("name").getStringValue());
 //                    bank.setAuthor(element.element("author").getStringValue());
 //                    bank.setPrice(element.element("price").getStringValue());
 //                    bank.setYear(element.element("year").getStringValue());
-                    banks.add(bank);
-                    bank = null;
+                        banks.add(bank);
+                        bank = null;
+                    }
                 }
+
 
 
             } catch (DocumentException e) {

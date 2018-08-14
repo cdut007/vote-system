@@ -1,5 +1,6 @@
 package com.itender.ms.controller;
 
+import com.itender.ms.bank.CBC.JiaoTongBankService;
 import com.itender.ms.bank.CITIC.Ajax;
 import com.itender.ms.bank.CITIC.BankService;
 import com.itender.ms.domain.TbDictionary;
@@ -52,28 +53,31 @@ import java.util.Map;
 public class BankController {
 
 
-
     @Autowired
     private BankService bankService;
 
-    private static final Logger logger = LoggerFactory.getLogger(BankController.class);
 
+    @Autowired
+    private JiaoTongBankService jiaoTongBankService;
+
+
+    private static final Logger logger = LoggerFactory.getLogger(BankController.class);
 
 
     @ApiOperation(value = "启动监听服务", notes = "启动监听服务")
     @RequestMapping(value = "/startServer", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> startServer(HttpServletRequest request,
-                                                               @RequestParam(required = true) boolean enable
+                                                           @RequestParam(required = true) boolean enable
     ) throws APIException {
         Map<String, Object> result = new HashMap<>();
 
-       new Thread(new Runnable() {
-           @Override
-           public void run() {
-               createReceviewServer();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                createReceviewServer();
 
-           }
-       }).start();
+            }
+        }).start();
 
 
         result.put("code", IEvaluation.CODE_ERROR_UNKONWN);
@@ -82,65 +86,77 @@ public class BankController {
     }
 
     @ApiImplicitParams({
-          @ApiImplicitParam(paramType = "form",name = "projectItemName", value = "子账户标识：标段编号+交易流水号（重复发送，不重复生成）", required = true, dataType = "String", defaultValue = "标段1"),
-          @ApiImplicitParam(paramType = "form",name = "tenderUnitName", value = "子账户名称", required = true, dataType = "String", defaultValue = "投标单位1"),
-          @ApiImplicitParam(paramType = "form",name = "depositEndTimeInMillis", value = "保证金截止日期", required = true, dataType = "String",  defaultValue = "1533270183000"),
-          @ApiImplicitParam(paramType = "form",name = "IsRetire", value = "是否退息", required = true, dataType = "String",  defaultValue = "1")
+            @ApiImplicitParam(paramType = "form", name = "projectItemName", value = "子账户标识：标段编号+交易流水号（重复发送，不重复生成）", required = true, dataType = "String", defaultValue = "标段1"),
+            @ApiImplicitParam(paramType = "form", name = "tenderUnitName", value = "子账户名称", required = true, dataType = "String", defaultValue = "投标单位1"),
+            @ApiImplicitParam(paramType = "form", name = "depositEndTimeInMillis", value = "保证金截止日期", required = true, dataType = "String", defaultValue = "1533270183000"),
+            @ApiImplicitParam(paramType = "form", name = "IsRetire", value = "是否退息", required = true, dataType = "String", defaultValue = "1")
 
     })
     @ApiOperation(value = "创建虚拟账户", notes = "创建虚拟账户,返回子账户")
     @RequestMapping(value = "/createSubAccount", method = RequestMethod.POST)
     public ResponseEntity<Ajax> createSubAccount(HttpServletRequest request,
-                                                            @RequestParam(required = true) String projectItemName,
-                                                            @RequestParam(required = true) String tenderUnitName,
-                                                            @RequestParam(required = true) long depositEndTimeInMillis,
-                                                            @RequestParam(required = true) String IsRetire
+                                                 @RequestParam(required = true) String projectItemName,
+                                                 @RequestParam(required = true) String tenderUnitName,
+                                                 @RequestParam(required = true) long depositEndTimeInMillis,
+                                                 @RequestParam(required = true) String IsRetire,
+                                                 @RequestParam(required = false) String type
     ) throws APIException {
-        return ResponseEntity.ok(bankService.createSubAccount(projectItemName,tenderUnitName,depositEndTimeInMillis,IsRetire));
+
+        if ("jiaotong".equals(type)) {
+            try {
+                return ResponseEntity.ok(jiaoTongBankService.createSubAccount(projectItemName + tenderUnitName));
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.ok(new Ajax(false, e.getLocalizedMessage()));
+            }
+
+        } else {
+            return ResponseEntity.ok(bankService.createSubAccount(projectItemName, tenderUnitName, depositEndTimeInMillis, IsRetire));
+        }
     }
 
 
     @ApiImplicitParams({
-          @ApiImplicitParam(paramType = "form",name = "subAccount", value = "子账户标识", required = true, dataType = "String", defaultValue = "3113710004951386970"),
-          @ApiImplicitParam(paramType = "form",name = "bankNo", value = "付款人账户", required = true, dataType = "String", defaultValue = "7119910130900000001"),
-          @ApiImplicitParam(paramType = "form",name = "bankName", value = "付款人银行名称", required = true, dataType = "String", defaultValue = "中信银行总行营业部账务中心"),
-          @ApiImplicitParam(paramType = "form",name = "name", value = "付款人户名", required = true, dataType = "String", defaultValue = "桐驰钞烦椭墒拼光"),
-          @ApiImplicitParam(paramType = "form",name = "timeMillis", value = "到账日期", required = true, dataType = "String", defaultValue = "1533270183000"),
-          @ApiImplicitParam(paramType = "form",name = "depositTransSeqNo", value = "来账序号，从银行回调中获取", required = true, dataType = "String", defaultValue = "20180622J0000000567269"),
-          @ApiImplicitParam(paramType = "form",name = "remark", value = "附言", required = true, dataType = "String", defaultValue = "保证金"),
-          @ApiImplicitParam(paramType = "form",name = "Amount", value = "到账金额", required = true, dataType = "String", defaultValue = "200.00"),
+            @ApiImplicitParam(paramType = "form", name = "subAccount", value = "子账户标识", required = true, dataType = "String", defaultValue = "3113710004951386970"),
+            @ApiImplicitParam(paramType = "form", name = "bankNo", value = "付款人账户", required = true, dataType = "String", defaultValue = "7119910130900000001"),
+            @ApiImplicitParam(paramType = "form", name = "bankName", value = "付款人银行名称", required = true, dataType = "String", defaultValue = "中信银行总行营业部账务中心"),
+            @ApiImplicitParam(paramType = "form", name = "name", value = "付款人户名", required = true, dataType = "String", defaultValue = "桐驰钞烦椭墒拼光"),
+            @ApiImplicitParam(paramType = "form", name = "timeMillis", value = "到账日期", required = true, dataType = "String", defaultValue = "1533270183000"),
+            @ApiImplicitParam(paramType = "form", name = "depositTransSeqNo", value = "来账序号，从银行回调中获取", required = true, dataType = "String", defaultValue = "20180622J0000000567269"),
+            @ApiImplicitParam(paramType = "form", name = "remark", value = "附言", required = true, dataType = "String", defaultValue = "保证金"),
+            @ApiImplicitParam(paramType = "form", name = "Amount", value = "到账金额", required = true, dataType = "String", defaultValue = "200.00"),
 
     })
     @ApiOperation(value = "保证金到账通知", notes = "保证金到账通知")
     @RequestMapping(value = "/depositReceiveNotify", method = RequestMethod.POST)
     public ResponseEntity<Ajax> depositReceiveNotify(HttpServletRequest request,
-                                                 @RequestParam(required = true) String depositTransSeqNo,
+                                                     @RequestParam(required = true) String depositTransSeqNo,
                                                      @RequestParam(required = true) long timeMillis,
                                                      @RequestParam(required = true) String Amount,
                                                      @RequestParam(required = true) String bankNo,
                                                      @RequestParam(required = true) String bankName,
                                                      @RequestParam(required = true) String name,
-                                                     @RequestParam(required = true) String subAccount,String remark
+                                                     @RequestParam(required = true) String subAccount, String remark
     ) throws APIException {
-        return ResponseEntity.ok(bankService.depositReceiveNotify(depositTransSeqNo,timeMillis,Amount,bankNo,bankName,name,subAccount,remark));
+        return ResponseEntity.ok(bankService.depositReceiveNotify(depositTransSeqNo, timeMillis, Amount, bankNo, bankName, name, subAccount, remark));
     }
 
 
     @ApiImplicitParams({
-          @ApiImplicitParam(paramType = "form",name = "subAccount", value = "子账户标识", required = true, dataType = "String", defaultValue = "3113710004951386970"),
-          @ApiImplicitParam(paramType = "form",name = "transInAccount", value = "转入账户", required = true, dataType = "String", defaultValue = "7119910130900000001"),
-          @ApiImplicitParam(paramType = "form",name = "transInAccountBank", value = "转入银行名称", required = true, dataType = "String", defaultValue = "中信银行总行营业部账务中心"),
-          @ApiImplicitParam(paramType = "form",name = "transInAccountName", value = "转入户名", required = true, dataType = "String", defaultValue = "桐驰钞烦椭墒拼光"),
-          @ApiImplicitParam(paramType = "form",name = "transInAmt", value = "转入本金金额", required = true, dataType = "String", defaultValue = "100.00"),
-          @ApiImplicitParam(paramType = "form",name = "isRetire", value = "是否结息", required = true, dataType = "String", defaultValue = "1"),
-          @ApiImplicitParam(paramType = "form",name = "bankType", value = "退款类别", required = true, dataType = "String", defaultValue = "1"),
-          @ApiImplicitParam(paramType = "form",name = "reason", value = "扣款原因", required = true, dataType = "String", defaultValue = ""),
+            @ApiImplicitParam(paramType = "form", name = "subAccount", value = "子账户标识", required = true, dataType = "String", defaultValue = "3113710004951386970"),
+            @ApiImplicitParam(paramType = "form", name = "transInAccount", value = "转入账户", required = true, dataType = "String", defaultValue = "7119910130900000001"),
+            @ApiImplicitParam(paramType = "form", name = "transInAccountBank", value = "转入银行名称", required = true, dataType = "String", defaultValue = "中信银行总行营业部账务中心"),
+            @ApiImplicitParam(paramType = "form", name = "transInAccountName", value = "转入户名", required = true, dataType = "String", defaultValue = "桐驰钞烦椭墒拼光"),
+            @ApiImplicitParam(paramType = "form", name = "transInAmt", value = "转入本金金额", required = true, dataType = "String", defaultValue = "100.00"),
+            @ApiImplicitParam(paramType = "form", name = "isRetire", value = "是否结息", required = true, dataType = "String", defaultValue = "1"),
+            @ApiImplicitParam(paramType = "form", name = "bankType", value = "退款类别", required = true, dataType = "String", defaultValue = "1"),
+            @ApiImplicitParam(paramType = "form", name = "reason", value = "扣款原因", required = true, dataType = "String", defaultValue = ""),
 
     })
     @ApiOperation(value = "保证金退回", notes = "保证金退回")
     @RequestMapping(value = "/depositRefund", method = RequestMethod.POST)
     public ResponseEntity<Ajax> depositRefund(HttpServletRequest request,
-                                             @RequestParam(required = true) String subAccount,
+                                              @RequestParam(required = true) String subAccount,
                                               @RequestParam(required = true) String transInAccount,
                                               @RequestParam(required = true) String transInAccountBank,
                                               @RequestParam(required = true) String transInAccountName,
@@ -149,83 +165,93 @@ public class BankController {
                                               @RequestParam(required = true) String bankType,
                                               @RequestParam String reason
     ) throws APIException {
-        return ResponseEntity.ok(bankService.depositRefund(subAccount,transInAccount,transInAccountBank,transInAccountName,transInAmt,isRetire,bankType,reason));
+        return ResponseEntity.ok(bankService.depositRefund(subAccount, transInAccount, transInAccountBank, transInAccountName, transInAmt, isRetire, bankType, reason));
     }
 
 
     @ApiImplicitParams({
-          @ApiImplicitParam(paramType = "form",name = "subAccount", value = "子账户标识", required = true, dataType = "String", defaultValue = ""),
+            @ApiImplicitParam(paramType = "form", name = "subAccount", value = "子账户标识", required = true, dataType = "String", defaultValue = ""),
 
     })
     @ApiOperation(value = "查询虚拟账户", notes = "查询虚拟账户")
     @RequestMapping(value = "/queryDeposit", method = RequestMethod.POST)
     public ResponseEntity<Ajax> queryDeposit(HttpServletRequest request,
-                                                     @RequestParam(required = true) String subAccount
+                                             @RequestParam(required = true) String subAccount,
+                                             @RequestParam(required = false) String type
     ) throws APIException {
-        return ResponseEntity.ok(bankService.queryDeposit(subAccount));
+
+        if ("jiaotong".equals(type)) {
+            try {
+                return ResponseEntity.ok(jiaoTongBankService.queryDeposit(subAccount));
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.ok(new Ajax(false, e.getLocalizedMessage()));
+            }
+
+        } else {
+            return ResponseEntity.ok(bankService.queryDeposit(subAccount));
+        }
     }
 
 
+    ServerSocket server = null;
 
-
-
-    ServerSocket server=null;
     private void createReceviewServer() {
-        try{
+        try {
 
-            try{
-                  server=new ServerSocket(6070);
+            try {
+                server = new ServerSocket(6070);
                 //b)指定绑定的端口，并监听此端口。
                 System.out.println("服务器启动成功");
                 //创建一个ServerSocket在端口5209监听客户请求
-            }catch(Exception e) {
-                System.out.println("没有启动监听："+e);
+            } catch (Exception e) {
+                System.out.println("没有启动监听：" + e);
                 //出错，打印出错信息
             }
-            Socket socket=null;
-            try{
-                socket=server.accept();
+            Socket socket = null;
+            try {
+                socket = server.accept();
                 //2、调用accept()方法开始监听，等待客户端的连接
                 //使用accept()阻塞等待客户请求，有客户
                 //请求到来则产生一个Socket对象，并继续执行
-            }catch(Exception e) {
-                System.out.println("accept Error."+e);
+            } catch (Exception e) {
+                System.out.println("accept Error." + e);
                 //出错，打印出错信息
             }
             //3、获取输入流，并读取客户端信息
             String line;
-            BufferedReader in=new BufferedReader(new InputStreamReader(socket.getInputStream(),"GBK"));
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "GBK"));
             //由Socket对象得到输入流，并构造相应的BufferedReader对象
-          //  PrintWriter writer=new PrintWriter(socket.getOutputStream());
+            //  PrintWriter writer=new PrintWriter(socket.getOutputStream());
 
             //在标准输出上打印从客户端读入的字符串
-            line=in.readLine();
+            line = in.readLine();
 
-            System.out.println("Client:"+line);
+            System.out.println("Client:" + line);
 
             //从标准输入读入一字符串
             //4、获取输出流，响应客户端的请求
-            String result=line;
-            while(!StringUtils.isEmpty(line)){
+            String result = line;
+            while (!StringUtils.isEmpty(line)) {
                 //如果该字符串为 "bye"，则停止循环
-             //   writer.println(line);
+                //   writer.println(line);
                 //向客户端输出该字符串
-             //   writer.flush();
+                //   writer.flush();
                 //刷新输出流，使Client马上收到该字符串
-                System.out.println("Server:"+line);
+                System.out.println("Server:" + line);
                 //从Client读入一字符串，并打印到标准输出上
-                line=in.readLine();
-                if(!StringUtils.isEmpty(line)){
-                    result+=line;
+                line = in.readLine();
+                if (!StringUtils.isEmpty(line)) {
+                    result += line;
                 }
 
                 //从系统标准输入读入一字符串
             } //继续循环
 
 
-            logger.info("收到银行到账result."+result);
+            logger.info("收到银行到账result." + result);
             //5、关闭资源
-           // writer.close(); //关闭Socket输出流
+            // writer.close(); //关闭Socket输出流
             in.close(); //关闭Socket输入流
             socket.close(); //关闭Socket
             server.close(); //关闭ServerSocket
@@ -240,34 +266,35 @@ public class BankController {
 //< IAcctNo >收款账号</ IAcctNo >
 //< Fy >附言</ Fy >
 //	</body>
-            Document doc = DocumentHelper.parseText(result);
-            //指向根节点
-            Element root = doc.getRootElement();
 
 
-            if(!StringUtils.isEmpty(result)){
+            if (!StringUtils.isEmpty(result)) {
                 String headTail = "</head>";
                 int endHead = result.indexOf(headTail);
-                if(endHead>=0){
+                if (endHead >= 0) {
+                    Document doc = DocumentHelper.parseText(result.substring(8));
+                    //指向根节点
+                    Element root = doc.getRootElement();
+
                     Element headElement = root.element("head");
 
-                    bankService.depositReceiveNotify(headElement.attributeValue("TransCode"),
-                            headElement.attributeValue("TransDate"),headElement.attributeValue("TransTime"),headElement.attributeValue("SeqNo"));
+                    bankService.depositReceiveNotify(
+                            headElement.elementTextTrim("TransDate"), headElement.elementTextTrim("TransTime"), headElement.elementTextTrim("SeqNo"), null);
 //                    String headContent=result.substring(0,endHead+headTail.length());
 //                    testBankXmlRequest(headContent);
 
-                }else{
-                    System.out.println("not found ***===="+result);
+                } else {
+                    System.out.println("not found ***====" + result);
                 }
-            }else{
-                System.out.println("not found ===="+result);
+            } else {
+                System.out.println("not found ====" + result);
             }
 
             createReceviewServer();
-        }catch(Exception e) {//出错，打印出错信息
+        } catch (Exception e) {//出错，打印出错信息
             e.printStackTrace();
-            System.out.println("Error."+e.getLocalizedMessage());
-            logger.info("收到银行到账result Error."+e.getLocalizedMessage());
+            System.out.println("Error." + e.getLocalizedMessage());
+            logger.info("收到银行到账result Error." + e.getLocalizedMessage());
 
         }
     }
@@ -296,7 +323,7 @@ public class BankController {
 
             //获取响应
             inputStream = socket.getInputStream();
-            br = new BufferedReader(new InputStreamReader(inputStream,"GBK"));
+            br = new BufferedReader(new InputStreamReader(inputStream, "GBK"));
             String info = "", line;
             while ((line = br.readLine()) != null) {
                 logger.info(line);
@@ -314,8 +341,6 @@ public class BankController {
             logger.info("发送数据失败");
         }
     }
-
-
 
 
 }
