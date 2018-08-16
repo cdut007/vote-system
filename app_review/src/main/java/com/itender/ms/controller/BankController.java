@@ -87,6 +87,28 @@ public class BankController {
         return ResponseEntity.ok(result);
     }
 
+
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "form", name = "payOrderId", value = " 订单编号（重复发送，不重复生成）", required = true, dataType = "String", defaultValue = "90000000000000000001"),
+            @ApiImplicitParam(paramType = "form", name = "totalPrice", value = "支付金额", required = true, dataType = "String", defaultValue = "0.01")
+
+    })
+    @ApiOperation(value = "创建支付订单", notes = "创建支付订单")
+    @RequestMapping(value = "/createOrder", method = RequestMethod.POST)
+    public ResponseEntity<Ajax> createOrder(HttpServletRequest request,
+                                                 @RequestParam(required = true) String payOrderId,
+                                                 @RequestParam(required = true) String totalPrice,
+                                                 @RequestParam(required = false) String type
+    ) throws APIException {
+
+
+            return ResponseEntity.ok(unionpayService.createOrder(payOrderId, totalPrice));
+
+    }
+
+
+
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "form", name = "projectItemName", value = "子账户标识：标段编号+交易流水号（重复发送，不重复生成）", required = true, dataType = "String", defaultValue = "标段1"),
             @ApiImplicitParam(paramType = "form", name = "tenderUnitName", value = "子账户名称", required = true, dataType = "String", defaultValue = "投标单位1"),
