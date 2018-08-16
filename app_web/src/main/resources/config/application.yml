@@ -6,7 +6,7 @@ logging:
 spring:
     ## 多环境配置
     profiles:
-        active: dev
+        active: staging
 
  #设置文件上大小
     http:

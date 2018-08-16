@@ -3,6 +3,7 @@ package com.itender.ms.controller;
 import com.itender.ms.bank.CBC.JiaoTongBankService;
 import com.itender.ms.bank.CITIC.Ajax;
 import com.itender.ms.bank.CITIC.BankService;
+import com.itender.ms.bank.unionpay.UnionpayService;
 import com.itender.ms.domain.TbDictionary;
 import com.itender.ms.domain.TbDictionaryExample;
 import com.itender.ms.evaluation.*;
@@ -42,10 +43,7 @@ import java.math.BigDecimal;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Validated
 @Controller
@@ -59,6 +57,10 @@ public class BankController {
 
     @Autowired
     private JiaoTongBankService jiaoTongBankService;
+
+
+    @Autowired
+    private UnionpayService unionpayService;
 
 
     private static final Logger logger = LoggerFactory.getLogger(BankController.class);
@@ -110,7 +112,7 @@ public class BankController {
                 return ResponseEntity.ok(new Ajax(false, e.getLocalizedMessage()));
             }
 
-        } else {
+        }else {
             return ResponseEntity.ok(bankService.createSubAccount(projectItemName, tenderUnitName, depositEndTimeInMillis, IsRetire));
         }
     }
@@ -177,18 +179,40 @@ public class BankController {
     @RequestMapping(value = "/queryDeposit", method = RequestMethod.POST)
     public ResponseEntity<Ajax> queryDeposit(HttpServletRequest request,
                                              @RequestParam(required = true) String subAccount,
-                                             @RequestParam(required = false) String type
+                                             @RequestParam(required = false) String type,
+                                             @RequestParam(required = false) String startDate,
+                                             @RequestParam(required = false) String endDate
     ) throws APIException {
 
         if ("jiaotong".equals(type)) {
             try {
-                return ResponseEntity.ok(jiaoTongBankService.queryDeposit(subAccount));
+                if(startDate==null){
+                    startDate = JiaoTongBankService.getNowDateStr();
+                }
+
+                if(endDate==null){
+                    endDate = JiaoTongBankService.getNowDateStr();
+                }
+                return ResponseEntity.ok(jiaoTongBankService.queryTransationDetail(new String[]{subAccount},startDate,endDate));
             } catch (Exception e) {
                 e.printStackTrace();
                 return ResponseEntity.ok(new Ajax(false, e.getLocalizedMessage()));
             }
 
-        } else {
+        } else if("unionpay".equals(type)){
+            try {
+                Date payDate = new Date();
+                if(startDate!=null){
+                    payDate.setTime(Long.parseLong(startDate));
+                }
+
+
+                return ResponseEntity.ok(unionpayService.queryTransationByOrderId(subAccount,payDate));
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.ok(new Ajax(false, e.getLocalizedMessage()));
+            }
+        }  else {
             return ResponseEntity.ok(bankService.queryDeposit(subAccount));
         }
     }
