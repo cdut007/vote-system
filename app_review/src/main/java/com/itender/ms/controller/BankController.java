@@ -248,7 +248,7 @@ public class BankController {
             try {
                 server = new ServerSocket(6070);
                 //b)指定绑定的端口，并监听此端口。
-                System.out.println("服务器启动成功");
+                System.out.println("服务器启动");
                 //创建一个ServerSocket在端口5209监听客户请求
             } catch (Exception e) {
                 System.out.println("没有启动监听：" + e);
@@ -257,11 +257,12 @@ public class BankController {
             Socket socket = null;
             try {
                 socket = server.accept();
+                System.out.println("服务器请求到成功");
                 //2、调用accept()方法开始监听，等待客户端的连接
                 //使用accept()阻塞等待客户请求，有客户
                 //请求到来则产生一个Socket对象，并继续执行
             } catch (Exception e) {
-                System.out.println("accept Error." + e);
+                System.out.println("accept Error." + e.getLocalizedMessage());
                 //出错，打印出错信息
             }
             //3、获取输入流，并读取客户端信息
@@ -273,8 +274,7 @@ public class BankController {
             //在标准输出上打印从客户端读入的字符串
             line = in.readLine();
 
-            System.out.println("Client:" + line);
-
+            logger.info("Server" + line);
             //从标准输入读入一字符串
             //4、获取输出流，响应客户端的请求
             String result = line;
@@ -284,16 +284,21 @@ public class BankController {
                 //向客户端输出该字符串
                 //   writer.flush();
                 //刷新输出流，使Client马上收到该字符串
-                System.out.println("Server:" + line);
+                logger.info("Server" + line);
                 //从Client读入一字符串，并打印到标准输出上
                 line = in.readLine();
                 if (!StringUtils.isEmpty(line)) {
                     result += line;
+
+                    if (line.contains("</root>")) {
+                        break;
+                    }
                 }
+
+
 
                 //从系统标准输入读入一字符串
             } //继续循环
-
 
             logger.info("收到银行到账result." + result);
 
@@ -345,7 +350,14 @@ public class BankController {
             logger.info("收到银行到账result Error." + e.getLocalizedMessage());
 
         }
+
+
+
     }
+
+
+
+
 
 
 

@@ -216,7 +216,7 @@ public class BankService {
                 "  <body>\n" +
                 "<TransResult>1</TransResult>\n" +
                 "<Remark>成功</Remark>\n" +
-                "</body>" +
+                "</body>\n" +
                 "</root>";
 
         try {

@@ -10,7 +10,7 @@ server:
 
 #数据库IP
 db:
-  ip: 39.106.4.105
+  ip: 172.17.52.68
   name: orcl
   username: tender_57
   password: live_tendre12
