@@ -4,6 +4,7 @@ import com.itender.ms.bank.CBC.JiaoTongBankService;
 import com.itender.ms.bank.CITIC.Ajax;
 import com.itender.ms.bank.CITIC.BankService;
 import com.itender.ms.bank.unionpay.UnionpayService;
+import com.itender.ms.bank.unionpay.gnetpg.BarcodeUnionpayService;
 import com.itender.ms.domain.TbDictionary;
 import com.itender.ms.domain.TbDictionaryExample;
 import com.itender.ms.evaluation.*;
@@ -63,6 +64,10 @@ public class BankController {
     private UnionpayService unionpayService;
 
 
+    @Autowired
+    private BarcodeUnionpayService barcodeUnionpayService;
+
+
     private static final Logger logger = LoggerFactory.getLogger(BankController.class);
 
 
@@ -94,6 +99,34 @@ public class BankController {
             @ApiImplicitParam(paramType = "form", name = "totalPrice", value = "支付金额", required = true, dataType = "String", defaultValue = "0.01")
 
     })
+
+
+
+    @ApiOperation(value = "callback", notes = "callback")
+    @RequestMapping(value = "/unionpay/CallBackUrl", method = RequestMethod.POST)
+    public ResponseEntity<Ajax> CallBackUrl(HttpServletRequest request
+    ) throws APIException {
+
+        logger.info("callback info=="+request.getParameterMap().toString());
+        return ResponseEntity.ok(new Ajax());
+
+    }
+
+    @ApiOperation(value = "创建二维码支付订单", notes = "创建二维码支付订单")
+    @RequestMapping(value = "/createBarcodeOrder", method = RequestMethod.POST)
+    public ResponseEntity<Ajax> createBarcodeOrder(HttpServletRequest request,
+                                            @RequestParam(required = true) String payOrderId,
+                                            @RequestParam(required = true) String totalPrice,
+                                                   HttpServletResponse response
+    ) throws APIException {
+        Ajax ajax = barcodeUnionpayService.createOrder(payOrderId, totalPrice);
+
+
+        return ResponseEntity.ok(ajax);
+
+    }
+
+
     @ApiOperation(value = "创建支付订单", notes = "创建支付订单")
     @RequestMapping(value = "/createOrder", method = RequestMethod.POST)
     public ResponseEntity<Ajax> createOrder(HttpServletRequest request,
@@ -191,6 +224,30 @@ public class BankController {
     ) throws APIException {
         return ResponseEntity.ok(bankService.depositRefund(subAccount, transInAccount, transInAccountBank, transInAccountName, transInAmt, isRetire, bankType, reason));
     }
+
+
+
+
+    @ApiOperation(value = "查询order", notes = "查询order")
+    @RequestMapping(value = "/queryBarcodeOrderStatus", method = RequestMethod.POST)
+    public ResponseEntity<Ajax> queryBarcodeOrderStatus(HttpServletRequest request,
+                                             @RequestParam(required = true) String orderId,
+                                             @RequestParam(required = false) String beginDate,
+                                             @RequestParam(required = false) String shoppingDate,
+                                             @RequestParam(required = false) String endDate
+    ) throws APIException {
+
+            try {
+
+                return ResponseEntity.ok(barcodeUnionpayService.queryTransationByOrderId(orderId,beginDate,endDate,shoppingDate));
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.ok(new Ajax(false, e.getLocalizedMessage()));
+            }
+
+    }
+
+
 
 
     @ApiImplicitParams({
