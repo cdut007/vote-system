@@ -205,18 +205,18 @@ public class BankService {
         Ajax ajax = new Ajax();
 
 
-        String requestXML = "<?xml version=\"1.0\" encoding=\"GBK\"?>\n" +
-                "<root>\n" +
-                "  <head>\n" +
-                "    <TransCode>G00002</TransCode>\n" +
-                "    <TransDate>" + transferDate + "</TransDate>\n" +
-                "    <TransTime>" + transferTime + "</TransTime>\n" +
-                "    <SeqNo>" + SeqNo + "</SeqNo>\n" +
-                "  </head>\n" +
-                "  <body>\n" +
-                "<TransResult>1</TransResult>\n" +
-                "<Remark>成功</Remark>\n" +
-                "</body>\n" +
+        String requestXML = "<?xml version=\"1.0\" encoding=\"GBK\"?>" +
+                "<root>" +
+                "<head>" +
+                "<TransCode>G00002</TransCode>" +
+                "<TransDate>" + transferDate + "</TransDate>" +
+                "<TransTime>" + transferTime + "</TransTime>" +
+                "<SeqNo>" + SeqNo + "</SeqNo>" +
+                "</head>" +
+                "<body>" +
+                "<TransResult>1</TransResult>" +
+                "<Remark>成功</Remark>" +
+                "</body>" +
                 "</root>";
 
         try {
