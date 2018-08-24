@@ -158,13 +158,7 @@ public class BankController {
 
 
 
-    @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "form", name = "projectItemName", value = "子账户标识：标段编号+交易流水号（重复发送，不重复生成）", required = true, dataType = "String", defaultValue = "标段1"),
-            @ApiImplicitParam(paramType = "form", name = "tenderUnitName", value = "子账户名称", required = true, dataType = "String", defaultValue = "投标单位1"),
-            @ApiImplicitParam(paramType = "form", name = "depositEndTimeInMillis", value = "保证金截止日期", required = true, dataType = "String", defaultValue = "1533270183000"),
-            @ApiImplicitParam(paramType = "form", name = "IsRetire", value = "是否退息", required = true, dataType = "String", defaultValue = "1")
 
-    })
 
 
     @ApiOperation(value = "注销虚拟账户", notes = "注销虚拟账户")
@@ -190,7 +184,13 @@ public class BankController {
 
 
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "form", name = "projectItemName", value = "子账户标识：标段编号+交易流水号（重复发送，不重复生成）", required = true, dataType = "String", defaultValue = "标段1"),
+            @ApiImplicitParam(paramType = "form", name = "tenderUnitName", value = "子账户名称", required = true, dataType = "String", defaultValue = "投标单位1"),
+            @ApiImplicitParam(paramType = "form", name = "depositEndTimeInMillis", value = "保证金截止日期", required = true, dataType = "String", defaultValue = "1533270183000"),
+            @ApiImplicitParam(paramType = "form", name = "IsRetire", value = "是否退息", required = true, dataType = "String", defaultValue = "1")
 
+    })
     @ApiOperation(value = "创建虚拟账户", notes = "创建虚拟账户,返回子账户")
     @RequestMapping(value = "/createSubAccount", method = RequestMethod.POST)
     public ResponseEntity<Ajax> createSubAccount(HttpServletRequest request,
