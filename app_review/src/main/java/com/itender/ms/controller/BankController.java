@@ -112,6 +112,22 @@ public class BankController {
 
     }
 
+
+    @ApiOperation(value = "银联退款退回", notes = "银联退款退回")
+    @RequestMapping(value = "/unionpayRefund", method = RequestMethod.POST)
+    public ResponseEntity<Ajax> unionpayRefund(HttpServletRequest request,
+                                              @RequestParam(required = true) String payOrderId,
+                                              @RequestParam(required = true) String totalPrice,
+                                              @RequestParam(required = true) String RefundAmount,
+                                              @RequestParam(required = true) String shoppingDate
+    ) throws APIException {
+        return ResponseEntity.ok(barcodeUnionpayService.refund(payOrderId, totalPrice, RefundAmount, shoppingDate));
+    }
+
+
+
+
+
     @ApiOperation(value = "创建二维码支付订单", notes = "创建二维码支付订单")
     @RequestMapping(value = "/createBarcodeOrder", method = RequestMethod.POST)
     public ResponseEntity<Ajax> createBarcodeOrder(HttpServletRequest request,
@@ -149,6 +165,32 @@ public class BankController {
             @ApiImplicitParam(paramType = "form", name = "IsRetire", value = "是否退息", required = true, dataType = "String", defaultValue = "1")
 
     })
+
+
+    @ApiOperation(value = "注销虚拟账户", notes = "注销虚拟账户")
+    @RequestMapping(value = "/destroySubAccount", method = RequestMethod.POST)
+    public ResponseEntity<Ajax> destroySubAccount(HttpServletRequest request,
+                                                 @RequestParam(required = true) String subAccNo,
+                                                 @RequestParam(required = false) String type
+    ) throws APIException {
+
+        if ("jiaotong".equals(type)) {
+            try {
+                return ResponseEntity.ok(jiaoTongBankService.destroySubAccount(subAccNo));
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.ok(new Ajax(false, e.getLocalizedMessage()));
+            }
+
+        }else {
+            return  ResponseEntity.ok(new Ajax());
+            //return ResponseEntity.ok(jiaoTongBankService.destroySubAccount(subAccNo));
+        }
+    }
+
+
+
+
     @ApiOperation(value = "创建虚拟账户", notes = "创建虚拟账户,返回子账户")
     @RequestMapping(value = "/createSubAccount", method = RequestMethod.POST)
     public ResponseEntity<Ajax> createSubAccount(HttpServletRequest request,

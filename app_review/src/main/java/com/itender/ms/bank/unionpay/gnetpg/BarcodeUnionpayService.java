@@ -44,6 +44,109 @@ public class BarcodeUnionpayService {
 
 
 
+
+    public Ajax refund(String payOrderId,String totalPrice,String RefundAmount,String shoppingDate){
+        // 前台页面传过来的
+        Ajax ajax = new Ajax();
+        Date nowDate = new Date();
+
+        /*** 保存订单 ***/
+        String orderId=payOrderId;
+
+        /***
+         * 计算银联支付金额
+         */
+
+        HashMap<String,String> requestData = new HashMap<String,String>();
+
+        /*** 商户接入参数 ***/
+        requestData.put("TranType", "31"); // 固定，31：退款
+        requestData.put("JavaCharset","UTF-8");//非空，UTF-8或GBK
+        requestData.put("Version","V36");//非空，版本号（固定）：V36
+        requestData.put("MerId",merId);
+        requestData.put("OrderNo",payOrderId);
+        requestData.put("ShoppingDate",shoppingDate);
+        requestData.put("PayAmount",totalPrice);
+        requestData.put("RefundAmount",RefundAmount);
+        requestData.put("Reserved","");
+
+        //商户密钥
+        String PKey = "12hi60ohgmp16nbev0gr8au69bodzguz";
+
+        //对Key进行排序
+        List<String> Keys = new ArrayList<String>(requestData.keySet());
+        Collections.sort(Keys);
+        //组装签名数据
+        StringBuilder SourceText = new StringBuilder();
+        for (String key : Keys)
+        {
+            String Value = requestData.get(key);
+            SourceText.append(key).append("=").append(Value).append("&");
+        }
+
+        //请求参数
+        String Param = SourceText.toString();
+        System.out.println("【请求参数】" + Param);
+
+        //对数据进行加密签名
+        String EncodePKey = Md5.md5(PKey, "UTF-8");
+        SourceText.append(EncodePKey);
+        String SignMsg = Md5.md5(SourceText.toString(), "UTF-8");
+        Param = Param + "SignMsg=" + SignMsg;
+
+        //退款接口URL
+        String URL = "http://test.gnetpg.com:8089/GneteMerchantAPI/Trans.action";
+        //商户域名
+        String MerDomain = "http://47.94.241.88:9900/bank/unionpay/CallBackUrl";
+        HttpUtils http = new HttpUtils();
+        String Resp = http.doHttpPost(URL, Param, "UTF-8", MerDomain);
+
+        System.out.println("【URL】" + URL);
+        System.out.println("【退款返回结果】" + Resp);
+
+        //处理退款结果，响应数据样例：Code=0000&Message=退款成功
+        if(Resp == null || Resp.length() == 0)
+        {
+           ajax.setMsg("退款返回的结果为空!");
+            System.out.println("【退款返回的结果为空!】");
+            return ajax;
+        }
+        String Code = PayUtils.GetValue(Resp, "Code");
+        String Message = PayUtils.GetValue(Resp, "Message");
+        String RespSignMsg = PayUtils.GetValue(Resp, "SignMsg");
+
+        System.out.println(EncodePKey);
+
+        String RespSourceText = "Code=" + Code.trim() + "&Message="+Message.trim() +"&"+ EncodePKey;
+        System.out.println(RespSourceText);
+        String _SignMsg = Md5.md5(RespSourceText.toString(), "UTF-8");
+        if (!RespSignMsg.equals(_SignMsg))
+        {
+            ajax.setMsg("验证签名失败!");
+            System.out.println("验证签名失败");
+            return ajax;
+        }
+
+        if("0000".equals(Code))
+        {
+
+            System.out.println("【退款成功！响应信息】" + Message);
+            ajax.setMsg("【退款成功！响应信息】" + Message);
+
+        }
+        else
+        {
+            System.out.println("【退款失败！错误信息】" + Message);
+            ajax.setMsg("【退款失败！错误信息】" + Message);
+            return  ajax;
+        }
+        ajax.setSuccess(true);
+        return  ajax;
+    }
+
+
+
+
     public Ajax createOrder(String payOrderId,String totalPrice){
             // 前台页面传过来的
             Ajax ajax = new Ajax();

@@ -220,6 +220,52 @@ public class JiaoTongBankService {
         return ajax;
     }
 
+
+    public Ajax destroySubAccount(String subAccNo) throws Exception {
+        logger.info("注销虚拟账户");
+        RequestAp ap = new RequestAp();
+        RequestHead head = new RequestHead("FHTS01", "1");
+        ap.setHead(head);
+        Body<String, Object> body = new Body<String, Object>();
+        XmlMapper xml = new XmlMapper();
+        {
+            RequestRoot requestRoot = new RequestRoot();
+            RequestRootHead requestRootHead = new RequestRootHead("DL2005", UUID.randomUUID().toString());
+            requestRoot.setHead(requestRootHead);
+            Body<String, Object> requestRootBody = new Body<String, Object>();
+            requestRootBody.put("MainAccNo", mainAccNo);
+            requestRootBody.put("SubAccNo", subAccNo);
+            requestRoot.setBody(requestRootBody);
+            String xmlString = xml.writeValueAsString(requestRoot);
+            String secondTimeBase64 = twoTimesBaseEncode(xmlString, encoding_UTF8);
+            body.put("data", secondTimeBase64);
+        }
+        body.put("rem", COMMON_REMARK);
+        body.put("systemId", SYSTEM_ID);
+        ap.setBody(body);
+        ResponseAp responseAp = bankInvoker.call(ap);
+        body = responseAp.getBody();
+        {
+            String RspMsgContent = body.getString("RspMsgContent");
+            String secondTimeBase64 = twoTimesBaseDecode(RspMsgContent, encoding_UTF8);
+            ResponseRoot responseRoot = xml.readValue(secondTimeBase64, ResponseRoot.class);
+            if (!"EBMP000000".equals(responseRoot.getBody().get("Status"))) {
+                String statusText = responseRoot.getBody().getString("StatusText");
+                logger.error("======================================================");
+                logger.error("注销虚拟账户");
+                logger.error("失败原因：" + statusText);
+                logger.error("=======================================================");
+                throw new RuntimeException(statusText);
+            }
+        }
+
+        Ajax ajax = new Ajax();
+        ajax.setSuccess(true);
+        ajax.setMsg("注销虚拟账户成功");
+        ajax.setData(subAccNo);
+        return ajax;
+    }
+
     public Ajax  createSubAccount(String subAccNm) throws Exception{
         logger.info("生成虚拟账户 ");
         RequestAp ap = new RequestAp();
