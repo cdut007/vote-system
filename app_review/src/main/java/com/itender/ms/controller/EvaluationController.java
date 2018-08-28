@@ -6,16 +6,7 @@ import com.itender.ms.domain.TbDictionaryExample;
 import com.itender.ms.evaluation.*;
 import com.itender.ms.exception.APIException;
 import com.itender.ms.mapper.TbDictionaryMapper;
-import com.itender.ms.workflow.service.IWorkFlowService;
 import io.swagger.annotations.ApiOperation;
-import org.activiti.engine.FormService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
-import org.activiti.engine.form.FormProperty;
-import org.activiti.engine.impl.form.DateFormType;
-import org.activiti.engine.impl.form.TaskFormDataImpl;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,61 +85,6 @@ public class EvaluationController {
     }
 
 
-
-
-    @Autowired
-    private RuntimeService runtimeService;
-    @Autowired
-    private FormService formService;
-    @Autowired
-    private TaskService taskService;
-    @Autowired
-    private IWorkFlowService workFlowService;
-
-    private void testActivity() {
-        Map<String, Object> variableMap = new HashMap<String, Object>();
-        variableMap.put("projectInstanceId", "projectInstanceId111");
-        // 绑定招标项目名称
-        variableMap.put("projectInstanceName", "projectInstanceName111");
-
-        variableMap.put("expertSignEnd", true);
-
-        variableMap.put("envelopeTypeOrder", "first");
-
-        variableMap.put("expertApplyId", "expertApplyId111");
-        variableMap.put("projectItemId", "projectItemId111");
-
-        variableMap.put("expertIdSign", "expertIdSign111");
-        //查询出监标人
-        variableMap.put("guardianIdSign", "guardianIdSign111");
-        variableMap.put("preliminaryReview", "0");
-
-        variableMap.put("roleId", "roleId111");
-
-        List<ProcessInstance> processInstanceList = runtimeService.createProcessInstanceQuery()
-                .processDefinitionKey("yj_project_item_open").processInstanceBusinessKey("expertApplyId111").active().list();
-        for (ProcessInstance processInstance : processInstanceList) {
-            workFlowService.deleteProcessInstance(processInstance.getId(), "重新初始化");
-        }
-
-        ProcessInstance processInstance = this.runtimeService.startProcessInstanceByKey("yj_project_item_open", "expertApplyId111", variableMap);
-        String taskId = this.taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
-        Task task = this.taskService.createTaskQuery().taskId(taskId).singleResult();
-        TaskFormDataImpl taskFormData = (TaskFormDataImpl) formService.getTaskFormData(taskId);
-        List<FormProperty> formPropertiesList = taskFormData.getFormProperties();
-
-        for (FormProperty formProperty : formPropertiesList) {
-        }
-
-        processInstance = this.runtimeService.createProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).singleResult();
-
-
-        Map<String, String> formProperties = new HashMap<String, String>();
-        for (FormProperty formProperty : formService.getTaskFormData(taskId).getFormProperties()) {
-
-        }
-        formService.submitTaskFormData(taskId, formProperties);
-    }
 
 
     @ApiOperation(value = "评标算法", notes = "用于评标算法")

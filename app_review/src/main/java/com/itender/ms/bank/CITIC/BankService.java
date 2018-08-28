@@ -67,6 +67,7 @@ public class BankService {
     }
 
 
+
     private String getStringByteLen(String content) {
         String XML = content;
         long len = 0;
@@ -446,7 +447,6 @@ public class BankService {
             e.printStackTrace();
             ajax.setMsg(e.getLocalizedMessage());
         }
-
 
         ajax.setSuccess(false);
         return ajax;

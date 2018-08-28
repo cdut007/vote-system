@@ -3,6 +3,7 @@ package com.itender.ms.controller;
 import com.itender.ms.bank.CBC.JiaoTongBankService;
 import com.itender.ms.bank.CITIC.Ajax;
 import com.itender.ms.bank.CITIC.BankService;
+import com.itender.ms.bank.VirtualAccountService;
 import com.itender.ms.bank.unionpay.UnionpayService;
 import com.itender.ms.bank.unionpay.gnetpg.BarcodeUnionpayService;
 import com.itender.ms.domain.TbDictionary;
@@ -10,17 +11,9 @@ import com.itender.ms.domain.TbDictionaryExample;
 import com.itender.ms.evaluation.*;
 import com.itender.ms.exception.APIException;
 import com.itender.ms.mapper.TbDictionaryMapper;
-import com.itender.ms.workflow.service.IWorkFlowService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.activiti.engine.FormService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
-import org.activiti.engine.form.FormProperty;
-import org.activiti.engine.impl.form.TaskFormDataImpl;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Task;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -58,6 +51,10 @@ public class BankController {
 
     @Autowired
     private JiaoTongBankService jiaoTongBankService;
+
+
+    @Autowired
+    private VirtualAccountService virtualAccountService;
 
 
     @Autowired
@@ -170,7 +167,18 @@ public class BankController {
 
         if ("jiaotong".equals(type)) {
             try {
-                return ResponseEntity.ok(jiaoTongBankService.destroySubAccount(subAccNo));
+                Ajax ajax = jiaoTongBankService.destroySubAccount(subAccNo);
+                if(ajax.isSuccess()){
+                  boolean succ=  virtualAccountService.releasaeSubAccount(subAccNo);
+                  if(succ){
+                      return ResponseEntity.ok(ajax);
+                  }else {
+                      ajax.setSuccess(false);
+                      ajax.setMsg("本地数据库释放失败");
+                      return ResponseEntity.ok(ajax);
+                  }
+                }
+                return ResponseEntity.ok(ajax);
             } catch (Exception e) {
                 e.printStackTrace();
                 return ResponseEntity.ok(new Ajax(false, e.getLocalizedMessage()));

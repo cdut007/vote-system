@@ -11,14 +11,10 @@ import com.itender.ms.exception.APIException;
 import com.itender.ms.mapper.TbArticleMapper;
 import com.itender.ms.mapper.TbAttachmentMapper;
 import com.itender.ms.util.HttpHelper;
-import com.itender.ms.workflow.model.*;
+import com.itender.ms.workflow.model.JsonObjectIgnoreDuplicates;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.form.AbstractFormType;
-import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -70,23 +66,23 @@ import java.util.List;
 public class TestJCEController {
 
 
-
-    @Bean
-    public InitializingBean activitiConfigurer(SpringProcessEngineConfiguration engineConfiguration) {
-        return new InitializingBean() {
-            @Override
-            public void afterPropertiesSet() throws Exception {
-
-                List<AbstractFormType> customFormTypes = new ArrayList<AbstractFormType>();
-                customFormTypes.add(new BinaryFormType());
-                customFormTypes.add(new IntegerFormType());
-                customFormTypes.add(new TextFormType());
-                customFormTypes.add(new TimeFormType());
-                customFormTypes.add(new UserFormType());
-                engineConfiguration.setCustomFormTypes(customFormTypes);
-            }
-        };
-        }
+//
+//    @Bean
+//    public InitializingBean activitiConfigurer(SpringProcessEngineConfiguration engineConfiguration) {
+//        return new InitializingBean() {
+//            @Override
+//            public void afterPropertiesSet() throws Exception {
+//
+//                List<AbstractFormType> customFormTypes = new ArrayList<AbstractFormType>();
+//                customFormTypes.add(new BinaryFormType());
+//                customFormTypes.add(new IntegerFormType());
+//                customFormTypes.add(new TextFormType());
+//                customFormTypes.add(new TimeFormType());
+//                customFormTypes.add(new UserFormType());
+//                engineConfiguration.setCustomFormTypes(customFormTypes);
+//            }
+//        };
+//        }
 
 
 

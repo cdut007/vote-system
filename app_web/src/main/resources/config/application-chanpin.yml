@@ -1,0 +1,23 @@
+##Staging环境
+spring:
+    profiles: chanpin
+
+
+#服务端口
+server:
+  port: 9900
+
+
+#数据库IP
+db:
+  ip: 172.17.52.59
+  name: orcl12c
+  username: tender_0403
+  password: tender_zcm159
+
+
+httpRequest:
+    domain:  http://192.168.99.19:8080
+    host:  http://39.107.127.11:9090
+    socket:  0.0.0.0
+
