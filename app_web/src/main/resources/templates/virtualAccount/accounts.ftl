@@ -37,7 +37,7 @@
 <div id="background" >
 
     <div class="layui-btn-group demoTable">
-        <button class="layui-btn" data-type="getCheckData">获取选中行数据</button>
+        <button class="layui-btn" data-type="getCheckData">批量释放选中行数据</button>
         <button class="layui-btn" data-type="getCheckLength">获取选中数目</button>
         <button class="layui-btn" data-type="isAll">验证是否全选</button>
     </div>
@@ -203,7 +203,8 @@
             getCheckData: function(){ //获取选中数据
                 var checkStatus = table.checkStatus('taskTable')
                         ,data = checkStatus.data;
-                layer.alert(JSON.stringify(data));
+                markDelete(data);
+                //layer.alert(JSON.stringify(data));
             }
             ,getCheckLength: function(){ //获取选中数目
                 var checkStatus = table.checkStatus('taskTable')
@@ -221,6 +222,39 @@
             active[type] ? active[type].call(this) : '';
         });
 
+
+        function markDelete(datas){
+            var index = layer.load(1, {
+                shade: [0.1,'#fff'] //0.1透明度的白色背景
+            });
+            for (var i = 0; i < datas.length; i++) {
+                var data = datas[i];
+                var subAccNo = data.accountNumber;
+                $.ajax({
+                    url: '/bank/destroySubAccount',
+                    type: "POST",
+                    dataType: "json",
+                    data: {type:'jiaotong',subAccNo:subAccNo},
+                    success: function (res) {
+                        layer.close(index);
+                        if(res!=null){
+                            if(res.success){
+                                alert(res.msg);
+                                reloadTaskTable();
+                            }else{
+                                alert("处理失败!"+ res.msg);
+                            }
+                        }
+
+
+                    },
+                    error: function (xmlHttpReq, error, ex) {
+                        alert("处理失败!"+ error);
+                        layer.close(index);
+                    }
+                })
+            }
+        }
 
         table.on('tool(taskTable)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
             var data = obj.data; //获得当前行数据
