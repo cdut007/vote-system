@@ -10,14 +10,8 @@ server:
 
 #数据库IP
 db:
-  ip: 172.17.52.68
-  name: orcl
-  username: tender_57
-  password: live_tendre12
-
-
-httpRequest:
-    domain:  http://192.168.99.19:8080
-    host:  http://39.107.127.11:9090
-    socket:  0.0.0.0
+  ip: 111.231.195.94
+  name: vote
+  username: root
+  password: Mdbo9$18Cd
 

@@ -4,14 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.itender</groupId>
+    <groupId>com.vote</groupId>
     <artifactId>application_cli</artifactId>
     <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
     <modules>
         <module>app_web</module>
 
-        <module>app_review</module>
+        <module>app_vote</module>
         <module>app_base</module>
         <module>app_test</module>
     </modules>
@@ -23,34 +23,9 @@
 
 
     </parent>
-    <repositories>
-        <repository>
-            <id>releases</id>
-            <url>http://JINCHAN-server:8081/nexus/content/groups/public/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </releases>
-        </repository>
-        <repository>
-            <id>snapshots</id>
-            <url>http://JINCHAN-server:8081/nexus/content/repositories/snapshots</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
-        </repository>
-    </repositories>
 
     <dependencies>
 
-
-        <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc6</artifactId>
-            <version>11.2.0</version>
-
-        </dependency>
 
 
         <!-- spring boot 内置tomcat jsp支持 -->
@@ -107,6 +82,29 @@
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-core</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-spring</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatisplus-spring-boot-starter</artifactId>
+            <version>1.0.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus</artifactId>
+            <version>2.1.8</version>
+        </dependency>
 
         <!--mybatis-->
         <dependency>
@@ -115,17 +113,11 @@
             <version>1.3.1</version>
         </dependency>
         <!--mapper-->
-        <dependency>
-            <groupId>tk.mybatis</groupId>
-            <artifactId>mapper-spring-boot-starter</artifactId>
-            <version>1.1.4</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.persistence</groupId>
-                    <artifactId>persistence-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>tk.mybatis</groupId>-->
+            <!--<artifactId>mapper-spring-boot-starter</artifactId>-->
+            <!--<version>1.1.4</version>-->
+        <!--</dependency>-->
         <!--pagehelper-->
         <dependency>
             <groupId>com.github.pagehelper</groupId>
@@ -145,19 +137,7 @@
             <artifactId>druid</artifactId>
             <version>1.1.6</version>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>com.oracle</groupId>-->
-        <!--<artifactId>ojdbc6</artifactId>-->
-        <!--<version>11.2.0</version>-->
-        <!--&lt;!&ndash;<scope>system</scope>&ndash;&gt;-->
-        <!--&lt;!&ndash;<systemPath>${basedir}/lib/ojdbc6-11.2.0.jar</systemPath>&ndash;&gt;-->
-        <!--</dependency>-->
 
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-freemarker</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
