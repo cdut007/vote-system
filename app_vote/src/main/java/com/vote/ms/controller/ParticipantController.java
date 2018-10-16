@@ -26,7 +26,7 @@ import com.vote.common.utils.R;
  * @date 2018-10-16 09:21:13
  */
 @RestController
-@RequestMapping("ms/participant")
+@RequestMapping("participant")
 public class ParticipantController {
     @Autowired
     private ParticipantService participantService;
@@ -35,7 +35,7 @@ public class ParticipantController {
      * 列表
      */
     @RequestMapping("/list")
-    @RequiresPermissions("ms:participant:list")
+   // @RequiresPermissions("ms:participant:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = participantService.queryPage(params);
 
@@ -47,7 +47,7 @@ public class ParticipantController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    @RequiresPermissions("ms:participant:info")
+  //  @RequiresPermissions("ms:participant:info")
     public R info(@PathVariable("id") String id){
 			ParticipantEntity participant = participantService.selectById(id);
 
@@ -58,7 +58,7 @@ public class ParticipantController {
      * 保存
      */
     @RequestMapping("/save")
-    @RequiresPermissions("ms:participant:save")
+ //   @RequiresPermissions("ms:participant:save")
     public R save(@RequestBody ParticipantEntity participant){
 			participantService.insert(participant);
 
@@ -69,7 +69,7 @@ public class ParticipantController {
      * 修改
      */
     @RequestMapping("/update")
-    @RequiresPermissions("ms:participant:update")
+ //   @RequiresPermissions("ms:participant:update")
     public R update(@RequestBody ParticipantEntity participant){
 			participantService.updateById(participant);
 
@@ -80,7 +80,7 @@ public class ParticipantController {
      * 删除
      */
     @RequestMapping("/delete")
-    @RequiresPermissions("ms:participant:delete")
+ //   @RequiresPermissions("ms:participant:delete")
     public R delete(@RequestBody String[] ids){
 			participantService.deleteBatchIds(Arrays.asList(ids));
 

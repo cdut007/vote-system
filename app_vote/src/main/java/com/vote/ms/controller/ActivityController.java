@@ -36,7 +36,7 @@ public class ActivityController extends  AbstractController{
      * 列表
      */
     @RequestMapping("/list")
-    @RequiresPermissions("ms:activity:list")
+   // @RequiresPermissions("ms:activity:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = activityService.queryPage(params);
 
@@ -48,7 +48,7 @@ public class ActivityController extends  AbstractController{
      * 信息
      */
     @RequestMapping("/info/{id}")
-    @RequiresPermissions("ms:activity:info")
+  //  @RequiresPermissions("ms:activity:info")
     public R info(@PathVariable("id") String id){
 			ActivityEntity activity = activityService.selectById(id);
 
@@ -72,7 +72,7 @@ public class ActivityController extends  AbstractController{
      * 修改
      */
     @RequestMapping("/update")
-    @RequiresPermissions("ms:activity:update")
+   // @RequiresPermissions("ms:activity:update")
     public R update(@RequestBody ActivityEntity activity){
 			activityService.updateById(activity);
 
@@ -83,7 +83,7 @@ public class ActivityController extends  AbstractController{
      * 删除
      */
     @RequestMapping("/delete")
-    @RequiresPermissions("ms:activity:delete")
+  //  @RequiresPermissions("ms:activity:delete")
     public R delete(@RequestBody String[] ids){
 			activityService.deleteBatchIds(Arrays.asList(ids));
 
