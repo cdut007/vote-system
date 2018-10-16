@@ -13,6 +13,7 @@
         <result property="theme" column="theme"/>
         <result property="color" column="color"/>
         <result property="createTime" column="create_time"/>
+        <result property="createrId" column="creater_id"/>
     </resultMap>
 
 

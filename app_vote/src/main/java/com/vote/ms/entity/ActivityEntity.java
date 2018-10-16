@@ -52,6 +52,11 @@ public class ActivityEntity implements Serializable {
 	private Date createTime;
 
 	/**
+	 * 创建者
+	 */
+	private String createrId;
+
+	/**
 	 * 设置：
 	 */
 	public void setId(String id) {
@@ -147,4 +152,14 @@ public class ActivityEntity implements Serializable {
 	public Date getCreateTime() {
 		return createTime;
 	}
+
+
+	public void setCreaterId(String createrId) {
+		this.createrId = createrId;
+	}
+
+	public String getCreaterId() {
+		return createrId;
+	}
+
 }

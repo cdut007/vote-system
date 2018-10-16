@@ -1,6 +1,7 @@
 package com.vote.ms.controller;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -26,8 +27,8 @@ import com.vote.common.utils.R;
  * @date 2018-10-16 09:21:13
  */
 @RestController
-@RequestMapping("ms/activity")
-public class ActivityController {
+@RequestMapping("activity")
+public class ActivityController extends  AbstractController{
     @Autowired
     private ActivityService activityService;
 
@@ -58,11 +59,13 @@ public class ActivityController {
      * 保存
      */
     @RequestMapping("/save")
-    @RequiresPermissions("ms:activity:save")
+   // @RequiresPermissions("ms:activity:save")
     public R save(@RequestBody ActivityEntity activity){
-			activityService.insert(activity);
+           activity.setCreaterId(getUserId());
+           activity.setCreateTime(new Date());
+		boolean save =	activityService.insert(activity);
 
-        return R.ok();
+        return R.ok().put("success",save);
     }
 
     /**
