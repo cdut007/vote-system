@@ -56,6 +56,21 @@ public class ActivityEntity implements Serializable {
 	 */
 	private String createrId;
 
+
+	/**
+	 * 短连接key
+	 */
+	private String shortUrlKey;
+
+
+	public void setShortUrlKey(String shortUrlKey) {
+		this.shortUrlKey = shortUrlKey;
+	}
+
+	public String getShortUrlKey() {
+		return shortUrlKey;
+	}
+
 	/**
 	 * 设置：
 	 */

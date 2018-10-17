@@ -4,13 +4,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 
+import com.vote.common.utils.IPUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.vote.ms.entity.ActivityEntity;
 import com.vote.ms.service.ActivityService;
@@ -66,6 +64,17 @@ public class ActivityController extends  AbstractController{
 		boolean save =	activityService.insert(activity);
 
         return R.ok().put("success",save);
+    }
+
+    @PostMapping("/share/{id}")
+    public R share(@PathVariable("id") String id){
+        ActivityEntity activity = activityService.selectById(id);
+        if(StringUtils.isEmpty(activity.getShortUrlKey())){
+            activity.setShortUrlKey(IPUtils.getShortUrl(id));
+            activityService.updateById(activity);
+        }
+
+        return R.ok().put("activity", activity);
     }
 
     /**

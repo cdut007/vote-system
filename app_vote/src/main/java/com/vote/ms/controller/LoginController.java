@@ -1,9 +1,13 @@
 package com.vote.ms.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.vote.common.utils.R;
+import com.vote.ms.entity.ActivityEntity;
+import com.vote.ms.entity.CaptchaEntity;
 import com.vote.ms.entity.UserEntity;
 import com.vote.ms.form.LoginForm;
 import com.vote.ms.oauth2.OAuth2Token;
+import com.vote.ms.service.ActivityService;
 import com.vote.ms.service.CaptchaService;
 import com.vote.ms.service.UserService;
 import com.vote.ms.service.UserTokenService;
@@ -50,6 +54,21 @@ public class LoginController extends AbstractController{
         ServletOutputStream out = response.getOutputStream();
         ImageIO.write(image, "jpg", out);
         IOUtils.closeQuietly(out);
+    }
+
+
+    @Autowired
+    private ActivityService activityService;
+    @GetMapping("{urlKey}")
+    public R info(@PathVariable("urlKey") String key){
+        ActivityEntity activity = activityService.selectOne(new EntityWrapper<ActivityEntity>().eq("short_url_key", key));
+        if(activity==null){
+            return R.error(-1001,"不存在该活动");
+        }else{
+            return R.ok().put("activity", activity);
+        }
+
+
     }
 
     /**
