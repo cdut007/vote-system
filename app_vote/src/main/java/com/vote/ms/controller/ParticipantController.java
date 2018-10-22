@@ -1,6 +1,7 @@
 package com.vote.ms.controller;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -64,6 +65,7 @@ public class ParticipantController {
     public R save(@RequestBody ParticipantEntity participant){
         int count = participantService.selectCount(new EntityWrapper<ParticipantEntity>().eq("activity_id",participant.getActivityId()));
            participant.setNum(count+1);
+           participant.setCreateTime(new Date());
 			participantService.insert(participant);
 
         return R.ok();

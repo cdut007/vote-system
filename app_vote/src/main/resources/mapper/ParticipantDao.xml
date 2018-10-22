@@ -10,6 +10,8 @@
         <result property="username" column="username"/>
         <result property="mobile" column="mobile"/>
         <result property="num" column="num"/>
+        <result property="scanCount" column="scan_count"/>
+        <result property="voteCount" column="vote_count"/>
         <result property="coverId" column="cover_id"/>
         <result property="videoLink" column="video_link"/>
         <result property="description" column="description"/>

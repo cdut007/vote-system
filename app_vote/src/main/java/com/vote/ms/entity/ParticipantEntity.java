@@ -53,10 +53,36 @@ public class ParticipantEntity implements Serializable {
 	private int num;
 
 	/**
+	 * 选手活动浏览量
+	 */
+	private int scanCount;
+
+	/**
+	 * 选手投票计数
+	 */
+	private int voteCount;
+
+	/**
 	 * 创建时间
 	 */
 	private Date createTime;
 
+
+	public void setScanCount(int scanCount) {
+		this.scanCount = scanCount;
+	}
+
+	public void setVoteCount(int voteCount) {
+		this.voteCount = voteCount;
+	}
+
+	public int getScanCount() {
+		return scanCount;
+	}
+
+	public int getVoteCount() {
+		return voteCount;
+	}
 
 	public void setNum(int num) {
 		this.num = num;
