@@ -3,6 +3,8 @@ package com.vote.ms.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,6 +62,8 @@ public class ParticipantController {
     @RequestMapping("/save")
  //   @RequiresPermissions("ms:participant:save")
     public R save(@RequestBody ParticipantEntity participant){
+        int count = participantService.selectCount(new EntityWrapper<ParticipantEntity>().eq("activity_id",participant.getActivityId()));
+           participant.setNum(count+1);
 			participantService.insert(participant);
 
         return R.ok();

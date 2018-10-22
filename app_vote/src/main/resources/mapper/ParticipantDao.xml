@@ -9,6 +9,7 @@
         <result property="activityId" column="activity_id"/>
         <result property="username" column="username"/>
         <result property="mobile" column="mobile"/>
+        <result property="num" column="num"/>
         <result property="coverId" column="cover_id"/>
         <result property="videoLink" column="video_link"/>
         <result property="description" column="description"/>

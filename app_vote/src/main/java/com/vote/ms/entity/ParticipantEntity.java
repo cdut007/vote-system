@@ -46,10 +46,25 @@ public class ParticipantEntity implements Serializable {
 	 * 选手描述
 	 */
 	private String description;
+
+	/**
+	 * 选手序号
+	 */
+	private int num;
+
 	/**
 	 * 创建时间
 	 */
 	private Date createTime;
+
+
+	public void setNum(int num) {
+		this.num = num;
+	}
+
+	public int getNum() {
+		return num;
+	}
 
 	/**
 	 * 设置：
