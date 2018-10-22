@@ -1,6 +1,8 @@
 package com.vote.ms.service.impl;
 
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
 import java.util.Map;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -18,8 +20,18 @@ public class VoteItemServiceImpl extends ServiceImpl<VoteItemDao, VoteItemEntity
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
+        Query<VoteItemEntity> voteItemEntityQuery = new Query<VoteItemEntity>(params);
+        if(params.get("activityId") != null){
+            HashMap<String,Object> filterParams = new HashMap<>();
+            filterParams.put("activity_id",params.get("activityId"));
+            if(params.get("playerId")!=null){
+                filterParams.put("player_id",params.get("playerId"));
+            }
+
+            voteItemEntityQuery.getPage().setCondition(filterParams);
+        }
         Page<VoteItemEntity> page = this.selectPage(
-                new Query<VoteItemEntity>(params).getPage(),
+                voteItemEntityQuery.getPage(),
                 new EntityWrapper<VoteItemEntity>()
         );
 
