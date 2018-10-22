@@ -26,7 +26,7 @@ import com.vote.common.utils.R;
  * @date 2018-10-16 09:21:13
  */
 @RestController
-@RequestMapping("ms/voteitem")
+@RequestMapping("voteitem")
 public class VoteItemController {
     @Autowired
     private VoteItemService voteItemService;
@@ -35,7 +35,7 @@ public class VoteItemController {
      * 列表
      */
     @RequestMapping("/list")
-    @RequiresPermissions("ms:voteitem:list")
+  //  @RequiresPermissions("ms:voteitem:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = voteItemService.queryPage(params);
 
@@ -47,7 +47,7 @@ public class VoteItemController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    @RequiresPermissions("ms:voteitem:info")
+   // @RequiresPermissions("ms:voteitem:info")
     public R info(@PathVariable("id") String id){
 			VoteItemEntity voteItem = voteItemService.selectById(id);
 
@@ -58,7 +58,7 @@ public class VoteItemController {
      * 保存
      */
     @RequestMapping("/save")
-    @RequiresPermissions("ms:voteitem:save")
+  //  @RequiresPermissions("ms:voteitem:save")
     public R save(@RequestBody VoteItemEntity voteItem){
 			voteItemService.insert(voteItem);
 
@@ -69,7 +69,7 @@ public class VoteItemController {
      * 修改
      */
     @RequestMapping("/update")
-    @RequiresPermissions("ms:voteitem:update")
+  //  @RequiresPermissions("ms:voteitem:update")
     public R update(@RequestBody VoteItemEntity voteItem){
 			voteItemService.updateById(voteItem);
 
@@ -80,7 +80,7 @@ public class VoteItemController {
      * 删除
      */
     @RequestMapping("/delete")
-    @RequiresPermissions("ms:voteitem:delete")
+ //   @RequiresPermissions("ms:voteitem:delete")
     public R delete(@RequestBody String[] ids){
 			voteItemService.deleteBatchIds(Arrays.asList(ids));
 
