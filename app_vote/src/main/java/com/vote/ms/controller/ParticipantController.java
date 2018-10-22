@@ -71,6 +71,22 @@ public class ParticipantController {
         return R.ok();
     }
 
+
+    /**
+     * 修改
+     */
+    @RequestMapping("/scan")
+    //   @RequiresPermissions("ms:participant:update")
+    public R scan(@RequestBody ParticipantEntity participant){
+        participant = participantService.selectOne(
+                new EntityWrapper<ParticipantEntity>().eq("id",participant.getId()));
+        participant.setScanCount(participant.getScanCount()+1);
+        participantService.updateById(participant);
+
+        return R.ok();
+    }
+
+
     /**
      * 修改
      */

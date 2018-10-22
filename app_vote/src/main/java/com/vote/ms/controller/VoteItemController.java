@@ -1,8 +1,12 @@
 package com.vote.ms.controller;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.vote.ms.entity.ParticipantEntity;
+import com.vote.ms.service.ParticipantService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +34,10 @@ import com.vote.common.utils.R;
 public class VoteItemController {
     @Autowired
     private VoteItemService voteItemService;
+
+
+    @Autowired
+    private ParticipantService participantService;
 
     /**
      * 列表
@@ -60,7 +68,11 @@ public class VoteItemController {
     @RequestMapping("/save")
   //  @RequiresPermissions("ms:voteitem:save")
     public R save(@RequestBody VoteItemEntity voteItem){
+           voteItem.setCreateTime(new Date());
 			voteItemService.insert(voteItem);
+        ParticipantEntity participantEntity = participantService.selectOne(new EntityWrapper<ParticipantEntity>().eq("id",voteItem.getPlayerId()));
+        participantEntity.setVoteCount(participantEntity.getVoteCount()+1);
+        participantService.updateById(participantEntity);
 
         return R.ok();
     }

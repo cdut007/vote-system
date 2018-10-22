@@ -8,6 +8,7 @@
         <result property="id" column="id"/>
         <result property="activityId" column="activity_id"/>
         <result property="voterId" column="voter_id"/>
+        <result property="playerId" column="player_id"/>
         <result property="voterName" column="voter_name"/>
         <result property="description" column="description"/>
         <result property="createTime" column="create_time"/>
