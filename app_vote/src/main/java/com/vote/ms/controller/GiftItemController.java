@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vote.ms.entity.VoteItemEntity;
-import com.vote.ms.service.VoteItemService;
+import com.vote.ms.entity.GiftItemEntity;
+import com.vote.ms.service.GiftItemService;
 import com.vote.common.utils.PageUtils;
 import com.vote.common.utils.R;
 
@@ -27,25 +27,21 @@ import com.vote.common.utils.R;
  *
  * @author james
  * @email 316458704@qq.com
- * @date 2018-10-16 09:21:13
+ * @date 2018-10-23 16:16:51
  */
 @RestController
-@RequestMapping("voteitem")
-public class VoteItemController {
+@RequestMapping("giftitem")
+public class GiftItemController {
     @Autowired
-    private VoteItemService voteItemService;
-
-
-    @Autowired
-    private ParticipantService participantService;
+    private GiftItemService giftItemService;
 
     /**
      * 列表
      */
     @RequestMapping("/list")
-  //  @RequiresPermissions("ms:voteitem:list")
+  //  @RequiresPermissions("ms:giftitem:list")
     public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = voteItemService.queryPage(params);
+        PageUtils page = giftItemService.queryPage(params);
 
         return R.ok().put("page", page);
     }
@@ -55,25 +51,26 @@ public class VoteItemController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-   // @RequiresPermissions("ms:voteitem:info")
+    @RequiresPermissions("ms:giftitem:info")
     public R info(@PathVariable("id") String id){
-			VoteItemEntity voteItem = voteItemService.selectById(id);
+			GiftItemEntity giftItem = giftItemService.selectById(id);
 
-        return R.ok().put("voteItem", voteItem);
+        return R.ok().put("giftItem", giftItem);
     }
 
-
-
+    @Autowired
+    private ParticipantService participantService;
     /**
      * 保存
      */
     @RequestMapping("/save")
-  //  @RequiresPermissions("ms:voteitem:save")
-    public R save(@RequestBody VoteItemEntity voteItem){
-           voteItem.setCreateTime(new Date());
-			voteItemService.insert(voteItem);
-        ParticipantEntity participantEntity = participantService.selectOne(new EntityWrapper<ParticipantEntity>().eq("id",voteItem.getPlayerId()));
-        participantEntity.setVoteCount(participantEntity.getVoteCount()+1);
+  //  @RequiresPermissions("ms:giftitem:save")
+    public R save(@RequestBody GiftItemEntity giftItem){
+            giftItem.setCreateTime(new Date());
+			giftItemService.insert(giftItem);
+        ParticipantEntity participantEntity = participantService.selectOne(new EntityWrapper<ParticipantEntity>().eq("id",giftItem.getPlayerId()));
+        participantEntity.setGiftCount(participantEntity.getGiftCount()+1);
+        participantEntity.setVoteCount(participantEntity.getVoteCount()+giftItem.getVoteCount());
         participantService.updateById(participantEntity);
 
         return R.ok();
@@ -83,9 +80,9 @@ public class VoteItemController {
      * 修改
      */
     @RequestMapping("/update")
-  //  @RequiresPermissions("ms:voteitem:update")
-    public R update(@RequestBody VoteItemEntity voteItem){
-			voteItemService.updateById(voteItem);
+    @RequiresPermissions("ms:giftitem:update")
+    public R update(@RequestBody GiftItemEntity giftItem){
+			giftItemService.updateById(giftItem);
 
         return R.ok();
     }
@@ -94,9 +91,9 @@ public class VoteItemController {
      * 删除
      */
     @RequestMapping("/delete")
- //   @RequiresPermissions("ms:voteitem:delete")
+    @RequiresPermissions("ms:giftitem:delete")
     public R delete(@RequestBody String[] ids){
-			voteItemService.deleteBatchIds(Arrays.asList(ids));
+			giftItemService.deleteBatchIds(Arrays.asList(ids));
 
         return R.ok();
     }

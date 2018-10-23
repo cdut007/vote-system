@@ -57,6 +57,13 @@ public class ParticipantEntity implements Serializable {
 	 */
 	private int scanCount;
 
+
+
+    /**
+     * 选手礼物数量
+     */
+    private int giftCount;
+
 	/**
 	 * 选手投票计数
 	 */
@@ -67,8 +74,15 @@ public class ParticipantEntity implements Serializable {
 	 */
 	private Date createTime;
 
+    public void setGiftCount(int giftCount) {
+        this.giftCount = giftCount;
+    }
 
-	public void setScanCount(int scanCount) {
+    public int getGiftCount() {
+        return giftCount;
+    }
+
+    public void setScanCount(int scanCount) {
 		this.scanCount = scanCount;
 	}
 
