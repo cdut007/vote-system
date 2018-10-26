@@ -9,6 +9,15 @@ public class LoginForm {
     private String password;
     private String captcha;
     private String uuid;
+    private String smsCode;
+
+    public void setSmsCode(String smsCode) {
+        this.smsCode = smsCode;
+    }
+
+    public String getSmsCode() {
+        return smsCode;
+    }
 
     public String getUsername() {
         return username;

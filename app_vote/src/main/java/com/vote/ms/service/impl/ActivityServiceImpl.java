@@ -1,6 +1,8 @@
 package com.vote.ms.service.impl;
 
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
 import java.util.Map;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -18,8 +20,14 @@ public class ActivityServiceImpl extends ServiceImpl<ActivityDao, ActivityEntity
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
-        Page<ActivityEntity> page = this.selectPage(
-                new Query<ActivityEntity>(params).getPage(),
+
+        Query<ActivityEntity> activityEntityQuery = new Query<ActivityEntity>(params);
+        if(params.get("createrId") != null){
+            HashMap<String,Object> filterParams = new HashMap<>();
+            filterParams.put("creater_id",params.get("createrId"));
+            activityEntityQuery.getPage().setCondition(filterParams);
+        }
+        Page<ActivityEntity> page = this.selectPage(activityEntityQuery.getPage(),
                 new EntityWrapper<ActivityEntity>()
         );
 

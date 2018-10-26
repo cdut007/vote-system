@@ -64,7 +64,8 @@ public class Md5Util {
         try {
             messageDigest = MessageDigest.getInstance("md5");
             byte[] b = messageDigest.digest(str.getBytes());
-            return new String(Base64.encodeBase64(b));
+            String md5=new String(Base64.encodeBase64(b));
+            return md5;
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("计算文件MD5值出错！");
         }
