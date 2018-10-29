@@ -1,6 +1,8 @@
 package com.vote.ms.service.impl;
 
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
 import java.util.Map;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -18,8 +20,13 @@ public class GiftItemServiceImpl extends ServiceImpl<GiftItemDao, GiftItemEntity
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
-        Page<GiftItemEntity> page = this.selectPage(
-                new Query<GiftItemEntity>(params).getPage(),
+        Query<GiftItemEntity> giftItemEntityQuery = new Query<GiftItemEntity>(params);
+        if(params.get("activityId") != null){
+            HashMap<String,Object> filterParams = new HashMap<>();
+            filterParams.put("activity_id",params.get("activityId"));
+            giftItemEntityQuery.getPage().setCondition(filterParams);
+        }
+        Page<GiftItemEntity> page = this.selectPage(giftItemEntityQuery.getPage(),
                 new EntityWrapper<GiftItemEntity>()
         );
 
