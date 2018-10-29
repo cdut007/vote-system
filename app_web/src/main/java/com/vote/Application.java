@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletComponentScan;
@@ -17,6 +18,7 @@ import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -32,11 +34,10 @@ import java.io.IOException;
 @Configurable
 @EnableAutoConfiguration
 @ComponentScan(basePackages = "com.vote")
-@SpringBootApplication
 @EnableTransactionManagement
 @EnableSwagger2
 @ServletComponentScan
-
+@SpringBootApplication
 public class Application  extends  SpringBootServletInitializer{
 
     @Override
@@ -71,14 +72,14 @@ public class Application  extends  SpringBootServletInitializer{
 
         return filterRegistrationBean;
     }
-
-    @Bean
-    public ServletRegistrationBean servletRegistrationBean(){
-        ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean();
-        servletRegistrationBean.setServlet(new StatViewServlet());
-        servletRegistrationBean.addUrlMappings("/druid/*");
-        return servletRegistrationBean;
-    }
+//
+//    @Bean
+//    public ServletRegistrationBean servletRegistrationBean(){
+//        ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean();
+//        servletRegistrationBean.setServlet(new StatViewServlet());
+//        servletRegistrationBean.addUrlMappings("/druid/*");
+//        return servletRegistrationBean;
+//    }
 
 
 

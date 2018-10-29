@@ -1,6 +1,5 @@
 package com.vote.ms.service;
 
-import com.github.pagehelper.PageInfo;
 import com.vote.ms.exception.APIException;
 
 import java.util.List;
@@ -27,14 +26,6 @@ public interface VoteServiceBase<T> {
      */
     List<T> findAll() throws APIException;
 
-    /**
-     * 分页查找
-     * @param pageNum
-     * @param pagesize
-     * @return
-     * @throws APIException
-     */
-    PageInfo<T> findPage(Integer pageNum,Integer pagesize) throws APIException;
 
     /**
      * 按ID删除

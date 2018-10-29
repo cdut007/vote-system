@@ -18,7 +18,7 @@ spring:
     #数据库配置
     datasource:
         name: vote
-        url: jdbc:mysql://${db.ip}:3306/${db.name}?useUnicode=true&characterEncoding=utf-8
+        url: jdbc:mysql://${db.ip}:3306/${db.name}?useUnicode=true&allowMultiQueries=true&characterEncoding=utf-8
         username: ${db.username}
         password: ${db.password}
 
@@ -26,19 +26,20 @@ spring:
         type: com.alibaba.druid.pool.DruidDataSource
         driver-class-name: com.mysql.jdbc.Driver
         filters: stat
-        initialSize: 1
-        maxActive: 20
+        initialSize: 10
+        maxActive: 200
         maxWait: 30000
-        minIdle: 1
-        poolPreparedStatements: true
+        minIdle: 10
         maxOpenPreparedStatements: 20
-        validationQuery: SELECT 1 FROM DUAL
         testWhileIdle: true
         testOnBorrow: true
         testOnReturn: true
-        timeBetweenEvictionRunsMillis: 30000
         minEvictableIdleTimeMillis: 30000
         keepAlive: true
+        dbcp2:
+          pool-prepared-statements: true
+        tomcat:
+          time-between-eviction-runs-millis: 30000
 
     jpa:
       database: MYSQL
