@@ -1,4 +1,4 @@
-package com.vote.ms.util;
+package com.bank.guarantee.ms.util;
 
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipFile;

@@ -1,4 +1,4 @@
-package com.vote;
+package com.bank.guarantee;
 
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
@@ -33,7 +33,7 @@ import java.io.IOException;
 
 @Configurable
 @EnableAutoConfiguration
-@ComponentScan(basePackages = "com.vote")
+@ComponentScan(basePackages = "com.bank.guarantee")
 @EnableTransactionManagement
 @EnableSwagger2
 @ServletComponentScan
@@ -96,7 +96,7 @@ public class Application  extends  SpringBootServletInitializer{
 
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.vote.ms.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.bank.guarantee.ms.controller"))
                 .paths(PathSelectors.any())
 
                 .build();

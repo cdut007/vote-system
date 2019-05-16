@@ -1,4 +1,4 @@
-package com.vote.config;
+package com.bank.guarantee.config;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.google.code.kaptcha.util.Config;

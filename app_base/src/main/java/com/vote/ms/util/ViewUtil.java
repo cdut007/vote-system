@@ -1,4 +1,4 @@
-package com.vote.ms.util;
+package com.bank.guarantee.ms.util;
 
 import org.springframework.util.StringUtils;
 

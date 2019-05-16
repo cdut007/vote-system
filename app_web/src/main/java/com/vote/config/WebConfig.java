@@ -1,4 +1,4 @@
-package com.vote.config;
+package com.bank.guarantee.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

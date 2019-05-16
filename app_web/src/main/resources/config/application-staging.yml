@@ -10,8 +10,8 @@ server:
 
 #数据库IP
 db:
-  ip: 111.231.195.94
-  name: vote
+  ip: 172.17.119.78 #39.107.127.11
+  name: bank_guarantee
   username: root
-  password: Mdbo9$18Cd
+  password: Ycp7WyjzNA
 

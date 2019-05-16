@@ -1,4 +1,4 @@
-//package com.vote.ms.controller;
+//package com.bank.guarantee.ms.controller;
 //
 //import org.springframework.stereotype.Controller;
 //import org.springframework.web.bind.annotation.RequestMapping;

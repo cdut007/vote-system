@@ -81,7 +81,7 @@ mybatis-plus:
     logic-delete-value: -1
     logic-not-delete-value: 0
     sql-injector: com.baomidou.mybatisplus.mapper.LogicSqlInjector
-  type-aliases-package: com.vote.ms.entity
+  type-aliases-package: com.bank.guarantee.ms.entity
   configuration:
       map-underscore-to-camel-case: true
       cache-enabled: false

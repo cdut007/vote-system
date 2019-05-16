@@ -1,6 +1,6 @@
-package com.vote.ms.service;
+package com.bank.guarantee.ms.service;
 
-import com.vote.ms.exception.APIException;
+import com.bank.guarantee.ms.exception.APIException;
 
 import java.util.List;
 

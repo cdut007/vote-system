@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>application_cli</artifactId>
-        <groupId>com.vote</groupId>
+        <groupId>com.bank.guarantee</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -14,8 +14,8 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.vote</groupId>
-            <artifactId>app_vote</artifactId>
+            <groupId>com.bank.guarantee</groupId>
+            <artifactId>app_guarantee</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
@@ -53,7 +53,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.vote.Application</mainClass>
+                    <mainClass>com.bank.guarantee.Application</mainClass>
                 </configuration>
 
                 <executions>

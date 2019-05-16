@@ -1,7 +1,7 @@
-package com.vote.config;
+package com.bank.guarantee.config;
 
-import com.vote.ms.oauth2.OAuth2Filter;
-import com.vote.ms.oauth2.OAuth2Realm;
+import com.bank.guarantee.ms.oauth2.OAuth2Filter;
+import com.bank.guarantee.ms.oauth2.OAuth2Realm;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;

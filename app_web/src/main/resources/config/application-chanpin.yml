@@ -10,10 +10,10 @@ server:
 
 #数据库IP
 db:
-  ip: 172.17.52.59
-  name: orcl12c
-  username: tender_0403
-  password: tender_zcm159
+  ip: 172.17.119.78 #39.107.127.11
+  name: bank_guarantee
+  username: root
+  password: Ycp7WyjzNA
 
 
 httpRequest:

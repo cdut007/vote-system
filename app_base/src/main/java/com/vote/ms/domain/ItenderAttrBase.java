@@ -1,4 +1,4 @@
-package com.vote.ms.domain;
+package com.bank.guarantee.ms.domain;
 
 import java.util.Date;
 

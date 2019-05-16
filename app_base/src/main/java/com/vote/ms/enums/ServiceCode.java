@@ -1,4 +1,4 @@
-package com.vote.ms.enums;
+package com.bank.guarantee.ms.enums;
 
 /**
  * Created by djiep on 2017/4/22.

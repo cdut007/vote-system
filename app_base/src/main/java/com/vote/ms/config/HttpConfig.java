@@ -1,4 +1,4 @@
-package com.vote.ms.config;
+package com.bank.guarantee.ms.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

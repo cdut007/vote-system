@@ -1,4 +1,4 @@
-package com.vote.ms.util;
+package com.bank.guarantee.ms.util;
 
 import java.security.Key;
 import java.security.SecureRandom;
@@ -53,7 +53,7 @@ public class PasswordUtil {
 
     public static void main(String[] args) throws Exception {
         String password = "123456";
-        String key = "com.vote";
+        String key = "com.bank.guarantee";
         String encryptMsg = encrypt(password, key);
         System.out.println("encrypted message is below :");
         System.out.println(encryptMsg);

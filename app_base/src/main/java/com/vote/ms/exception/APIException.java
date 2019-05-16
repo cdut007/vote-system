@@ -1,4 +1,4 @@
-package com.vote.ms.exception;
+package com.bank.guarantee.ms.exception;
 
 
 /**
