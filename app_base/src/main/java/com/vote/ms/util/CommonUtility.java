@@ -5,6 +5,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -641,5 +642,36 @@ public class CommonUtility {
             uuid = uuid.replaceAll("-", "");
         }
         return uuid;
+    }
+
+    public static boolean isLinux(String OS){
+        return OS.indexOf("linux")>=0;
+    }
+
+    public static boolean isMacOS(String OS){
+        return OS.indexOf("mac")>=0&&OS.indexOf("os")>0&&OS.indexOf("x")<0;
+    }
+
+    public static boolean isMacOSX(String OS){
+        return OS.indexOf("mac")>=0&&OS.indexOf("os")>0&&OS.indexOf("x")>0;
+    }
+
+    public static boolean isWindows(String OS){
+        return OS.indexOf("windows")>=0;
+    }
+
+
+
+    public  static  String getFileDirByName(String name){
+        String root = "C:\\\\";
+        String os = System.getProperty("os.name").toLowerCase();
+        if(isMacOS(os) || isMacOSX(os)){
+            root = "/Users/mac/Downloads";
+        }else if (isLinux(os)){
+            root = "/root";
+        }
+
+        String filePath = root + File.separator+"data"+File.separator+name+File.separator;
+        return  filePath;
     }
 }

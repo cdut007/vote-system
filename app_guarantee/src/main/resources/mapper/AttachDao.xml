@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bank.guarantee.ms.dao.AttachDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.bank.guarantee.ms.entity.AttachEntity" id="attachMap">
+        <result property="id" column="id"/>
+        <result property="fileName" column="file_name"/>
+        <result property="uploadUserId" column="upload_user_id"/>
+        <result property="length" column="length"/>
+        <result property="fileType" column="file_type"/>
+        <result property="md5" column="md5"/>
+        <result property="path" column="path"/>
+        <result property="uploadTime" column="upload_time"/>
+        <result property="groupId" column="group_id"/>
+        <result property="contentType" column="content_type"/>
+    </resultMap>
+
+
+</mapper>
